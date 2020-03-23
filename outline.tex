@@ -1,0 +1,76 @@
+\chapter{Introduction}
+
+\section{Thesis Contribution}
+\section{Thesis Outline}
+
+\chapter{Graph Theory and Wikipedia}
+Will provide background and concepts related to graph theory and Wikipedia. Then we will focus on the task of predicting the vote of an individual user given their voting history and current state of the election. We then present the local signed network based model that accurately predicts a user's vote. 
+
+\section{Signed Graphs, Balance and Status}
+\subsection{Graphs and Signed Graphs }
+\begin{itemize}
+    \item Discuss basic terms related to graph theory 
+    \item Define terms such as Nodes, Edges, direction, edge weight,
+    \item successor, predecessor and neighbors
+    \item Signed graphs and restrictions 
+    \item Explain relevance in real world settings
+\end{itemize}
+
+\subsection{Balance Theory}
+\begin{itemize}
+    \item Explain balance theory origin and significance.
+    \item Illustrate with traids and examples
+    \item Define mathematical background to measure balance through the Eigendecomposition of the graph Laplacian  
+\end{itemize}
+
+\subsection{Status Theory}
+\begin{itemize}
+    \item Describe the nature of the directed setting
+    \item Illustrate the differences to Balance theory
+    \item Mention existing ways to measure violation to status in a network
+\end{itemize}
+
+\section{Elections in Wikipedia}
+\begin{itemize}
+    \item Explain Editors and Administrators in Wikipedia
+    \item Describe the Request for Administrator(RfA) process
+    \item Discuss general trends and patters
+    \item Mention research interest and possible current works?
+\end{itemize}
+
+\chapter{Vote Prediction}
+In this section we discuss the vote prediction problem and the various approaches to solve it.
+
+\section{Signed Edge Prediction}
+\begin{itemize}
+    \item Discuss the existing edge predictions work
+    \item Directly using signed traids as features
+    \item Using triads along with network features
+    \item Using user information and interaction data for predicting votes and/or elections
+    \item The main drawbacks in these methods when considering an election setting
+\end{itemize}
+\section{Linear Combination of Graphs}
+\begin{itemize}
+    \item Describe the linear combination of graphs derived from user and election data
+    \item Explain topic similarity, follows network, interaction networks and other features
+    \item How it can also incorporate signed features as additional features in prediction
+\end{itemize}
+\section{Local Signed Network}
+\begin{itemize}
+    \item Explain the concept of the local signed network for a particular user
+    \item Motivate the definition with respect to elections and influence
+    \item Describe how to use balance and status theory to predict the vote
+    \item Clarify the differences to signed edge prediction efforts
+    \item Mention Agony as a way to measure status compliance here?
+\end{itemize}
+\chapter{Experiments}
+\section{Datasets}
+\section{Models}
+\section{Evaluation}
+
+\chapter{Results and Discussion} 
+\section{Linear Combination of Graphs}
+\section{Local Signed Network}
+\section{Discussion}
+
+\chapter{Conclusions and Future Work}
