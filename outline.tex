@@ -39,8 +39,22 @@ Will provide background and concepts related to graph theory and Wikipedia. Then
 \end{itemize}
 
 \chapter{Vote Prediction}
-In this section we discuss the vote prediction problem and the various approaches to solve it.
+In this section we first provide the motivation of choosing independent vote prediction as our target and the differnces from predicting the result of an election.Next we describe the available techniques and methods to predict individual votes or signed edges in a network and how it relates to the problem at hand. We then provide two novel methods of using user information long with past election results to predict votes.
 
+\section{Election versus Vote Prediction}
+\begin{itemize}
+    \item Discuss existing election result predictions schemes
+    \item Discuss the limitations in understanding election dynamics through just predicting election results
+    \item Describe the process as an information cascade, discuss the potential Game Theory settings
+    \item Show the two parts of the problem from an information cascading perspective 
+     \begin{itemize}
+        \item Who is going to vote next
+        \item How they are going to vote
+    \end{itemize}
+    \item Discuss the assumptions in usual Independent Cascade (IC) models
+    \item Explain the difficulty of both aspects in the domain of an election 
+    \item Motivate the selection of the problem as an \textbf{Independent Vote Prediction}
+\end{itemize}
 \section{Signed Edge Prediction}
 \begin{itemize}
     \item Discuss the existing edge predictions work
@@ -63,14 +77,79 @@ In this section we discuss the vote prediction problem and the various approache
     \item Clarify the differences to signed edge prediction efforts
     \item Mention Agony as a way to measure status compliance here?
 \end{itemize}
+
+
 \chapter{Experiments}
+In this section we first describe the datasets that will be used in building our vote prediction models. Then we discuss the various linear and graphical models that we consider and their implementations details. Lastly we define the metrics and other means of evaluating the models and the results.
+
 \section{Datasets}
+\begin{itemize}
+    \item Maybe a short description of existing SNAP datasets and their limitations
+    \item The details of the \textit{Wiki-RfA} data and the \textit{User-Contribution} datasets
+\end{itemize}
+\section{Graphs}
+\begin{itemize}
+    \item Discuss the process of extraction of the various graphs discussed in the previous sections
+    \item \textbf{Agree Graphs and Follows Graph}, where we measure the degree to which one user agrees and follows another user in previous elections
+    \item \textbf{Topic similarity} from the top 100 articles edited for each user and the pairwise Jaccard similarity 
+    \item \textbf{Talk and Interaction graphs}, measures communication between users on their respective user talk pages
+    \item \textbf{Signed Graphs}, triad encoding and extracting the triad counts for each voter
+\end{itemize}
 \section{Models}
+\subsection{Linear Combination of Graphs}
+\begin{itemize}
+    \item Discuss the various linear models considered for Graph Combinations
+    \begin{itemize}
+        \item Linear Regression
+        \item Support Vector Classifier
+        \item Extreme Gradient Boosting (XGBOOOST) 
+    \end{itemize}
+    \item Discuss how each graph contributes features and the problem is a linear classification problem
+\end{itemize}
+\subsubsection{Iterative Mode}
+\begin{itemize}
+    \item Discuss the motivation behind an iterative model versus a static prediction model
+    \item Describe how balance is derived from the Agree Graph in a local signed network
+    \item Discuss how the Agree graph is updated in terms of Balance
+    \item Describe how status is derived from the Follows graph in a local signed network 
+    \item Discuss how the Follows graph is updated after every election
+    \item Describe how to make the predictions 
+    \begin{itemize}
+        \item Deterministic : just decide based on eigen value or agony as support or oppose
+        \item Probabilistic : provide a probability for predicting a support vote
+    \end{itemize}
+\end{itemize}
 \section{Evaluation}
+\begin{itemize}
+    \item Discuss the issues with the imbalance in the datasets
+    \item Illustrate the issues with pure measures of accuracy
+    \item Define Precision, Recall and Macro F1 score
+    \item Discuss ROC AUC and Precision Recall curves for probability based predictions 
+\end{itemize}
 
 \chapter{Results and Discussion} 
+In this section we will present the results of the models and discuss their implications.
 \section{Linear Combination of Graphs}
+\begin{itemize}
+    \item Present results for each linear classifier
+    \item Discuss the different splits of the dataset to check for robustness and chronological consistency
+    \item Show the feature importances and discuss their relevance 
+    \item Compare the raw accuracy versus the macro f1 scores
+    \item Highlight the difficulty of predicting negative votes
+\end{itemize}
 \section{Local Signed Network}
-\section{Discussion}
+\begin{itemize}
+    \item Present the Iterative Balance model results
+    \item Discuss quality of predictions using evaluation metrics
+    \item Mention the difference between deterministic and probabilistic prediction accuracies
+    \item Explain the Iterative Status model results 
+    \item Discuss the issues with local model of status and the potential reasons for lower score and quality
+\end{itemize}
+\section{Comparison}
+\begin{itemize}
+    \item Compare results from signed edge prediction and Iterative signed models
+    \item Discuss Static Linear combination predictions versus Iterative signed predictions 
+    \item Discuss the assumptions used in the models and limitations 
+\end{itemize}
 
 \chapter{Conclusions and Future Work}
