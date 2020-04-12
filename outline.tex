@@ -15,7 +15,7 @@ Will provide background and concepts related to graph theory. Then we will focus
 \subsection{Balance Theory}
 \begin{itemize}
     \item Explain balance theory origin and significance.
-    \item Illustrate with traids and examples
+    \item Illustrate with triads and examples
     \item Define mathematical background to measure balance through the Eigendecomposition of the graph Laplacian  
 \end{itemize}
 
@@ -28,7 +28,8 @@ Will provide background and concepts related to graph theory. Then we will focus
 
 
 \chapter{Vote Prediction}
-In this section we first provide the motivation of choosing independent vote prediction as our target and the differnces from predicting the result of an election.Next we describe the available techniques and methods to predict individual votes or signed edges in a network and how it relates to the problem at hand. We then provide two novel methods of using user information long with past election results to predict votes.
+\label{chp:vote-predicition}
+In this section we first provide the motivation of choosing independent vote prediction as our target and the differences from predicting the result of an election.Next we describe the available techniques and methods to predict individual votes or signed edges in a network and how it relates to the problem at hand. We then provide two novel methods of using user information long with past election results to predict votes.
 
 \section{Election versus Vote Prediction}
 \begin{itemize}
@@ -47,7 +48,7 @@ In this section we first provide the motivation of choosing independent vote pre
 \section{Signed Edge Prediction}
 \begin{itemize}
     \item Discuss the existing edge predictions work
-    \item Directly using signed traids as features
+    \item Directly using signed triads as features
     \item Using triads along with network features
     \item Using user information and interaction data for predicting votes and/or elections
     \item The main drawbacks in these methods when considering an election setting
@@ -68,6 +69,7 @@ In this section we first provide the motivation of choosing independent vote pre
 \end{itemize}
 
 \chapter{Wikipedia}
+\label{chp:wikipedia}
 In this section we provide an overview of how Wikipedia is structured, the hierarchy that exists withing editors. We then explain the election process of getting administrator rights in Wikipedia.
 
 \section{Structure and hierarchy in Wikipedia}
@@ -80,6 +82,7 @@ In this section we provide an overview of how Wikipedia is structured, the hiera
 \end{itemize}
 
 \chapter{Experiments}
+\label{chp:experiments}
 In this section we first describe the datasets that will be used in building our vote prediction models. Then we discuss the various linear and graphical models that we consider and their implementations details. Lastly we define the metrics and other means of evaluating the models and the results.
 
 \section{Datasets}
@@ -128,6 +131,7 @@ In this section we first describe the datasets that will be used in building our
 \end{itemize}
 
 \chapter{Results and Discussion} 
+\label{chp:results}
 In this section we will present the results of the models and discuss their implications.
 \section{Linear Combination of Graphs}
 \begin{itemize}
@@ -153,6 +157,7 @@ In this section we will present the results of the models and discuss their impl
 \end{itemize}
 
 \chapter{Conclusions and Future Work}
+\label{chp:conclusion}
 \begin{itemize}
     \item Explain the quality of results with the election perspective
     \item Future work is to extend this to other election settings and investigate generality of this approach
