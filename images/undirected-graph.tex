@@ -1,0 +1,30 @@
+\tikzset{
+    position/.style args={#1:#2 from #3}{
+        at=(#3.#1), anchor=#1+180, shift=(#1:#2)
+    }
+}
+
+\begin{tikzpicture}
+
+    \begin{scope}[every node/.style={circle,thick,draw}]
+        \node (v1) at (0,0) {$v_1$};
+        \node[below=1cm of v1] (v2) {$v_2$};
+        \node[position=45:2cm from v2] (v3) {$v_3$};
+        \node[position=150:2cm from v1] (v4) {$v_4$};
+        \node[left=3cm of v2] (v5) {$v_5$};
+        \node[position=45:1cm from v5] (v6) {$v_6$};
+    \end{scope}
+
+    \begin{scope}[>={Stealth[red]},
+        every edge/.style={thick,draw},
+        every node/.style={fill=white,circle}]
+        % \draw (v4) -- (v1) -- (v3) -- (v2) -- (v1);
+        \path (v1) edge (v2) 
+            (v2) edge (v3)
+            (v1) edge node[above] {$1$} (v3)
+            (v1) edge (v4)
+            (v5) edge (v6)
+            ;
+    \end{scope}
+  \end{tikzpicture}
+  

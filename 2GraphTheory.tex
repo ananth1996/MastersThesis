@@ -1,0 +1,57 @@
+\chapter{Graph Theory}
+\label{chp:graph-theory}
+In this chapter we will provide the fundamentals of the graph theory concepts required to understand the rest of the thesis. In Section~\ref{sec:prelim} we cover the basic definitions, terminologies used to describe different types of graphs. Then we define a signed graph and discuss its unique properties in Section~\ref{sec:signed-graphs}. We outline the theory of balance in signed networks and methods to measure it in Section~\ref{sec:balance-theory}.Next, we discuss the theory of status and illustrate the differences to balance in Section~\ref{sec:status-theory}. Lastly, we explain techniques of finding hierarchies in directed networks and the concept of agony in Section~\ref{sec:hierarchy}.
+
+\section{Preliminaries}
+\label{sec:prelim}
+In this section we define the various types of graphs and their basic properties. The notation and terminologies used closely follows those used in Diestel~\cite{diestel1997graph}. Graphs are structures that describe relationships between entities. These entities are called \textit{vertices} and entities related to one another are joined by edges. The terms graph, vertices and edges can be used interchangeably with \textit{network}, \textit{nodes} and \textit{links} respectively.
+
+Graphs can be classified broadly into two types based on whether the edges posses a direction or not. We now go on to define them in detail.
+\subsection{Undirected Graphs}
+An undirected graph is pair $G=(V,E)$, where $V$ is the set of vertices and $E$ is the set $E \subseteq \{ (u,v) \mid u,v \in V\}$ of unordered pairs of vertices called edges. In this thesis we will deal with only \textit{simple graphs}, i.e. no are so self loops $(u,v)\in V \times V, ~ u\neq v$ and there is at most one edge between vertices $u$ and $v$.
+
+The number of the vertices in a graph is called the \textit{order} of the graphs is denoted by $n= |G|$ and the \textit{size} of a graph is the number of edges denoted by $m = \|G\|$ or $m=|E|$. A vertex $u$ is \textit{adjacent} to $v$ is they are the end points of an edge, $(u,v) \in E$. All the vertices adjacent to vertex $v$ is called the \textit{neighbourhood} of $v$ and is denoted by $N(v)$.
+
+\begin{figure}[!ht]
+    \centering
+    \input{images/undirected-graph.tex}
+    \caption{An example of a weighted undirected graph }
+    \label{}
+\end{figure}
+
+\subsection{Directed Graphs}
+\begin{itemize}
+    \item Directed, Undirected, Weighted, nweighted
+    \item successor, predecessor and neighbors
+\end{itemize}
+
+\section{Signed Graphs}
+\label{sec:signed-graphs}
+\begin{itemize}
+    \item Signed graphs and restrictions 
+    \item Explain relevance in real world settings
+\end{itemize}
+
+\section{Balance Theory}
+\label{sec:balance-theory}
+\begin{itemize}
+    \item Explain balance theory origin and significance.
+    \item Illustrate with triads and examples
+    \item Define mathematical background to measure balance through the Eigen decomposition of the graph Laplacian  
+\end{itemize}
+
+\section{Status Theory}
+\label{sec:status-theory}
+\begin{itemize}
+    \item Describe the nature of the directed setting
+    \item Illustrate the differences to Balance theory
+    \item Mention existing ways to measure violation to status in a network
+\end{itemize}
+
+\section{Hierarchy in directed networks}
+\label{sec:hierarchy}
+\begin{itemize}
+    \item Discuss the hierarchy in DAGs
+    \item Explain concept of Agony
+    \item Provide existing algorithms to find the ranking of nodes.
+\end{itemize}
