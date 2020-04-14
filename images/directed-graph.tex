@@ -1,0 +1,32 @@
+\tikzset{
+    position/.style args={#1:#2 from #3}{
+        at=(#3.#1), anchor=#1+180, shift=(#1:#2)
+    }
+}
+
+\begin{tikzpicture}
+
+    \begin{scope}[every node/.style={circle,thick,draw}]
+        \node (v1) at (0,0) {$v_1$};
+        \node[below=2cm of v1] (v2) {$v_2$};
+        \node[right=2cm of v2] (v3) {$v_3$};
+        \node[above=2cm of v3] (v4) {$v_4$};
+        \node[below right=1cm and 2cm of v4] (v5) {$v_5$};
+        \node[below left=1cm and 2cm of v1] (v6) {$v_6$};
+    \end{scope}
+
+    \begin{scope}[>={Stealth[black]},
+        every edge/.style={thick,draw},
+        every node/.style={fill=white,circle}]
+        % \draw (v4) -- (v1) -- (v3) -- (v2) -- (v1);
+        \path[->] 
+        (v1) edge[bend right=20] node[left] {$2$} (v2)
+        (v2) edge[bend right=30] node[below right=1mm] {$4$} (v4)  
+        (v1) edge[bend left=35] node[above=0.8mm] {$1$} (v4)
+        (v4) edge[bend left=35] node[below=0.8mm] {$1.5$} (v1)
+        (v5) edge[bend left=30] node[below right=1mm] {$3.5$} (v3)
+        (v2) edge[bend left=30] node[below left=0.8mm and 0.8mm] {$2.5$} (v6)
+        ;
+    \end{scope}
+  \end{tikzpicture}
+  

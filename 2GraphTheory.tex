@@ -8,23 +8,33 @@ In this section we define the various types of graphs and their basic properties
 
 Graphs can be classified broadly into two types based on whether the edges posses a direction or not. We now go on to define them in detail.
 \subsection{Undirected Graphs}
-An undirected graph is pair $G=(V,E)$, where $V$ is the set of vertices and $E$ is the set $E \subseteq \{ (u,v) \mid u,v \in V\}$ of unordered pairs of vertices called edges. In this thesis we will deal with only \textit{simple graphs}, i.e. no are so self loops $(u,v)\in V \times V, ~ u\neq v$ and there is at most one edge between vertices $u$ and $v$.
+An undirected graph is pair $G=(V,E)$, where $V$ is the set of vertices and $E$ is the set $E \subseteq \{ (u,v) \mid u,v \in V\}$ of unordered pairs of vertices called edges. In this thesis we will deal with only \textit{simple graphs}, i.e. no are so self loops $(u,v)\in V \times V, ~ u\neq v$ and there is at most one edge between vertices $u$ and $v$. 
 
-The number of the vertices in a graph is called the \textit{order} of the graphs is denoted by $n= |G|$ and the \textit{size} of a graph is the number of edges denoted by $m = \|G\|$ or $m=|E|$. A vertex $u$ is \textit{adjacent} to $v$ is they are the end points of an edge, $(u,v) \in E$. All the vertices adjacent to vertex $v$ is called the \textit{neighbourhood} of $v$ and is denoted by $N(v)$.
+The number of the vertices in a graph is called the \textit{order} of the graphs is denoted by $n= |G|$ and the \textit{size} of a graph is the number of edges denoted by $m = \|G\|$ or $m=|E|$. A vertex $u$ is \textit{adjacent} to $v$ is they are the end points of an edge, $(u,v) \in E$. All the vertices adjacent to vertex $v$ is called the \textit{neighbourhood} of $v$ and is denoted by $N(v)$. The \textit{degree} of a vertex $v$ is the number of nodes adjacent to that vertex and is denoted by $d(v) = |N(v)|$. 
 
+The edges of an undirected graph can also have an associated value. This value can indicate the distance or similarity between a pair of vertices. These values are called \textit{weights} and the corresponding graph is called a \textit{weighted undirected graph}. Therefore, a weighted graph is defined as a triple $G=(V,E,w)$, where $w:E \rightarrow \mathbb{R}^{+}$ is a function that maps an edge $e$ to a positive real weight $w(e)$. Now an \textit{unweighed graph} is simply a weighted graph where the function $w$ is defined as: if $e \in E$ then $w(e)=1$ else $w(e)=0$. The degree of a a vertex $v$ in a weighed graph is the sum of the weights to all the neighbours of $v$ and is defined as $d(v) = \sum_{u\in N(v)}w((u,v))$ An example of a weighted undirected graph is shown in Figure~\ref{fig:weighted-undirected}. 
 \begin{figure}[!ht]
     \centering
     \input{images/undirected-graph.tex}
-    \caption{An example of a weighted undirected graph }
-    \label{}
+    \caption{An example of a weighted undirected graph}
+    \label{fig:weighted-undirected}
 \end{figure}
 
-\subsection{Directed Graphs}
-\begin{itemize}
-    \item Directed, Undirected, Weighted, nweighted
-    \item successor, predecessor and neighbors
-\end{itemize}
 
+\subsection{Directed Graphs}
+The main distinction regarding a \textit{directed graph} (or \textit{digraph}) is that the edges are ordered pairs, i.e.$(u,v) \neq (v,u)$. Therefore, a directed graph has a similar definition: a pair $G=(V,E)$, where $V$ is the set of vertices and $E$ is the set of \textit{ordered} pairs of vertices. Now given an edge $e=(u,v)$ we can define a source function $\src:E\rightarrow V$ such that $\src(e)=u$ and a destination function $d:E\rightarrow V$ where $\dest(e)=v$. These functions classify the vertices in an edge $e$ as either the source or the destination. In this thesis, we deal only with \textit{simple directed graphs}, i.e. no self-loops and there can be at most one edge from $u$ to $v$. 
+
+As the edges now have an inherent direction we can define the \textit{successors} and \textit{predecessors} of a node $v$. A vertex $u$ is called the \textit{successor} of a node $v$ is there exists a directed edge from $v$ to $u$, therefore the set of successors for a vertex $v$ can be defined as $S(v) = \{u \mid (v,u) \in E\}$. A \textit{predecessor} of a node $v$ is a vertex $u$ such that there exists a directed edge from $u$ to $v$, the set of predecessors for a vertex $v$ can de defined as $P(v) = \{u \mid (u,v) \in E\}$. We now a vertex $u$ that is either a successor or a predecessor of a vertex $v$ can be called a neighbour of the vertex $v$. Therefore, we define the \textit{neighbourhood} of a vertex $v$ as the set of vertices in the union of successors and predecessor, i.e $N(v) = S(u) \cup P(v)$. This definition is also compatible with undirected graphs because if $(u,v) \in E$ then $(v,u) \in E$. 
+
+Directed graphs can also have values associated with each directed edge called a \textit{weight}. A \textit{weighted directed graph} can be defined as a triple $G=(V,E,w)$, where the weight function $w:E \rightarrow \mathbb{R}^{+}$ that maps each edge $e$ to a weight $w(e)$. The indegree of a vertex $v$ is defined as the sum of the weights from the predecessors of $v$ and is denoted as $\indegree(v) = \sum_{u \in P(v)} w((u,v))$. Similarly, the outdegree of a vertex $v$ is defined as the sum of the weights to the successors of 
+Figure~\ref{fig:weighted-directed} shows an example of a weighted directed graph.
+
+\begin{figure}[!ht]
+    \centering
+    \input{images/directed-graph.tex}
+    \caption{An example of a weighted directed graph}
+    \label{fig:weighted-directed}
+\end{figure}
 \section{Signed Graphs}
 \label{sec:signed-graphs}
 \begin{itemize}

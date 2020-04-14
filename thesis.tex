@@ -9,6 +9,8 @@
 \usepackage{subfigure}
 \usepackage[medium]{titlesec}
 
+\usepackage{amssymb}
+\usepackage{amsmath}
 % The TikZ package allows you to create professional technical figures.
 % The learning curve is quite steep, but it is definitely worth it if 
 % you wish to have really good-looking technical figures. 
@@ -21,7 +23,7 @@
 \usetikzlibrary{decorations.pathmorphing,decorations.markings}
 \usetikzlibrary{shapes}
 \usetikzlibrary{patterns}
-
+\input{macros.tex}
 
 % The aalto-thesis package provides typesetting instructions for the
 % standard master's thesis parts (abstracts, front page, and so on)
@@ -318,7 +320,8 @@ Swedish abstract}
 \pagestyle{headings}
 % The contents of the thesis are separated to their own files.
 % Edit the content in these files, rename them as necessary.
-% ------------------------------------------------------------------
+
+%------------------------------------------------------------------
 \input{1introduction.tex}
 
 \input{2GraphTheory.tex}
