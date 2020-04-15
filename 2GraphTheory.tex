@@ -26,7 +26,7 @@ The main distinction regarding a \textit{directed graph} (or \textit{digraph}) i
 
 As the edges now have an inherent direction we can define the \textit{successors} and \textit{predecessors} of a node $v$. A vertex $u$ is called the \textit{successor} of a node $v$ is there exists a directed edge from $v$ to $u$, therefore the set of successors for a vertex $v$ can be defined as $S(v) = \{u \mid (v,u) \in E\}$. A \textit{predecessor} of a node $v$ is a vertex $u$ such that there exists a directed edge from $u$ to $v$, the set of predecessors for a vertex $v$ can de defined as $P(v) = \{u \mid (u,v) \in E\}$. We now a vertex $u$ that is either a successor or a predecessor of a vertex $v$ can be called a neighbour of the vertex $v$. Therefore, we define the \textit{neighbourhood} of a vertex $v$ as the set of vertices in the union of successors and predecessor, i.e $N(v) = S(u) \cup P(v)$. This definition is also compatible with undirected graphs because if $(u,v) \in E$ then $(v,u) \in E$. 
 
-Directed graphs can also have values associated with each directed edge called a \textit{weight}. A \textit{weighted directed graph} can be defined as a triple $G=(V,E,w)$, where the weight function $w:E \rightarrow \mathbb{R}^{+}$ that maps each edge $e$ to a weight $w(e)$. The indegree of a vertex $v$ is defined as the sum of the weights from the predecessors of $v$ and is denoted as $\indegree(v) = \sum_{u \in P(v)} w((u,v))$. Similarly, the outdegree of a vertex $v$ is defined as the sum of the weights to the successors of 
+Directed graphs can also have values associated with each directed edge called a \textit{weight}. A \textit{weighted directed graph} can be defined as a triple $G=(V,E,w)$, where the weight function $w:E \rightarrow \mathbb{R}^{+}$ that maps each edge $e$ to a weight $w(e)$. The indegree of a vertex $v$ is defined as the sum of the edge weights from the predecessors of $v$ and is denoted as $\indegree(v) = \sum_{u \in P(v)} w((u,v))$. Similarly, the outdegree of a vertex $v$ is defined as the sum of the edge weights to the successors of $v$ and is denoted by $\outdegree(v) = \sum_{u \in S(v)}w((v,u))$.
 Figure~\ref{fig:weighted-directed} shows an example of a weighted directed graph.
 
 \begin{figure}[!ht]
@@ -35,12 +35,10 @@ Figure~\ref{fig:weighted-directed} shows an example of a weighted directed graph
     \caption{An example of a weighted directed graph}
     \label{fig:weighted-directed}
 \end{figure}
+
 \section{Signed Graphs}
 \label{sec:signed-graphs}
-\begin{itemize}
-    \item Signed graphs and restrictions 
-    \item Explain relevance in real world settings
-\end{itemize}
+
 
 \section{Balance Theory}
 \label{sec:balance-theory}
