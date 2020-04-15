@@ -38,8 +38,11 @@ Figure~\ref{fig:weighted-directed} shows an example of a weighted directed graph
 
 \section{Signed Graphs}
 \label{sec:signed-graphs}
+The simple weighted graphs we have defined so far only have non-negative edge weights that can represent similarity or closeness. In the 1950s social psychologists found it desirable to express liking, disliking or indifference in social interactions. This was formalized by Harary \cite{harary1953on} using graphs with weights $(-1,0,1)$. These graphs are therefore called \textit{signed graphs}, where a negative edge weight can denote dissimilarity between a pair of vertices. In this thesis we will use notation similar to Gallier \cite{gallier2016spectral} and Kunegis et al. in defining terms related to signed graphs \cite{kunegis2010spectral}.
 
+A signed graph is a triple $G=(V,E,w)$, where $V$ is the set of vertices, $E$ is the set of pair of vertices and the weight function $w:E \rightarrow \mathbb{R}$. The weight function now takes an edge $e$ and maps it to a signed weight $w(e)$. Historically, signed graphs were studied as an undirected graph where edge weights can have negative values and directed graphs were analysed by simply disregarding the edge direction. However, in this thesis, we will consider directed and undirected signed graphs as separate and distinct entities. 
 
+In signed graphs, certain terms need to be redefined to incorporate negative edge weights. The degree of a vertex $v$ is now the sum of the absolute edge weight of its neighbours is called the \textit{signed degree} and is denoted by $\bar{d}(v) = \sum_{u \in N(v)}|w((u,v))|$. This can also be extended to \textit{signed indegree} and \textit{signed outdegree} defined as $\overline{\indegree}(v)=\sum_{u \in P(v)}|w((u,v))|$ and $\overline{\outdegree}(v)=\sum_{u \in S(v)}|w((v,u))|$.
 \section{Balance Theory}
 \label{sec:balance-theory}
 \begin{itemize}
