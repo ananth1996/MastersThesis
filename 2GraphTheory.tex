@@ -43,6 +43,25 @@ The simple weighted graphs we have defined so far only have non-negative edge we
 A signed graph is a triple $G=(V,E,w)$, where $V$ is the set of vertices, $E$ is the set of pair of vertices and the weight function $w:E \rightarrow \mathbb{R}$. The weight function now takes an edge $e$ and maps it to a signed weight $w(e)$. Historically, signed graphs were studied as an undirected graph where edge weights can have negative values and directed graphs were analysed by simply disregarding the edge direction. However, in this thesis, we will consider directed and undirected signed graphs as separate and distinct entities. 
 
 In signed graphs, certain terms need to be redefined to incorporate negative edge weights. The degree of a vertex $v$ is now the sum of the absolute edge weight of its neighbours is called the \textit{signed degree} and is denoted by $\bar{d}(v) = \sum_{u \in N(v)}|w((u,v))|$. This can also be extended to \textit{signed indegree} and \textit{signed outdegree} defined as $\overline{\indegree}(v)=\sum_{u \in P(v)}|w((u,v))|$ and $\overline{\outdegree}(v)=\sum_{u \in S(v)}|w((v,u))|$.
+
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \centering
+        \input{images/signed-undirected-graph.tex}
+        \caption{A undirected signed graph}
+        \label{fig:signed-undirected}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \input{images/signed-directed-graph.tex}
+        \caption{A directed signed graph}
+        \label{fig:signed-directed graph}
+    \end{subfigure}
+    \caption{Examples of Signed Graphs}
+    \label{}
+\end{figure}
 \section{Balance Theory}
 \label{sec:balance-theory}
 \begin{itemize}
