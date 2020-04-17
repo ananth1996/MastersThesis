@@ -1,0 +1,56 @@
+\tikzset{
+    position/.style args={#1:#2 from #3}{
+        at=(#3.#1), anchor=#1+180, shift=(#1:#2)
+    }
+}
+
+\begin{tikzpicture}
+
+    \begin{scope}[every node/.style={circle,thick,draw}]
+        \node (v1) at (0,0) {};
+        \node[position=-120:1cm from v1] (v2) {};
+        \node[position=-60:1cm from v1] (v3) {};
+        
+        \node[right=2cm of v1] (v4) {};
+        \node[position=-120:1cm from v4] (v5) {};
+        \node[position=-60:1cm from v4] (v6) {};
+        
+        \node[right=2cm of v4] (v7) {};
+        \node[position=-120:1cm from v7] (v8) {};
+        \node[position=-60:1cm from v7] (v9) {};
+        
+        \node[right=2cm of v7] (v10) {};
+        \node[position=-120:1cm from v10] (v11) {};
+        \node[position=-60:1cm from v10] (v12) {};
+        
+
+    \end{scope}
+
+    \begin{scope}[>={Stealth[red]},
+        positive/.style={thick,draw},
+        negative/.style={thick,dashed,draw},
+        every node/.style={fill=white,circle}]
+        % \draw (v4) -- (v1) -- (v3) -- (v2) -- (v1);
+        \path 
+        (v1) edge[positive] node[above left=0.1mm and 0.1mm] {$+$} (v2)
+        (v1) edge[positive] node[above right=0.1mm and 0.1mm] {$+$} (v3) 
+        (v3) edge[positive] node[below] {$+$} node[below=1cm] {$T_1$}  (v2)      
+        ;
+        \path 
+        (v4) edge[negative] node[above left=0.1mm and 0.1mm] {$-$} (v5)
+        (v4) edge[negative] node[above right=0.1mm and 0.1mm] {$-$} (v6) 
+        (v6) edge[positive] node[below] {$+$} node[below=1cm] {$T_2$}  (v5)      
+        ;
+        \path 
+        (v7) edge[positive] node[above left=0.1mm and 0.1mm] {$+$} (v8)
+        (v7) edge[positive] node[above right=0.1mm and 0.1mm] {$+$} (v9) 
+        (v9) edge[negative] node[below] {$-$} node[below=1cm] {$T_3$}  (v8)      
+        ;
+        \path 
+        (v10) edge[negative] node[above left=0.1mm and 0.1mm] {$-$} (v11)
+        (v10) edge[negative] node[above right=0.1mm and 0.1mm] {$-$} (v12) 
+        (v12) edge[negative] node[below] {$-$} node[below=1cm] {$T_4$}  (v11)      
+        ;
+    \end{scope}
+  \end{tikzpicture}
+  

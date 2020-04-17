@@ -38,13 +38,9 @@ Figure~\ref{fig:weighted-directed} shows an example of a weighted directed graph
 
 \section{Signed Graphs}
 \label{sec:signed-graphs}
-The simple weighted graphs we have defined so far only have non-negative edge weights that can represent similarity or closeness. In the 1950s social psychologists found it desirable to express liking, disliking or indifference in social interactions. This was formalized by Harary \cite{harary1953on} using graphs with weights $(-1,0,1)$. These graphs are therefore called \textit{signed graphs}, where a negative edge weight can denote dissimilarity between a pair of vertices. In this thesis we will use notation similar to Gallier \cite{gallier2016spectral} and Kunegis et al. in defining terms related to signed graphs \cite{kunegis2010spectral}.
+The simple weighted graphs we have defined so far only have non-negative edge weights that can represent similarity or closeness. In the 1950s social psychologists found it desirable to express liking, disliking or indifference in social interactions. This was formalized by Harary \cite{harary1953on} using graphs with weights $(-1,0,1)$. These graphs are therefore called \textit{signed graphs}, where a negative edge weight can denote dissimilarity between a pair of vertices. In this thesis we will use notations and terms similar to Gallier \cite{gallier2016spectral}, Kunegis et al. \cite{kunegis2010spectral}, Hou \cite{hou2005bounds} and Zaslavsky \cite{zaslavsky1982signed}.
 
-A signed graph is a triple $G=(V,E,w)$, where $V$ is the set of vertices, $E$ is the set of pair of vertices and the weight function $w:E \rightarrow \mathbb{R}$. The weight function now takes an edge $e$ and maps it to a signed weight $w(e)$. Historically, signed graphs were studied as an undirected graph where edge weights can have negative values and directed graphs were analysed by simply disregarding the edge direction. However, in this thesis, we will consider directed and undirected signed graphs as separate and distinct entities. 
-
-In signed graphs, certain terms need to be redefined to incorporate negative edge weights. The degree of a vertex $v$ is now the sum of the absolute edge weight of its neighbours is called the \textit{signed degree} and is denoted by $\bar{d}(v) = \sum_{u \in N(v)}|w((u,v))|$. This can also be extended to \textit{signed indegree} and \textit{signed outdegree} defined as $\overline{\indegree}(v)=\sum_{u \in P(v)}|w((u,v))|$ and $\overline{\outdegree}(v)=\sum_{u \in S(v)}|w((v,u))|$.
-
-
+A signed graph is a triple $G=(V,E,w)$, where $V$ is the set of vertices, $E$ is the set of pair of vertices and the weight function $w:E \rightarrow \mathbb{R}$. The weight function now takes an edge $e$ and maps it to a signed weight $w(e)$. We can partition the edges into positive and negative edges, $E = E^{+}\cup E^{-}$, where $E^{+} = \{e \mid w(e)>0\}$ and $E^{-}=\{e \mid w(e)<0\}$. Similar to Zaslavsky \cite{zaslavsky1982signed}, we consider undirected signed graphs where and directed signed graphs as distinct and separate entities. We can see some examples of signed graphs in Figure~\ref{fig:signed-graphs}.
 \begin{figure}[!ht]
     \centering
     \begin{subfigure}{0.5\textwidth}
@@ -61,17 +57,49 @@ In signed graphs, certain terms need to be redefined to incorporate negative edg
         \label{fig:signed-directed graph}
     \end{subfigure}
     \caption{Examples of Signed Graphs}
-    \label{}
+    \label{fig:signed-graphs}
 \end{figure}
-\section{Balance Theory}
-\label{sec:balance-theory}
-\begin{itemize}
-    \item Explain balance theory origin and significance.
-    \item Illustrate with triads and examples
-    \item Define mathematical background to measure balance through the Eigen decomposition of the graph Laplacian  
-\end{itemize}
 
-\section{Status Theory}
+We can now proceed to define a few more terms. The degree of a vertex $v$ is now the sum of the absolute edge weight of its neighbours is called the \textit{signed degree} and is defined as 
+\[
+    \overline{d}(v) = \sum_{u \in N(v)}|w((u,v))|
+\] 
+This can also be extended to \textit{signed indegree} and \textit{signed outdegree} denoted by $\overline{\indegree}(v)$ and $\overline{\outdegree}(v)$ and defined as
+\[
+    \overline{\indegree}(v)=\sum_{u \in P(v)}|w((u,v))|
+\] 
+\[
+    \overline{\outdegree}(v)=\sum_{u \in S(v)}|w((v,u))|
+\] 
+
+We can create a $n \times n$ square weight matrix $W$, where each entry $w_{ij}$ is defined as 
+
+\[ w_{ij} = 
+\begin{cases}
+    w((v_i,v_j)) & \text{if } (v_i,v_j) \in E \\
+    0 & \text{if } (v_i,v_j) \notin E      
+\end{cases}
+\] 
+The signed degree matrix $\overline{D}$ is a diagonal matrix consisting of the signed verted degrees, $\overline{D} = \text{diag}(\overline{d}(v_{1}),\dots,d(v_n))$. We can now define the \textit{signed Laplacian}, $\overline{L}$ as 
+\[ \overline{L} = \overline{D} - W\]
+The signed Laplacian along with results from spectral analysis of signed graphs \cite{hou2005bounds,kunegis2010spectral}, will be useful for balance theory of signed graphs. 
+
+\subsection{Balance Theory}
+\label{sec:balance-theory}
+
+
+Heider \cite{heider1946attitudes} proposed in 1940's that when there are either positive relations (friendship, love, support) and negative relations (enmity, hate, oppose) in a group, the  group tends towards \textit{balance}. Balance was defined as there being all positive relations or one positive and two negative relations for a group of 3 people. Harary and Cartwright \cite{cartwright1956structural} generalized this notion of balance by using signed graphs. This can been seen in Figure~\ref{fig:balance-triads} where solid edges are positive and dashed edges are negative. Social psychology also showed that balanced triads $T_1$ and $T_2$ mirror aphorisms such as "the friend of my friend is also a friend" and "the enemy of my enemy is a friend" respectively. 
+
+The concept of balance can be generalized to state that an undirected signed graph $G=(V,E,w)$ is balanced iff every cycle in $G$ has an even number of negative edges. This leads to result from Harary \cite{harary1953on} that states that if a graph $G$ is balanced, then there is a partition of the vertices $V = V_1 \cup V_2$ such that edges within the vertices of each set is positive and edges between the sets are negative. This means that we can have a bipartite style graph where edges between the two sets of vertices are negative and every cycle has an even number of negative edges.   
+
+\begin{figure}[!ht]     
+    \centering
+    \input{images/balanced-triads.tex}  
+    \caption{Triads in undirected signed graphs. $T_1$ and $T_2$ are \textit{balanced} triads as they have even number of negative edges. $T_3$ and $T_4$ are \textit{unbalanced} as they have odd number of negative edges.}
+    \label{fig:balance-triads}
+\end{figure}
+
+\subsection{Status Theory}
 \label{sec:status-theory}
 \begin{itemize}
     \item Describe the nature of the directed setting
