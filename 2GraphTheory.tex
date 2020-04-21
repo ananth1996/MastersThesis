@@ -133,8 +133,7 @@ Gupte et al. \cite{gupte2011finding} provide a method to discern the levels of s
 \[A(G,r) =  \sum_{(u,v)\in E} \max(r(u)-r(v)+1,0)\]
 As nodes in a graph tend to minimize the overall agony, the agony of a network $G$ is the smallest possible agony over all possible ranking for $r$, $A(G) = \min_{r\in \text{Rankings}}A(G,r)$. The hierarchy of a given network $G$, denoted by $h(G)$ can now be expressed in terms of the agony of the network, $h(G)=1-\frac{1}{m}A(G)$, where $m$ is the number of edges. We can see examples of hierarchy in unweighted directed graph in Figure~\ref{fig:hierarchy}.
 
-Therefore, finding a ranking of the nodes that minimizes the agony of the network gives us the optimal hierarchy present in that network. Gupte et al. \cite{gupte2011finding} and Tatti \cite{tatti2014faster} present a polynomial algorithm that can solve the dual of the problem to obtain the optimal ranking $r$ for unweighted graphs. Tatti \cite{tatti2017tiers} provides an alternate approach using a capacitated circulation solver that can handle weighted digraphs as well as additional cardinality constraints.  
-
+ 
 \begin{figure}[!ht]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
@@ -159,3 +158,7 @@ Therefore, finding a ranking of the nodes that minimizes the agony of the networ
     \caption{Examples of hierarchy in unweighted directed graphs. Numbers inside nodes indicate the rank of vertex.}
     \label{fig:hierarchy} 
 \end{figure}
+
+Therefore, finding a ranking of the nodes that minimizes the agony of the network gives us the optimal hierarchy present in that network. Gupte et al. \cite{gupte2011finding} and Tatti \cite{tatti2014faster} present a polynomial algorithm that can solve the dual of the agony minimization problem to obtain the optimal ranking $r$ for unweighted graphs. Tatti \cite{tatti2017tiers} provides an alternate approach using a capacitated circulation solver that can handle weighted digraphs as well as additional cardinality constraints. These algorithms allows us to find the levels of hierarchy present in any given directed social network and analyse the interaction between members belonging to different strata in that community.
+
+We will explain in future chapters how hierarchies in social network is intrinsically linked to the theory of status in directed signed networks. We show one can use the concept of agony of a directed signed graph $G$ to quantify the violation to status theory and use it as a metric to predict an unknown signed edge.
