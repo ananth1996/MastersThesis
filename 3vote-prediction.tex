@@ -1,10 +1,17 @@
 \chapter{Vote Prediction}
-\label{chp:vote-predicition}
+\label{chp:vote-prediction}
 In this chapter, we cover the main motivation behind predicting the vote of an individual voter and present the methods that can be used to solve this task. We discuss the contrast in perspectives that is present when predicting the result compared to predicting a vote in Section~\ref{sec:result-vs-vote}. Next, we explain the link prediction problem in signed networks and the existing approaches as well as limitations to predicting votes in Section~\ref{sec:link-prediction}. In Section~\ref{sec:linear-combination-theory}, we describe a supervised machine learning framework that can use graphs from voting and non-voting features to predict a vote. Lastly, we present our novel approach of constructing a signed graph from neighbours of the current voter and previous votes and using balance and status theory to predict the vote in Section~\ref{sec:local-signed-network}. 
 
 
 \section{Result versus Vote Prediction}
 \label{sec:result-vs-vote}
+In this thesis, we are interested in the voting behaviour for a collective action. In such cases, members in a particular community come together as \textit{voters} to decide on a particular \textit{candidate} item. In the parliament of a government the voters are the elected members of the parliament and the candidate is usually a bill or policy matter. When it is promotion within a political party or an online community such as Wikipedia, the members vote on a candidate who has been nominated for the position. In all these cases we have two levels of decisions being made. The first the individual decisions that a voter makes with regard to the candidate. The second is the final decision that the group arrives to after everyone has voted. We refer to predicting the latter as \textit{vote prediction} and predicting the former as \textit{result prediction}. 
+
+When the chosen problem is result prediction, we gain a macro level perspective of the incentives of a community. We can create models based on the characteristics of a candidate to predict the result of a collective action. This will lead to understanding on a communal level of what features are preferred or if there are voting blocks formed within the members based on the type of candidate. This translates to practical examples such as party level dynamics in a parliament, the topic of a bill or the credentials of a nominee \cite{burke2008mopping,yano2012textual,yogatama-etal-2011-predicting}. 
+
+Vote prediction model, game theory, analysis of voting models and lead on to influence maximization. Show that these models can be represented as graphs. 
+
+Next is information cascades and the similarity to voting models. Discuss the two steps of the process and the motivation to study the independent vote prediction problem. Discuss the roll call and related investigations. 
 \begin{itemize}
     \item Discuss existing result predictions schemes
     \item Discuss the limitations in understanding voting dynamics through just predicting results
