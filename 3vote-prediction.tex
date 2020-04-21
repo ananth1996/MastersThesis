@@ -1,8 +1,10 @@
 \chapter{Vote Prediction}
 \label{chp:vote-predicition}
-In this section we first provide the motivation of choosing independent vote prediction as our target and the differences from predicting the result of an election.Next we describe the available techniques and methods to predict individual votes or signed edges in a network and how it relates to the problem at hand. We then provide two novel methods of using user information long with past election results to predict votes.
+In this chapter, we cover the main motivation behind predicting the vote of an individual voter and present the methods that can be used to solve this task. We discuss the contrast in perspectives that is present when predicting the result compared to predicting a vote in Section~\ref{sec:result-vs-vote}. Next, we explain the link prediction problem in signed networks and the existing approaches as well as limitations to predicting votes in Section~\ref{sec:link-prediction}. In Section~\ref{sec:linear-combination-theory}, we describe a supervised machine learning framework that can use graphs from voting and non-voting features to predict a vote. Lastly, we present our novel approach of constructing a signed graph from neighbours of the current voter and previous votes and using balance and status theory to predict the vote in Section~\ref{sec:local-signed-network}. 
+
 
 \section{Result versus Vote Prediction}
+\label{sec:result-vs-vote}
 \begin{itemize}
     \item Discuss existing result predictions schemes
     \item Discuss the limitations in understanding voting dynamics through just predicting results
@@ -18,7 +20,8 @@ In this section we first provide the motivation of choosing independent vote pre
 \end{itemize}
 
 
-\section{Signed Edge Prediction}
+\section{Signed Link Prediction}
+\label{sec:link-prediction}
 \begin{itemize}
     \item Discuss the existing edge predictions work
     \item Directly using signed triads as features
@@ -26,13 +29,17 @@ In this section we first provide the motivation of choosing independent vote pre
     \item Using user information and interaction data for predicting votes and/or elections
     \item The main drawbacks in these methods when considering an election setting
 \end{itemize}
+
 \section{Linear Combination of Graphs}
+\label{sec:linear-combination-theory}
 \begin{itemize}
     \item Describe the linear combination of graphs derived from user and election data
     \item Explain topic similarity, follows network, interaction networks and other features
     \item How it can also incorporate signed features as additional features in prediction
 \end{itemize}
+
 \section{Local Signed Network}
+\label{sec:local-signed-network}
 \begin{itemize}
     \item Explain the concept of the local signed network for a particular user
     \item Motivate the definition with respect to elections and influence
