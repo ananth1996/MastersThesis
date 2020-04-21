@@ -1,0 +1,42 @@
+\chapter{Vote Prediction}
+\label{chp:vote-predicition}
+In this section we first provide the motivation of choosing independent vote prediction as our target and the differences from predicting the result of an election.Next we describe the available techniques and methods to predict individual votes or signed edges in a network and how it relates to the problem at hand. We then provide two novel methods of using user information long with past election results to predict votes.
+
+\section{Result versus Vote Prediction}
+\begin{itemize}
+    \item Discuss existing result predictions schemes
+    \item Discuss the limitations in understanding voting dynamics through just predicting results
+    \item Describe the process as an information cascade, discuss the potential Game Theory settings
+    \item Show the two parts of the problem from an information cascading perspective 
+     \begin{itemize}
+        \item Who is going to vote next
+        \item How they are going to vote
+    \end{itemize}
+    \item Discuss the assumptions in usual Independent Cascade (IC) models
+    \item Explain the difficulty of both aspects in the domain of an election 
+    \item Motivate the selection of the problem as an \textbf{Independent Vote Prediction}
+\end{itemize}
+
+
+\section{Signed Edge Prediction}
+\begin{itemize}
+    \item Discuss the existing edge predictions work
+    \item Directly using signed triads as features
+    \item Using triads along with network features
+    \item Using user information and interaction data for predicting votes and/or elections
+    \item The main drawbacks in these methods when considering an election setting
+\end{itemize}
+\section{Linear Combination of Graphs}
+\begin{itemize}
+    \item Describe the linear combination of graphs derived from user and election data
+    \item Explain topic similarity, follows network, interaction networks and other features
+    \item How it can also incorporate signed features as additional features in prediction
+\end{itemize}
+\section{Local Signed Network}
+\begin{itemize}
+    \item Explain the concept of the local signed network for a particular user
+    \item Motivate the definition with respect to elections and influence
+    \item Describe how to use balance and status theory to predict the vote
+    \item Clarify the differences to signed edge prediction efforts
+    \item Mention Agony as a way to measure status compliance here?
+\end{itemize}
