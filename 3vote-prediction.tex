@@ -11,6 +11,7 @@ When the chosen problem is result prediction, we gain a macro level perspective 
 
 On the other hand, when we focus on the vote prediction problem, we get a deeper understanding of the dynamics between voters and the candidate. In fields such as game theory, this is well studied using frameworks such as \textit{strategic voting models} and \textit{momentum} \cite{meir2020strategic,zou2015strategicDoodle,ali2006a,banerjee1992simple}. These models are more theoretical and are studied under synthetic experiments. They still provide a foundation on which we can construct more practical models that can use external features. One such popular approach is using textual information from bills, speeches and legislature to predict votes of politicians in parliament \cite{budhwar2018predicting,gerrish2011predicting}. The next important step is to represent the voting data as networks and leveraging network features to predict and understand voter behaviour \cite{tal2015a,brito2020aBrazil,li2015voter,kearns2009behavioral}. Network analysis of voting data from a game theoretic perspective points to a similar well known model of \textit{information cascades} in social networks \cite{ali2006theory,li2015voter}.
 
+\todo[inline]{Are the IC paras neccessary?}
 Information cascades are widely studied in epidemiology where we model the spread of a contagion through infections of neighbours and the halting using a rate of recovery. Collective voting in a network can be similarly modelled as a sequence of votes spreading through a network and naturally ending when a final decision has been taken. Using an \textit{independent cascade} model we can separate the spread of information in a network into two logical problems.
 
 The first, is a which node will be affected next. This is equivalent to knowing which node will get infected in a contagion model or which person will be next to vote in a voter model. In contagions spread this is probabilistic hence can be easily modelled. This is different for voting models as some cases might have a fixed voting order while others may not. In the cases we have a known voting order such as the roll call for voting in parliament or timestamps in promotions of Wikipedia administrators, the problem is intrinsically solved. We have mentioned other models above, that can handle cases where there is either no known order or voting happens in a non-sequential manner. 
@@ -19,8 +20,12 @@ The second problem, is how will the node will react. In the context of a contagi
 
 The problem of independent vote prediction is studied in Karimi et al. \cite{karimi2019multicongress} and Jankowski-Lorek et al.\cite{jankowski-lorek2013MBSN}. They propose models that incorporate network information, textual data, signed graph features to predict the voting behaviour. Although their models achieve a high predictive accuracy in their respective tasks, they are quite tasks specific and cannot easily be extended to other settings. In contrast, we focus on using general signed network features of balance and status to create a model to predict the votes. 
 
+\todo[inline,backgroundcolor=blue!25]{Add a paragraph to transition for signed link prediction}
+
 \section{Signed Link Prediction}
 \label{sec:link-prediction}
+
+
 \begin{itemize}
     \item Discuss the existing edge predictions work
     \item Directly using signed triads as features
