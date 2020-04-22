@@ -20,34 +20,37 @@ The second problem, is how will the node will react. In the context of a contagi
 
 The problem of independent vote prediction is studied in Karimi et al. \cite{karimi2019multicongress} and Jankowski-Lorek et al.\cite{jankowski-lorek2013MBSN}. They propose models that incorporate network information, textual data, signed graph features to predict the voting behaviour. Although their models achieve a high predictive accuracy in their respective tasks, they are quite tasks specific and cannot easily be extended to other settings. In contrast, we focus on using general signed network features of balance and status to create a model to predict the votes. 
 
-\todo[inline,backgroundcolor=blue!25]{Add a paragraph to transition for signed link prediction}
+\todo[inline,backgroundcolor=blue!25]{Add a paragraph to transition to signed link prediction}
 
 \section{Signed Link Prediction}
 \label{sec:link-prediction}
 
 
 \begin{itemize}
-    \item Discuss the existing edge predictions work
-    \item Directly using signed triads as features
-    \item Using triads along with network features
-    \item Using user information and interaction data for predicting votes and/or elections
-    \item The main drawbacks in these methods when considering an election setting
+    \item Outline of the link prediction problem for signed networks \cite{liben-nowell2007the,leskovec2010signed}
+    \item How task is related to vote prediction 
+    \item Balance based prediction models that use network features, matrix factorization, and triadic features \cite{leskovec2010predicting,chiang2011exploiting,agrawal2013link,gu2019link,Jiliang2015Negative,Shuang-Hong2012Friend}
+    \item Status and motif based prediction models \cite{Liu2019LinkPrediction}
+    \item The main limitations in directly using these methods for vote prediction task
 \end{itemize}
 
 \section{Linear Combination of Graphs}
 \label{sec:linear-combination-theory}
 \begin{itemize}
-    \item Describe the linear combination of graphs derived from user and election data
-    \item Explain topic similarity, follows network, interaction networks and other features
+    \item Describe how to change the link prediction framework to suit vote prediction task
+    \item Discuss how to create features by taking the local neighbours of a voters and features from graphs 
+    \item Create a supervised learning problem that can be solved using linear methods
     \item How it can also incorporate signed features as additional features in prediction
+    \item It can use other non-voter data specific to the task
 \end{itemize}
 
 \section{Local Signed Network}
 \label{sec:local-signed-network}
 \begin{itemize}
     \item Explain the concept of the local signed network for a particular user
-    \item Motivate the definition with respect to elections and influence
+    \item Motivate the definition with respect to voters and influence in a small network
     \item Describe how to use balance and status theory to predict the vote
-    \item Clarify the differences to signed edge prediction efforts
-    \item Mention Agony as a way to measure status compliance here?
+    \item Balance is through creating a signed adjacency matrix and then computing the smallest eigenvalue and choosing the edge that makes the graph most balanced
+    \item The status is measured using the concept of agony and in a similar way we choose the edge that has least agony when added.
+    \item Use them as deterministic rules or confidence values, akin to Logistic Regression
 \end{itemize}
