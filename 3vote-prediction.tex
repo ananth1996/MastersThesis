@@ -9,7 +9,7 @@ In this thesis, we are interested in the voting behaviour for a collective actio
 
 When the chosen problem is result prediction, we gain a macro level perspective of the incentives of a community. We can create models based on the characteristics of a candidate to predict the result of a collective action. This will lead to understanding on a communal level of what features are preferred or if there are voting blocks formed within the members based on the type of candidate. This translates to practical examples such as party level dynamics in a parliament, the topic of a bill or the credentials of a nominee \cite{burke2008mopping,yano2012textual,yogatama-etal-2011-predicting}. 
 
-On the other hand, when we focus on the vote prediction problem, we get a deeper understanding of the dynamics between voters and the candidate. In fields such as game theory, this is well studied using frameworks such as \textit{strategic voting models} and \textit{momentum} \cite{meir2020strategic,zou2015strategicDoodle,ali2006a,banerjee1992simple}. These models are more theoretical and are studied under synthetic experiments. They still provide a foundation on which we can construct more practical models that can use external features. One such popular approach is using textual information from bills, speeches and legislature to predict votes of politicians in parliament \cite{budhwar2018predicting,gerrish2011predicting}. The next important step is to represent the voting data as networks and leveraging network features to predict and understand voter behaviour \cite{tal2015a,brito2020aBrazil,li2015voter,kearns2009behavioral}. Network analysis of voting data from a game theoretic perspective points to a similar well known model of \textit{information cascades} in social networks \cite{ali2006theory,li2015voter}.
+On the other hand, when we focus on the vote prediction problem, we get a deeper understanding of the dynamics between voters and the candidate. In fields such as game theory, this is well studied using frameworks such as \textit{strategic voting models} and \textit{momentum} \cite{meir2020strategic,zou2015strategicDoodle,ali2006a,banerjee1992simple}. These models are more theoretical and are studied under synthetic conditions. Nevertheless, they still provide a foundation on which we can construct practical models that can utilize additional external features. One such popular approach is using textual information from bills, speeches and legislature to predict votes of politicians in parliament \cite{budhwar2018predicting,gerrish2011predicting}. The next important step is to represent the voting data as networks and leveraging network features to predict and understand voter behaviour \cite{tal2015a,brito2020aBrazil,li2015voter,kearns2009behavioral}. Network analysis of voting data from a game theoretic perspective points to a similar well known model of \textit{information cascades} in social networks \cite{ali2006theory,li2015voter}.
 
 \todo[inline]{Are the IC paras neccessary?}
 Information cascades are widely studied in epidemiology where we model the spread of a contagion through infections of neighbours and the halting using a rate of recovery. Collective voting in a network can be similarly modelled as a sequence of votes spreading through a network and naturally ending when a final decision has been taken. Using an \textit{independent cascade} model we can separate the spread of information in a network into two logical problems.
@@ -20,19 +20,7 @@ The second problem, is how will the node will react. In the context of a contagi
 
 The problem of independent vote prediction is studied in Karimi et al. \cite{karimi2019multicongress} and Jankowski-Lorek et al.\cite{jankowski-lorek2013MBSN}. They propose models that incorporate network information, textual data, signed graph features to predict the voting behaviour. Although their models achieve a high predictive accuracy in their respective tasks, they are quite tasks specific and cannot easily be extended to other settings. In contrast, we focus on using general signed network features of balance and status to create a model to predict the votes. 
 
-\todo[inline,backgroundcolor=blue!25]{Add a paragraph to transition to signed link prediction}
-
-\section{Signed Link Prediction}
-\label{sec:link-prediction}
-
-
-\begin{itemize}
-    \item Outline of the link prediction problem for signed networks \cite{liben-nowell2007the,leskovec2010signed}
-    \item How task is related to vote prediction 
-    \item Balance based prediction models that use network features, matrix factorization, and triadic features \cite{leskovec2010predicting,chiang2011exploiting,agrawal2013link,gu2019link,Jiliang2015Negative,Shuang-Hong2012Friend}
-    \item Status and motif based prediction models \cite{Liu2019LinkPrediction}
-    \item The main limitations in directly using these methods for vote prediction task
-\end{itemize}
+\todo[inline,backgroundcolor=blue!25]{Move Signed link predicition to Background section}
 
 \section{Linear Combination of Graphs}
 \label{sec:linear-combination-theory}
