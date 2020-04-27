@@ -5,7 +5,7 @@ In this chapter, we cover the main motivation behind predicting the vote of an i
 
 \section{Result versus Vote Prediction}
 \label{sec:result-vs-vote}
-In this thesis, we are interested in the voting behaviour for a collective action. In such cases, members of a community come together as \textit{voters} to decide on a particular \textit{candidate} item. In a government parliament  the voters are the elected members of the parliament and the candidate is usually a bill or policy matter. When it is promotion within a political party or an online community such as Wikipedia, the members vote on a candidate who has been nominated for the position. In all these cases we have two levels of decisions being made. The first the individual decisions that a voter makes with regard to the candidate. The second is the final decision that the group arrives to after everyone has voted. We refer to task of predicting the former as \textit{vote prediction} and the latter as \textit{result prediction}. 
+In this thesis, we are interested in the voting behaviour for a collective action. In such cases, members of a community come together as \textit{voters} to decide on a particular \textit{candidate} item during a \textit{session}. In a government parliament  the voters are the elected members of the parliament and the candidate is usually a bill or policy matter. When it is promotion within a political party or an online community such as Wikipedia, the members vote on a candidate who has been nominated for the position. In all these cases we have two levels of decisions being made. The first the individual decisions that a voter makes with regard to the candidate. The second is the final decision that the group arrives to after everyone has voted. We refer to task of predicting the former as \textit{vote prediction} and the latter as \textit{result prediction}. 
 
 Result prediction provides a macro level perspective of the incentives of a community. We can create models based on the characteristics of a candidate to predict the result of a collective action. This will lead to understanding on a communal level of what features are preferred and if there are voting blocks formed within the members based on the type of candidate. This translates to practical examples such as party level dynamics in a parliament, the topic of a bill or the credentials of a nominee \cite{burke2008mopping,yano2012textual,yogatama-etal-2011-predicting}. 
 
@@ -19,6 +19,7 @@ Correlation clustering and community detection of signed voting graphs can disco
 The first subtask is to predict who will vote next given a candidate $c$ and a set of previous votes. This subtask is similar to link prediction in a signed network where we aim to predict possible future edges of the type $(v,c)$. The complexity subtask depends on the format of voting that takes place. If there is a known voting order, such as in roll call in parliamentary proceedings or explicit timestamps then it is essentially solved. If the voting occurs simultaneously, the subtask can be reduced to predicting the possible subset of members who will vote in a given session. When the voting is iterative and there is no known underlying process of who votes next, then a separate model might be required to infer the voting sequence. This case can be combinatorially hard as we would need to find the correct ordering of votes in a session.
 
 The second subtask is to predict how a voter $v$ will vote for a candidate $c$ given the previous votes in the session. This task translates into predicting the sign of an edge $(v,c)$ in the current session. We call this subtask the \textit{independent vote prediction} problem. It is independent in nature are we are only interested in the decision of the voter $v$ assuming that we have complete prior knowledge of how the previous votes have been cast. This problem can be framed as a supervised learning task, using features of the interaction between the current voter $v$, previous voters $U$ and the candidate $c$ to predict the sign of the edge $(v,c)$. We can utilize theories of balance and status in signed networks to create models similar to those by Karimi et al. \cite{karimi2019multicongress} and Jankowski-Lorek et al. \cite{jankowski-lorek2013MBSN} to predict voter behaviour.
+
 \iffalse
 \todo[inline]{Are the IC paras neccessary?}
 Information cascades are widely studied in epidemiology where we model the spread of a contagion through infections of neighbours and the halting using a rate of recovery. Collective voting in a network can be similarly modelled as a sequence of votes spreading through a network and naturally ending when a final decision has been taken. Using an \textit{independent cascade} model we can separate the spread of information in a network into two logical problems.
@@ -33,19 +34,23 @@ The problem of independent vote prediction is studied in Karimi et al. \cite{kar
 
 \section{Linear Combination of Graphs}
 \label{sec:linear-combination-theory}
+
+In this section we explain how the approaches outlined in Section~\ref{sec:link-prediction} can be applied to solve the \textit{independent vote prediction} problem. As discussed previously, the \textit{edge sign prediction} task in signed network is analogous to vote prediction. The models proposed by Leskovec et al. \cite{leskovec2010predicting} can be used to predict the sign of the edge $(v,c)$. Voting in a community takes place across many sessions in a chronological manner. Therefore, we must partition the training and testing datasets to avoid data leakage. We propose the following framework to gather features using a linear combination of the voting history and several auxiliary graphs.
+
+
+
+
 \begin{itemize}
     \item Describe how to change the link prediction framework to suit vote prediction task
-    \item Discuss how to create features by taking the local neighbours of a voters and features from graphs 
-    \item Create a supervised learning problem that can be solved using linear methods
-    \item How it can also incorporate signed features as additional features in prediction
-    \item It can use other non-voter data specific to the task
+    \item Discuss how to take the local neighbours of a voter and get features from auxiliary graphs similar to multidimensional social networks \cite{kazienko2011multidimensional}. 
+    \item How to also add signed triad features directly from the previous session information.
+    \item Create a supervised learning problem for votes across multiple sessions. 
 \end{itemize}
-
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
-    \caption{Feature vector generator for an independent voter $v$ }
-    \KwIn{Voter $v$, Candidate $c$, Set of auxillary graphs $A$, Current voting session $S$ and Previous voters $U$ }
+    \caption{Auxiliary feature vector for voter $v$ }
+    \KwIn{Voter $v$, Candidate $c$, Set of auxiliary graphs $A$, Current voting session $S$ and Previous voters $U$ }
     \KwResult{Featuer vector $\mathbf{x}$ for voter }
     Initialize $\mathbf{x}$ of length $|A|$
     \ForEach{$G_i$ in $A$}{
@@ -59,8 +64,17 @@ The problem of independent vote prediction is studied in Karimi et al. \cite{kar
       $\mathbf{x}_i += w_i((v,c))$ \tcp*{Add edge weight to candidate}
     }
     \Return $\mathbf{x}$
-   \end{algorithm}
-   
+\end{algorithm}
+
+\begin{figure}[!ht]
+    \centering
+    \input{images/combination-graphs.tex}
+    \caption{Example auxiliary features from combination of three graphs. Dashed red lines are previous votes in the session. Solid blue lines are edge weights in auxiliary graph. $\mathbf{x}_i$ is feature for voter $v$ from auxiliary graph $G_i$}
+    \label{fig:linear-combination of graphs}
+\end{figure}
+
+
+
 \section{Local Signed Network}
 \label{sec:local-signed-network}
 \begin{itemize}

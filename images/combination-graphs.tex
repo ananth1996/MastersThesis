@@ -1,0 +1,70 @@
+\tikzset{
+    position/.style args={#1:#2 from #3}{
+        at=(#3.#1), anchor=#1+180, shift=(#1:#2)
+    }
+}
+
+\begin{tikzpicture}
+
+    \begin{scope}[every node/.style={circle,thick,draw,minimum size=7mm}]
+        \node (v) at (0,0) {$v$};
+        \node[right= 2cm of v] (c) {$c$};
+        \node[position=50:1cm from v] (u1) {$u_1$};
+        \node[position=-50:1cm from v] (u2) {$u_2$};
+        
+        \node[right = 4cm of v] (v1)  {$v$};
+        \node[right= 2cm of v1] (c1) {$c$};
+        \node[position=50:1cm from v1] (u11) {$u_1$};
+        \node[position=-50:1cm from v1] (u21) {$u_2$};
+        
+        \node[right = 4cm of v1] (v2)  {$v$};
+        \node[right= 2cm of v2] (c2) {$c$};
+        \node[position=50:1cm from v2] (u12) {$u_1$};
+        \node[position=-50:1cm from v2] (u22) {$u_2$};
+        
+    \end{scope}
+
+    % Session vote edges
+    \begin{scope}[
+        >={Stealth[red]},
+        every edge/.style={thick,draw,red,->,dashed},
+        every node/.style={fill=white,circle,inner sep=0pt}]
+        \path 
+        (u1) edge node[above right=1mm] {$+$} (c)
+        (u2) edge node[below right=1mm] {$-$} (c)
+
+        (u11) edge node[above right=1mm] {$+$} (c1)
+        (u21) edge node[below right=1mm] {$-$} (c1)
+
+        (u12) edge node[above right=1mm] {$+$} (c2)
+        (u22) edge node[below right=1mm] {$-$} (c2)
+        ;
+    \end{scope}
+    \path (v) edge[white] node[below=2.2cm,text=black] {$G_1$} (c);
+    \path (v) edge[white] node[below=2.8cm,text=black] {$\mathbf{x}_1=w_a+w_b$} (c);
+    
+    \path (v1) edge[white] node[below=2.2cm,text=black] {$G_2$} (c1);
+    \path (v1) edge[white] node[below=2.8cm,text=black] {$\mathbf{x}_2=w_c-w_b$} (c1);
+    
+    \path (v2) edge[white] node[below=2.2cm,text=black] {$G_3$} (c2);
+    \path (v2) edge[white] node[below=2.8cm,text=black] {$\mathbf{x}_3=-(w_e+w_f+w_g)$} (c2);
+    % Auxiliary graph edges
+    \begin{scope}[
+        >={Stealth[blue]},
+        every edge/.style={thick,draw,blue,->},
+        every node/.style={fill=white,circle,inner sep=0pt}]
+        \path 
+        (v) edge node[above left=1mm] {$w_a$} (u1)
+        (v) edge node[above=1mm] {$w_b$} (c)
+
+        (v1) edge[-] node[above left=1mm] {$w_c$} (u11)
+        (v1) edge[-] node[below left=1mm] {$w_d$} (u21)
+
+        (v2) edge node[above left=1mm] {$-w_f$} (u12)
+        (v2) edge node[below left=1mm] {$w_g$} (u22)
+        (v2) edge node[above] {$-w_e$} (c2) 
+        ;
+    \end{scope}
+
+  \end{tikzpicture}
+  
