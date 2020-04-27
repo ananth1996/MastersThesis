@@ -14,8 +14,10 @@ On the other hand, when we focus on the vote prediction problem, we get a deeper
 \section{Voting and Signed networks}
 Votes by nature express a positive or negative relationship between a \textit{voter} and a \textit{candidate}. Therefore, \textit{signed graphs} provide an intuitive way to structurally represent the voting pattern of members in a community. These signed voting networks can be used to develop models to solve the task of vote prediction and analyse voter behaviour.
 
-Correlation clustering and community detection of signed voting graphs can discover trends and vote blocks in communities \cite{brito2020aBrazil,arinik2017signed}. Analysing the networks using social theories of balance and status provides knowledge of voter behaviour and features for prediction methods \cite{levorato2016brazilian,derr2018congressional}. We can 
+Correlation clustering and community detection of signed voting graphs can discover trends and vote blocks in communities \cite{brito2020aBrazil,arinik2017signed}. Analysing the networks using social theories of balance and status provides knowledge of voter behaviour and features for prediction methods \cite{levorato2016brazilian,derr2018congressional}. The vote prediction task can be broken down into two parts which are analogous to link and sign prediction in signed networks. 
 
+The first part, 
+\iffalse
 \todo[inline]{Are the IC paras neccessary?}
 Information cascades are widely studied in epidemiology where we model the spread of a contagion through infections of neighbours and the halting using a rate of recovery. Collective voting in a network can be similarly modelled as a sequence of votes spreading through a network and naturally ending when a final decision has been taken. Using an \textit{independent cascade} model we can separate the spread of information in a network into two logical problems.
 
@@ -24,6 +26,8 @@ The first, is a which node will be affected next. This is equivalent to knowing 
 The second problem, is how will the node will react. In the context of a contagion model, this translates to whether the now infected node becomes sick or not. This is usually a known feature of a given contagion and hence is not critical to a contagion model. In a voter mode, this problem is determining how an individual voter will cast their vote given the information of who have already cast their vote. We call this problem the \textit{independent vote prediction} problem as it considers each voter in the chain as an independent actor and only aims to predict how that particular individual would vote. In solving this problem we can gain insights into the motivations and behaviour of voters. 
 
 The problem of independent vote prediction is studied in Karimi et al. \cite{karimi2019multicongress} and Jankowski-Lorek et al.\cite{jankowski-lorek2013MBSN}. They propose models that incorporate network information, textual data, signed graph features to predict the voting behaviour. Although their models achieve a high predictive accuracy in their respective tasks, they are quite tasks specific and cannot easily be extended to other settings. In contrast, we focus on using general signed network features of balance and status to create a model to predict the votes. 
+
+\fi
 
 \section{Linear Combination of Graphs}
 \label{sec:linear-combination-theory}
