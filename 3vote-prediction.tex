@@ -37,8 +37,7 @@ The problem of independent vote prediction is studied in Karimi et al. \cite{kar
 
 In this section we explain how the approaches outlined in Section~\ref{sec:link-prediction} can be applied to solve the \textit{independent vote prediction} problem. As discussed previously, the \textit{edge sign prediction} task in signed network is analogous to vote prediction. The models proposed by Leskovec et al. \cite{leskovec2010predicting} can be used to predict the sign of the edge $(v,c)$. Voting in a community takes place across many sessions in a chronological manner. Therefore, we must partition the training and testing datasets to avoid data leakage. We propose the following framework to gather features using a linear combination of the voting history and several auxiliary graphs.
 
-
-
+We denote the directed signed graph for the current voting session as $S=(V_S,E_S)$. The current voter in consideration is denoted by $v$ and the candidate of the session is $c$. The votes that have been cast prior to the current voter exists as edges $(u,c)$ in the session $S$ and the set of prior voters is denoted as $U =\{u \mid (u,c) \in E_S\}$. The history $H=(V_H,E_H)$ is defined as the directed signed graph containing the votes from sessions chronologically prior to $S$. We also define a set of auxiliary graphs $A = \{G_1,G_2,\dots,G_l\}$ based on external non-voting data. These auxiliary graphs can be either directed or undirected, weighted or unweighted, signed or unsigned. These graphs capture different relations between a subset of the voting members which will be used to generate additional features for the vote prediction task. This concept is similar to the \textit{Multidimensional Social Networks} (MSN) descried by Kazienko et al. \cite{kazienko2011multidimensional}.
 
 \begin{itemize}
     \item Describe how to change the link prediction framework to suit vote prediction task
@@ -50,13 +49,13 @@ In this section we explain how the approaches outlined in Section~\ref{sec:link-
 \begin{algorithm}[H]
     \DontPrintSemicolon
     \caption{Auxiliary feature vector for voter $v$ }
-    \KwIn{Voter $v$, Candidate $c$, Set of auxiliary graphs $A$, Current voting session $S$ and Previous voters $U$ }
+    \KwIn{Voter $v$, Candidate $c$, Set of auxiliary graphs $A$, Current voting session $S$ and Prior voters $U$ }
     \KwResult{Featuer vector $\mathbf{x}$ for voter }
-    Initialize $\mathbf{x}$ of length $|A|$
+    Initialize $\mathbf{x}$ of length $|A|$\;
     \ForEach{$G_i$ in $A$}{
      
       $Z = N_i(v) \cap U$ \tcp*{neighbours in $G_i$ who have voted}
-      Initialize $\mathbf{x}_i$ to 0
+      Initialize $\mathbf{x}_i$ to 0\;
       \ForEach{$z$ in $Z$}{
           \tcc{vote in current session multiplied by the edge weight in $G_i$}
           $\mathbf{x}_i$ += $w_S((z,c)) \cdot w_i((v,z))$
@@ -69,7 +68,7 @@ In this section we explain how the approaches outlined in Section~\ref{sec:link-
 \begin{figure}[!ht]
     \centering
     \input{images/combination-graphs.tex}
-    \caption{Example auxiliary features from combination of three graphs. Dashed red lines are previous votes in the session. Solid blue lines are edge weights in auxiliary graph. $\mathbf{x}_i$ is feature for voter $v$ from auxiliary graph $G_i$}
+    \caption{Example auxiliary features from combination of three graphs. Dashed red lines are prior votes in the session. Solid blue lines are edge weights in auxiliary graph. $\mathbf{x}_i$ is feature for voter $v$ from auxiliary graph $G_i$}
     \label{fig:linear-combination of graphs}
 \end{figure}
 
