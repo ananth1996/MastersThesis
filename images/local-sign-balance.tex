@@ -1,0 +1,78 @@
+\tikzset{
+        position/.style args={#1:#2 from #3}{
+            at=(#3.#1), anchor=#1+180, shift=(#1:#2)
+        }
+    }
+
+\begin{figure}[!ht]
+    \centering
+
+\begin{tikzpicture}
+
+    \begin{scope}[every node/.style={circle,thick,draw,minimum size=9mm}]
+        \node (u1) at (0,0) {$u_1$};
+        \node[position=-60:1.3cm from u1] (c) {$c$};
+        \node[position=-120:1.3cm from u1] (v) {$v$};
+
+        \node[right= 5cm of u1] (u2) {$u_2$};
+        \node[left=1cm of u2] (u12) {$u_1$};
+        \node[position=-90:1cm from u2] (c2) {$c$};
+        \node[left=1cm of c2] (v2) {$v$};
+
+        \path (c) -- node[below=3cm] (u3) {$u_3$} (v2); 
+        \node[right= 1cm of u3] (u13) {$u_1$};
+        \node[below=1cm of u3] (c3) {$c$};
+        \node[right=1cm of c3] (u23) {$u_2$};
+        \node[left=1cm of c3] (v3) {$v$};
+    \end{scope}
+
+    % positive edges
+    \begin{scope}[
+        relation/.style= {thick,draw,blue},
+        vote/.style= {very thick,draw,red,densely dotted},
+        predict/.style={thick,draw,dashed},
+        every node/.style={fill=white,rectangle,inner sep=0}]
+        % \draw (v4) -- (v1) -- (v3) -- (v2) -- (v1);
+        \path 
+        (u1) edge[vote] node[above right=1mm] {$-$} (c)  
+        (v) edge[relation] node[above left=1mm] {$-$} (u1)
+        (v) edge[predict] (c)
+        
+        (u12) edge[vote] node[above right=1mm] {$-$} (c2)  
+        (u2) edge[vote] node[right=1mm] {$+$} (c2)
+        (u2) edge[relation] node[above=1mm] {$-$} (u12)
+        (v2) edge[relation] node[left=1mm] {$+$} (u12)
+        (v2) edge[predict] (c2)
+
+        (u13) edge[vote] node[above left=1mm] {$-$} (c3)  
+        (u23) edge[vote] node[above=1mm] {$+$} (c3)
+        (u3) edge[vote] node[left=1mm] {$-$} (c3)
+        (u23) edge[relation] node[right=1mm] {$-$} (u13)
+        (u3) edge[relation] node[above=1mm] {$+$} (u13)
+        (v3) edge[relation] node[above left=1mm] {$-$} (u3)
+        (v3) edge[relation,bend right=50] node[above=1mm] {$-$} (u23)
+        (v3) edge[predict] (c3)
+
+        
+        ;
+    \end{scope}
+    \begin{scope}[
+        every edge/.style= {},
+        every node/.style={fill=white,rectangle,inner sep=0,text=black}]
+    \path 
+    (v) edge node[below=2cm] {$(a)~i=1$} (c)
+    (v) edge node[below=1cm] {$\lambda_1^+ = 0, \lambda_1^-=1$} (c)
+    
+    (v2) edge node[below=2cm] {$(b)~i=2$} (c2)
+    (v2) edge node[below=1cm] {$\lambda_1^+ = 0.58, \lambda_1^-=0$} (c2)
+    (v3) edge node[below=3cm] {$(c)~i=3$} (u23)
+    (v3) edge node[below=2cm] {$\lambda_1^+ = 0.55, \lambda_1^-=0.55$} (u23)
+    ;
+    \end{scope}
+  \end{tikzpicture}
+  
+
+
+    \caption{Iterative Balance Local Singed Network model example. At every iteration $i$ the dotted red lines are prior votes, solid blue lines are relationships based on voting records and the dashed black edge $(v,c)$ is the edge whose sign is being predicted. $\lambda_1^+$ and $\lambda_1^-$ correspond to the smallest eigenvalue of the signed Laplacian $\overline{L}_i$ based on whether $w((v,c))=+1$ or $w((v,c))=-1$.     }
+    \label{}
+\end{figure}

@@ -39,7 +39,7 @@ The problem of independent vote prediction is studied in Karimi et al. \cite{kar
 
 In this section we explain how the approaches outlined in Section~\ref{sec:link-prediction} can be applied to solve the \textit{independent vote prediction} problem. As discussed previously, the \textit{edge sign prediction} task in signed network is analogous to vote prediction. The models proposed by Leskovec et al. \cite{leskovec2010predicting} can be used to predict the sign of the edge $(v,c)$. Voting in a community takes place across many sessions in a chronological manner. Therefore, we must partition the training and testing datasets to avoid data leakage. We propose the following framework to gather features using a linear combination of the voting history and several auxiliary graphs.
 
-We denote the directed signed graph for the current voting session as $S=(V_S,E_S)$. The current voter in consideration is denoted by $v$ and the candidate of the session is $c$. The votes that have been cast prior to the current voter exists as edges $(u,c)$ in the session $S$ and the set of prior voters is denoted as $U =\{u \mid (u,c) \in E_S\}$. The history $H=(V_H,E_H)$ is defined as the directed signed graph containing the votes from sessions chronologically prior to $S$. We also define a set of auxiliary graphs $A = \{G_1,G_2,\dots,G_l\}$ based on external non-voting data. These auxiliary graphs can be either directed or undirected, weighted or unweighted, signed or unsigned. This is similar to the relational layer in \textit{Multidimensional Social Networks} (MSN) described by Kazienko et al. \cite{kazienko2011multidimensional} and Jankowski-Lorek et al. \cite{jankowski-lorek2013MBSN}. However, the auxiliary graphs capture different relations between a subset of the voting members which will be used to generate additional features for the vote prediction task. 
+We denote the directed signed graph for the current voting session as $S=(V_S,E_S,w_S)$. The current voter in consideration is denoted by $v$ and the candidate of the session is $c$. In this thesis, for all the models we assume that each session has a unique candidate. The votes that have been cast prior to the current voter exists as edges $(u,c)$ in the session $S$ and the set of prior voters is denoted as $U =\{u \mid (u,c) \in E_S\}$. The history $H=(V_H,E_H,w_H)$ is defined as the directed signed graph containing the votes from sessions chronologically prior to $S$. We also define a set of auxiliary graphs $A = \{G_1,G_2,\dots,G_l\}$ based on external non-voting data. These auxiliary graphs can be either directed or undirected, weighted or unweighted, signed or unsigned. This is similar to the relational layer in \textit{Multidimensional Social Networks} (MSN) described by Kazienko et al. \cite{kazienko2011multidimensional} and Jankowski-Lorek et al. \cite{jankowski-lorek2013MBSN}. However, the auxiliary graphs capture different relations between a subset of the voting members which will be used to generate additional features for the vote prediction task. 
 
 Algorithm~\ref{alg:auxiliary-feature} describes how to generate a feature vector $\mathbf{a}$ from the auxiliary graphs $A$. The algorithm finds the intersection of the prior voters $U$ and the neighbourhood of the current voter $v$ in the graph $G_i$ which we call the \textit{voting neighbourhood}. Then the feature $\mathbf{a}_i$ is computed as the weighted sum of the voting neighbourhood plus the edge weight to the candidate $(v,c)$. Figure~\ref{fig:linear-combination of graphs} provides an example with three auxiliary graphs and two prior voters $u_1$ and $u_2$. The dashed red edges are the votes cast in the current session $S$ by the prior voters. We see that in the example $G_1$ is a directed graph, $G_2$ is an undirected graph and $G_3$ is a signed directed graph. The current voter $v$ has different relations to his voting neighbourhood in each auxiliary graph and therefore each feature is a different combination of edge weights. 
 
@@ -94,12 +94,61 @@ We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given 
 
 
 \section{Local Signed Network}
+
+
 \label{sec:local-signed-network}
+
 \begin{itemize}
     \item Explain the concept of the local signed network for a particular user
-    \item Motivate the definition with respect to voters and influence in a small network
-    \item Describe how to use balance and status theory to predict the vote
-    \item Balance is through creating a signed adjacency matrix and then computing the smallest eigenvalue and choosing the edge that makes the graph most balanced
+    \item Describe the Session graph $S$ and the historical voting graph $H$. 
+    \item Prediction with a session can be iteratively done and at the end update $H$.
+    \item Balance is through creating a signed adjacency matrix and then computing the smallest eigenvalue and choosing the edge that makes the graph most balanced. How to report probability that edge is positive.
     \item The status is measured using the concept of agony and in a similar way we choose the edge that has least agony when added.
-    \item Use them as deterministic rules or confidence values, akin to Logistic Regression
 \end{itemize}
+
+
+\input{images/local-sign-balance.tex}
+
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \caption{Predict positive vote probability using balance theory}
+    \label{alg:balance-pred}
+    \KwIn{Voter $v$, Candidate $c$, Local Signed Network $LSN$}
+    \KwResult{Probablity of edge $(v,c)$ being positive}
+    $w_{LSN}((v,c)) \leftarrow +1$ \tcp*{Assume positive vote}
+    Compute signed Laplacian $\overline{L}_+$\;
+    $\lambda_1^+ \leftarrow $ smallest eigenvalue of $\overline{L}_+$\;
+    $w_{LSN}((v,c)) \leftarrow -1$ \tcp*{Assume negative vote} 
+    Compute signed Laplacian $\overline{L}_-$\;
+    $\lambda_{1}^- \leftarrow$ smallest eigenvalue of $\overline{L}_-$\;
+    $w_{LSN}((v,c)) \leftarrow 0$ \tcp*{Reset edge weight}
+    $r \leftarrow {\lambda_{1}^-}/{\lambda_{1}^{+}}$\;
+    $p \leftarrow 1/(1+e^{(1-r)})$\;
+    \Return p
+\end{algorithm}
+
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \caption{Iterative Balance Model}
+    \label{alg:balance-pred}
+    \KwIn{Relation graph $R=(V_R,E_R,w_R)$, Order of voters in current session $O$, Candidate $c$ }
+    \KwResult{Predictions for current session }
+    $k \leftarrow |O|$\;
+    $u \leftarrow O[1]$ \tcp*{First voter} 
+    $V_S \leftarrow \{c,u\}$ \tcp*{candidate and first voter}
+    $E_S \leftarrow \{(u,c)\}$ \tcp*{first vote}
+    Add true value of first vote $w_S((u,c))$ \;
+    Initialize session graph $S = \{V_S,E_S,w_S\}$\;
+    $predictions \leftarrow \emptyset$ \;
+    \For{$i \leftarrow 2$ till $|O|$}{
+        $v \leftarrow O[i]$\; 
+        $V_S \leftarrow V_S \cup \{v\}$ \;
+        $LSN \leftarrow S \cap R$\;
+        $p \leftarrow PredictBalance(v,c,LSN)$\;
+        $predictions \leftarrow predictions \cup p$\;
+        $E_S \leftarrow E_S \cup \{(v,c)\}$\;
+        Add true value of vote $w_S((v,c))$ \;
+    }   
+    $Update(R,S)$ \tcp*{Update Relations graph}
+    \Return $predictions$\;
+\end{algorithm}
