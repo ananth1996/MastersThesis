@@ -127,6 +127,52 @@ We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given 
     \Return p
 \end{algorithm}
 
+filler
+
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \caption{Compute Agony for a directed signed network }
+    \label{alg:signed-agony}
+    \KwIn{Directed siged graph $G = (V,E,w)$}
+    \KwResult{Signed Agony $\alpha$ of $G$}
+    Initialize $G^\prime = (V^\prime,E^\prime,w^\prime)$\;
+    $V^\prime \leftarrow V$\;
+    \ForEach{$e \in E$}{
+        \eIf{$w(e) <0$}{         
+            $e^\prime \leftarrow \left(\dest(e),\src(e)\right)$ \tcp*{Change direction of the edge}
+            $E^\prime \leftarrow E^\prime \cup \{e^\prime\} $\;
+            $w^\prime(e^\prime)\leftarrow -w(e)$ \tcp*{Make the weight positive}
+        }
+        {
+            $E^\prime \leftarrow E^\prime \cup \{e\}$\;
+            $w^\prime(e) \leftarrow w(e)$\;
+        }
+        
+    }
+    $\alpha \leftarrow Agony(G^\prime)$\; 
+    \Return $\alpha$\;
+\end{algorithm}
+
+sdas 
+
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \caption{Predict positive vote probability using status theory}
+    \label{alg:status-pred}
+    \KwIn{Voter $v$, Candidate $c$, Local Signed Network $LSN$}
+    \KwResult{Probablity of edge $(v,c)$ being positive}
+    $w_{LSN}((v,c)) \leftarrow +1$ \tcp*{Assume positive vote}
+    $\alpha^+ \leftarrow SignedAgony(LSN)$\;
+    $w_{LSN}((v,c)) \leftarrow -1$ \tcp*{Assume negative vote} 
+    $\alpha^- \leftarrow SignedAgony(LSN)$\;
+    $w_{LSN}((v,c)) \leftarrow 0$ \tcp*{Reset edge weight}
+    $r \leftarrow {\alpha^-}/{\alpha^{+}}$\;
+    $p \leftarrow 1/(1+e^{(1-r)})$\;
+    \Return p
+\end{algorithm}
+
+filler
+
 \begin{algorithm}[H]
     \DontPrintSemicolon
     \caption{Iterative Balance Model}
@@ -144,7 +190,7 @@ We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given 
         $v \leftarrow O[i]$\; 
         $V_S \leftarrow V_S \cup \{v\}$ \;
         $LSN \leftarrow S \cap R$\;
-        $p \leftarrow PredictBalance(v,c,LSN)$\;
+        $p \leftarrow Predict(v,c,LSN)$\;
         $predictions \leftarrow predictions \cup p$\;
         $E_S \leftarrow E_S \cup \{(v,c)\}$\;
         Add true value of vote $w_S((v,c))$ \;
