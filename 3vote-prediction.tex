@@ -18,7 +18,7 @@ Votes by nature express a positive or negative relationship between a \textit{vo
 
 Correlation clustering and community detection of signed voting graphs can discover trends and vote blocks in communities \cite{brito2020aBrazil,arinik2017signed}. Analysing the networks using social theories of balance and status provides knowledge of voter behaviour and features for prediction methods \cite{levorato2016brazilian,derr2018congressional}. The vote prediction task can be broken down into two subtasks which are analogous to link and sign prediction in signed networks. 
 
-The first subtask is to predict who will vote next given a candidate $c$ and a set of previous votes. This subtask is similar to link prediction in a signed network where we aim to predict possible future edges of the type $(v,c)$. The complexity subtask depends on the format of voting that takes place. If there is a known voting order, such as in roll call in parliamentary proceedings or explicit timestamps then it is essentially solved. If the voting occurs simultaneously, the subtask can be reduced to predicting the possible subset of members who will vote in a given session. When the voting is iterative and there is no known underlying process of who votes next, then a separate model might be required to infer the voting sequence. This case can be combinatorially hard as we would need to find the correct ordering of votes in a session.
+The first subtask is to predict who will vote next given a candidate $c$ and a set of previous votes. This subtask is similar to link prediction in a signed network where we aim to predict possible future edges of the type $(v,c)$. The complexity subtask depends on the format of voting that takes place. If there is a known voting order, such as in roll call in parliamentary proceedings or explicit timestamps then it is essentially solved. If the voting occurs simultaneously, the subtask can be reduced to predicting the possible subset of members who will vote in a given session. When the voting is iterative and there is no known underlying process of who votes next, then a separate model might be required to infer the voting sequence. This case can be combinatorially  hard as we would need to find the correct ordering of votes in a session.
 
 The second subtask is to predict how a voter $v$ will vote for a candidate $c$ given the previous votes in the session. This task translates into predicting the sign of an edge $(v,c)$ in the current session. We call this subtask the \textit{independent vote prediction} problem. It is independent in nature are we are only interested in the decision of the voter $v$ assuming that we have complete prior knowledge of how the previous votes have been cast. This problem can be framed as a supervised learning task, using features of the interaction between the current voter $v$, previous voters $U$ and the candidate $c$ to predict the sign of the edge $(v,c)$. We can utilize theories of balance and status in signed networks to create models similar to those by Karimi et al. \cite{karimi2019multicongress} and Jankowski-Lorek et al. \cite{jankowski-lorek2013MBSN} to predict voter behaviour.
 
@@ -97,17 +97,14 @@ We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given 
 
 
 \label{sec:local-signed-network}
+In this section, we present an unsupervised method that can be used iteratively in predicting the votes in a session. This method builds on top the concept of a \textit{voting neighbourhood} introduced in the previous section and relies solely on the social theories of balance and status in signed networks to predict a vote. However, unlike the triads features used in the supervised method, we will utilize generic measures of the balance or status of a network  and predict the vote that preserves these measures the best. 
 
-\begin{itemize}
-    \item Explain the concept of the local signed network for a particular user
-    \item Describe the Session graph $S$ and the historical voting graph $H$. 
-    \item Prediction with a session can be iteratively done and at the end update $H$.
-    \item Balance is through creating a signed adjacency matrix and then computing the smallest eigenvalue and choosing the edge that makes the graph most balanced. How to report probability that edge is positive.
-    \item The status is measured using the concept of agony and in a similar way we choose the edge that has least agony when added.
-\end{itemize}
+As defined in the previous section, the directed signed graph of the current session is $S = (V_S,E_S,w_S)$ and $v$ is the voter, $c$ is the candidate and $U$ is the set of prior voters in the session. $H=(V_H,E_H,w_H)$ is the directed signed graph that contains the historical voting records prior to the current session. The first step is to construct a signed \textit{relationship graph} $R=(V_R,E_R,w_R)$ from the history voting graph $H$. The edges of this graph capture simple signed relationship between the voters such as \textit{agreement} or \textit{concurrence}  and can be constructed uniquely based on the given problem. Based on whether we use balance or status theory to predict the vote, the relationship graph is either unweighted or weighted respectively.
 
+We now define the \textit{Local Signed Network} (LSN) of a voter $v$ as the intersection of the session and the relationship graph $LSN=S \cap R$. We assume that candidate $c$ is present in the relationship graph so that we get all the prior vote edges $(u_j,c)$ in the LSN. The \textit{voting neighbourhood} that we described in the previous section is the set of vertices for the LSN i.e., $V_{LSN}=V_S \cap V_R$. There are three main types of edges present in the LSN. The first are the prior vote edges $(u_j,c)$, from the prior voters to the candidate. The second are the relationship edges $(v,u_j)$, from the voter to the prior voters. The third is the relationships between the prior voters $(u_j,u_k)$. All these three types of edges can be seen in the undirected LSN shown in Figure~\ref{fig:lsn-balance}c. We will now cover how to predict the edge $(v,c)$ in the LSN using balance and status theory.  
 
-\subsection{Prediction based on Balance Theory}
+\subsection{Prediction Based on Balance Theory}
+\label{subsec:prediction-based-balance}
 
 \input{images/local-sign-balance.tex}
 
