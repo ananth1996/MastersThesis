@@ -107,6 +107,8 @@ We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given 
 \end{itemize}
 
 
+\subsection{Prediction based on Balance Theory}
+
 \input{images/local-sign-balance.tex}
 
 \begin{algorithm}[H]
@@ -127,7 +129,7 @@ We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given 
     \Return p
 \end{algorithm}
 
-filler
+\subsection{Prediction based on Status Theory }
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
@@ -171,12 +173,15 @@ sdas
     \Return p
 \end{algorithm}
 
+\input{images/local-sign-status.tex}
 filler
+
+\subsection{Iterative Prediction Model}
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
-    \caption{Iterative Balance Model}
-    \label{alg:balance-pred}
+    \caption{Iterative Prediction Model}
+    \label{alg:iterative-pred}
     \KwIn{Relation graph $R=(V_R,E_R,w_R)$, Order of voters in current session $O$, Candidate $c$ }
     \KwResult{Predictions for current session }
     $k \leftarrow |O|$\;
@@ -199,4 +204,3 @@ filler
     \Return $predictions$\;
 \end{algorithm}
 
-\input{images/local-sign-status.tex}
