@@ -1,0 +1,94 @@
+\tikzset{
+        position/.style args={#1:#2 from #3}{
+            at=(#3.#1), anchor=#1+180, shift=(#1:#2)
+        }
+    }
+
+\begin{figure}[!ht]
+    \centering
+
+\begin{tikzpicture}
+
+    \begin{scope}[every node/.style={circle,thick,draw,minimum size=9mm}]
+        \node (u) at (0,0) {$u$};
+        \node[position=-60:1.3cm from u] (c) {$c$};
+        \node[position=-120:1.3cm from u] (v) {$v$};
+        
+        \node[position=-120:2cm from v] (u1)  {$u$};
+        \node[position=-60:1.3cm from u1] (c1) {$c$};
+        \node[position=-120:1.3cm from u1] (v1) {$v$};
+
+        \node[position=-60:2cm from c] (u2)  {$u$};
+        \node[position=-60:1.3cm from u2] (c2) {$c$};
+        \node[position=-120:1.3cm from u2] (v2) {$v$};
+
+        \node[position=-90:4cm from u1] (u3)  {$u$};
+        \node[position=-60:1.3cm from u3] (c3) {$c$};
+        \node[position=-120:1.3cm from u3] (v3) {$v$};
+
+        \node[position=-90:4cm from u2] (u4)  {$u$};
+        \node[position=-60:1.3cm from u4] (c4) {$c$};
+        \node[position=-120:1.3cm from u4] (v4) {$v$};
+
+
+    \end{scope}
+
+    % positive edges
+    \begin{scope}[
+        relation/.style= {thick,draw,blue,->,>={Stealth[blue]}},
+        vote/.style= {very thick,draw,red,densely dotted,->,>={Stealth[red]}},
+        predict/.style={thick,draw,dashed,->,>={Stealth[black]}},
+        assume/.style={thick,draw,->,>={Stealth[black]}},
+        every node/.style={fill=white,rectangle,inner sep=0}]
+        % \draw (v4) -- (v1) -- (v3) -- (v2) -- (v1);
+        \path 
+        (u) edge[vote] node[above right=1mm] {$-$} (c)  
+        (v) edge[relation] node[above left=1mm] {$-$} (u)
+        (v) edge[predict] (c)
+
+        (u1) edge[vote] node[above right=1mm] {$-$} (c1)  
+        (v1) edge[relation] node[above left=1mm] {$-$} (u1)
+        (v1) edge[assume] node[above=1mm] {$+$} (c1)
+        
+        (u2) edge[vote] node[above right=1mm] {$-$} (c2)  
+        (v2) edge[relation] node[above left=1mm] {$-$} (u2)
+        (v2) edge[assume] node[above=1mm] {$-$} (c2)
+        
+        (c3) edge[vote] node[above right=1mm] {$+$} (u3)  
+        (u3) edge[relation] node[above left=1mm] {$+$} (v3)
+        (v3) edge[assume] node[above=1mm] {$+$} (c3)
+        
+        (c4) edge[vote] node[above right=1mm] {$+$} (u4)  
+        (u4) edge[relation] node[above left=1mm] {$+$} (v4)
+        (c4) edge[assume] node[above=1mm] {$+$} (v4)
+        ;
+    \end{scope}
+    \begin{scope}[
+        every edge/.style= {thick,draw,->},
+        every node/.style={fill=white,rectangle,inner sep=0,text=black}
+    ]
+    \node[position=-90:4cm from u3] (a1) {$\alpha^+=3$};
+    \node[position=-90:4cm from u4] (a2) {$\alpha^-=0$};
+    \path     
+    (v) edge[shorten >=0.5cm,shorten <=0.5cm] node[above left=0.1cm,text width=2cm,align=center] {Assume \\ positive vote} (u1)
+    (c) edge[shorten >=0.5cm,shorten <=0.5cm] node[above right=0.1cm,text width=2cm,align=center] {Assume \\ Negative vote} (u2)
+
+    ($(u1)!0.5!(u3)$) edge node[right=1mm] (convertL) {} ($(u1)!0.8!(u3)$)
+    ($(u2)!0.5!(u4)$) edge node[left=1mm] (convertR) {} ($(u2)!0.8!(u4)$)
+    
+    (convertL) edge[draw=none] node[text width=3cm,align=center] {Convert\\ negative edges} (convertR)
+    
+    ($(u3)!0.6!(a1)$) edge node[right=1mm] (agonyL) {} ($(u3)!0.9!(a1)$)
+    ($(u4)!0.6!(a2)$) edge node[left=1mm] (agonyR) {} ($(u4)!0.9!(a2)$)
+    
+    (agonyL) edge[draw=none] node[text width=3cm,align=center] {Compute\\ Agony} (agonyR)
+
+    ;
+    \end{scope}
+  \end{tikzpicture}
+  
+
+
+    \caption{Local Singed Network prediction based on status.}
+    \label{}
+\end{figure}
