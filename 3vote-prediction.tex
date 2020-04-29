@@ -105,8 +105,11 @@ We now define the \textit{Local Signed Network} (LSN) of a voter $v$ as the inte
 
 \subsection{Prediction Based on Balance Theory}
 \label{subsec:prediction-based-balance}
+As described in Section~\ref{sec:balance-theory}, balance theory is applied to undirected signed graphs. Therefore, we construct a undirected signed relationship graph $R$ using voting history. The signed relations the edges $E_R$ in this graph describe should be symmetric in nature for e.g., the probability of agreements or disagreement between a pair of nodes $u$ and $v$. Now, we create the LSN from the intersection of the session graph $S$ and relationship graph $R$ and keep the LSN an undirected graph by ignoring the direction of the voting edges $(u_j,c)$. 
 
-\input{images/local-sign-balance.tex}
+Now, we turn to the task of predicting the sign of the edge $(v,c)$ in the LSN. The voter $v$ can cast either a positive or negative vote for the candidate $c$. This gives us two possibilities $w_{LSN}((v,c))=+1$ or $w_{LSN}((v,c))=-1$. We state that the voter aims to maintain the balance in the LSN. Therefore, we can predict the vote that when added as the edge $(v,c)$ to the LSN results in a more balanced network. This indicates that we require a measure of the \textit{imbalance} of a network. If $\overline{L}_{LSN}$ is the signed Laplacian of the LSN with eigenvalues $\lambda_1\leq\lambda_2\leq\dots\lambda_n$, then Li et al.\ \cite{li2016note} show that the smallest eigenvalue $\lambda_1$ is a measure of the imbalance of the LSN. Therefore, the larger $\lambda_1$ is, the more imbalanced the network is and if $\lambda_1=0$, then the network is perfectly balanced. 
+ 
+Combining these concepts we have Algorithm~\ref{alg:balance-pred}. When given a LSN and an edge $(v,c)$ to predict, we first assume the vote is positive, add it to the LSN and compute the smallest eigenvalue denoted by $\lambda_1^{+}$. Next, we assume the vote is negative and add the edge to the LSN and the corresponding smallest eigenvalue is $\lambda_1^-$. Now, if $\lambda_1^+ < \lambda_1^-$, then we can predict that the vote is positive as the resulting LSN is more balanced. Similarly, if $\lambda_1^-<\lambda_1^+$, we predict a negative vote as it results in a more balanced network. This deterministic rule does not capture the gap between $\lambda_1^+$ and $\lambda_1^-$. Therefore, the ratio $r=\frac{\lambda_1^-}{\lambda_1^+}$ can be used to express the confidence in predicting the vote is positive. As $\lambda_1^+$ approaches $0$ (or $\lambda_1^-$ increases), $r$ approaches $\infty$ and when $\lambda_1^-$ approaches $0$ (or $\lambda_1^+$ increases), $r$ approaches $0$. Also, when $\lambda_1^+=\lambda_1^-$, $r=1$ which indicates that we are equivocal between the vote being positive and negative. We can convert the ratio $r$ into a measure of the probability that the given edge $(v,c)$ is positive by defining $p=1/(1+e^{(1-r)})$. Therefore, the output of the model is a probability measure that can be compared similar to the output of a logistic regression model.
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
@@ -126,7 +129,12 @@ We now define the \textit{Local Signed Network} (LSN) of a voter $v$ as the inte
     \Return p
 \end{algorithm}
 
-\subsection{Prediction based on Status Theory }
+Figure~\ref{fig:lsn-balance} shows an example of how the we can iteratively predict votes using balance theory. The current voter at every iteration $i$ is $v=u_{i+1}$. We start in the first iteration $i=1$ with one prior voter $u_1$ who has voted negatively for the candidate $c$ seen by the dotted red line in Figure~\ref{fig:lsn-balance}a. The current voter $v$ has a negative relation towards $u_1$ indicated by the solid blue line. Now, in this triad we know "$v$ disagrees with $u_1$" and "$u_1$ disapproves of $c$". Using the intuition provided by balance theory, we can predict that the edge $(v,c)$ is positive as it results in the triad being balanced. This result can be verified empirically by observing the values of smallest eigenvalue. We see that $\lambda_1^+=0$ and $\lambda_1^-=1$ and therefore, the positive vote probability is $p=1$. Now, in the next iteration, $v$ becomes the prior voter $u_2$ and we add the edge $(u_2,c)$ with the true vote (in this example we assume it was the same as the prediction made) and we get the next voter as the new $v$.
+
+In the second iteration $i=2$, the new voter $v$ has a positive relation with the prior voter $u_1$ as seen in Figure~\ref{fig:lsn-balance}b. By preserving the relation between $u_1$ and $u_2$ from the previous iteration there are larger cycles in the LSN. Similar to the previous iteration, we can observe the smallest eigenvalues and conclude that a negative vote leads to more balanced network and positive vote probability is now $p=0$. Now, in the third iteration $i=3$, the smallest eigenvalues in both cases are equal. Therefore, we are equivocal in the vote being positive or negative and the positive vote probability is $p=0.5$.
+
+\input{images/local-sign-balance.tex}
+\subsection{Prediction Based on Status Theory }
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
@@ -185,7 +193,7 @@ filler
     $u \leftarrow O[1]$ \tcp*{First voter} 
     $V_S \leftarrow \{c,u\}$ \tcp*{candidate and first voter}
     $E_S \leftarrow \{(u,c)\}$ \tcp*{first vote}
-    Add true value of first vote $w_S((u,c))$ \;
+    $w_S((u,c)) \leftarrow w^{*}((u,c))$ \tcp*{Assign true vote}
     Initialize session graph $S = \{V_S,E_S,w_S\}$\;
     $predictions \leftarrow \emptyset$ \;
     \For{$i \leftarrow 2$ till $|O|$}{
@@ -195,7 +203,7 @@ filler
         $p \leftarrow Predict(v,c,LSN)$\;
         $predictions \leftarrow predictions \cup p$\;
         $E_S \leftarrow E_S \cup \{(v,c)\}$\;
-        Add true value of vote $w_S((v,c))$ \;
+        $w_S((v,c)) \leftarrow w^{*}((v,c))$ \tcp*{Assign true vote}
     }   
     $Update(R,S)$ \tcp*{Update Relations graph}
     \Return $predictions$\;
