@@ -111,7 +111,13 @@ Now, we turn to the task of predicting the sign of the edge $(v,c)$ in the LSN. 
  
 Combining these concepts we have Algorithm~\ref{alg:balance-pred}. When given a LSN and an edge $(v,c)$ to predict, we first assume the vote is positive, add it to the LSN and compute the smallest eigenvalue denoted by $\lambda_1^{+}$. Next, we assume the vote is negative and add the edge to the LSN and the corresponding smallest eigenvalue is $\lambda_1^-$. Now, if $\lambda_1^+ < \lambda_1^-$, then we can predict that the vote is positive as the resulting LSN is more balanced. Similarly, if $\lambda_1^-<\lambda_1^+$, we predict a negative vote as it results in a more balanced network. This deterministic rule does not capture the gap between $\lambda_1^+$ and $\lambda_1^-$. Therefore, the ratio $r=\frac{\lambda_1^-}{\lambda_1^+}$ can be used to express the confidence in predicting the vote is positive. As $\lambda_1^+$ approaches $0$ (or $\lambda_1^-$ increases), $r$ approaches $\infty$ and when $\lambda_1^-$ approaches $0$ (or $\lambda_1^+$ increases), $r$ approaches $0$. Also, when $\lambda_1^+=\lambda_1^-$, $r=1$ which indicates that we are equivocal between the vote being positive and negative. We can convert the ratio $r$ into a measure of the probability that the given edge $(v,c)$ is positive by defining $p=1/(1+e^{(1-r)})$. Therefore, the output of the model is a probability measure that can be compared similar to the output of a logistic regression model.
 
-\begin{algorithm}[H]
+Figure~\ref{fig:lsn-balance} shows an example of how the we can iteratively predict votes using balance theory. The current voter at every iteration $i$ is $v=u_{i+1}$. We start in the first iteration $i=1$ with one prior voter $u_1$ who has voted negatively for the candidate $c$ seen by the dotted red line in Figure~\ref{fig:lsn-balance}a. The current voter $v$ has a negative relation towards $u_1$ indicated by the solid blue line. Now, in this triad we know "$v$ disagrees with $u_1$" and "$u_1$ disapproves of $c$". Using the intuition provided by balance theory, we can predict that the edge $(v,c)$ is positive as it results in the triad being balanced. This result can be verified empirically by observing the values of smallest eigenvalue. We see that $\lambda_1^+=0$ and $\lambda_1^-=1$ and therefore, the positive vote probability is $p=1$. Now, in the next iteration, $v$ becomes the prior voter $u_2$ and we add the edge $(u_2,c)$ with the true vote (in this example we assume it was the same as the prediction made) and we get the next voter as the new $v$.
+
+In the second iteration $i=2$, the new voter $v$ has a positive relation with the prior voter $u_1$ as seen in Figure~\ref{fig:lsn-balance}b. By preserving the relation between $u_1$ and $u_2$ from the previous iteration there are larger cycles in the LSN. Similar to the previous iteration, we can observe the smallest eigenvalues and conclude that a negative vote leads to more balanced network and positive vote probability is now $p=0$. Now, in the third iteration $i=3$, the smallest eigenvalues in both cases are equal. Therefore, we are equivocal in the vote being positive or negative and the positive vote probability is $p=0.5$.
+
+\input{images/local-sign-balance.tex}
+
+\begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Predict positive vote probability using balance theory}
     \label{alg:balance-pred}
@@ -129,14 +135,34 @@ Combining these concepts we have Algorithm~\ref{alg:balance-pred}. When given a 
     \Return p
 \end{algorithm}
 
-Figure~\ref{fig:lsn-balance} shows an example of how the we can iteratively predict votes using balance theory. The current voter at every iteration $i$ is $v=u_{i+1}$. We start in the first iteration $i=1$ with one prior voter $u_1$ who has voted negatively for the candidate $c$ seen by the dotted red line in Figure~\ref{fig:lsn-balance}a. The current voter $v$ has a negative relation towards $u_1$ indicated by the solid blue line. Now, in this triad we know "$v$ disagrees with $u_1$" and "$u_1$ disapproves of $c$". Using the intuition provided by balance theory, we can predict that the edge $(v,c)$ is positive as it results in the triad being balanced. This result can be verified empirically by observing the values of smallest eigenvalue. We see that $\lambda_1^+=0$ and $\lambda_1^-=1$ and therefore, the positive vote probability is $p=1$. Now, in the next iteration, $v$ becomes the prior voter $u_2$ and we add the edge $(u_2,c)$ with the true vote (in this example we assume it was the same as the prediction made) and we get the next voter as the new $v$.
-
-In the second iteration $i=2$, the new voter $v$ has a positive relation with the prior voter $u_1$ as seen in Figure~\ref{fig:lsn-balance}b. By preserving the relation between $u_1$ and $u_2$ from the previous iteration there are larger cycles in the LSN. Similar to the previous iteration, we can observe the smallest eigenvalues and conclude that a negative vote leads to more balanced network and positive vote probability is now $p=0$. Now, in the third iteration $i=3$, the smallest eigenvalues in both cases are equal. Therefore, we are equivocal in the vote being positive or negative and the positive vote probability is $p=0.5$.
-
-\input{images/local-sign-balance.tex}
 \subsection{Prediction Based on Status Theory }
+We mentioned in Section~\ref{sec:status-theory} that status theory is described for directed signed networks. The relationship graph $R$ should, therefore, be be constructed from the history $H$ as a directed signed network. The directed edges $(u,v)$ should denote asymmetric relation between the nodes for e.g., the ratio of concurrence: a measure of times that $u$ has voted after $v$ in a session and agreed. The LSN created from the intersection of the session $S$ and the relation is also a directed signed graph.
 
-\begin{algorithm}[H]
+Similar to predicting the vote using balance theory, the vote is either positive or negative. Now, we state that the voter aims to maintain the status in the resulting LSN. Therefore, we predict the vote $(v,c)$ that when added to the LSN best preserves status in the network. Therefore, we need a measure of how much a given network conforms to the theory of status. However, to the best of our knowledge, there are no existing methods to quantify and measure the extent that a network conforms to status theory. In this thesis, we present a quantitative definition of status theory in a network and also present a novel method of using the agony of a directed network to measure the compliance with status theory.
+
+As we discussed in Section~\ref{sec:status-theory}, signed edges can be interpreted as recognition of relative status. This means that a positive edge $u \plusrightarrow v$ indicates that $v$ has a higher status than $u$, and a negative edge $u \minusrightarrow v$ indicates that $v$ has lower status than $u$. Let us assume that there is an implicit status function $\sigma: V \rightarrow \mathbb{N}$ that maps each node in the network to a quantity that correlates with status. Therefore, the edges $u\plusrightarrow
+ v$ and $u \minusrightarrow v$ indicate $\sigma(u)<\sigma(v)$ and $\sigma(u)>\sigma(v)$ respectively. This is how we predict the missing sign of an edge in a triad. Leskovec et al.\ \cite{leskovec2010signed} provide a way to compute this status function $\sigma$ from the node degrees as seen in Section~\ref{sec:status-theory}. However, this measure is still defined locally and can be used only to predict the sign of an edge. We still require a framework to quantify violations and measure how much the network complies with status theory. We define that an edge $e=(u,v)$ \textit{violates} status theory if $w(e)\sigma(u)\not\leq w(e)\sigma(v)$. Now, we can define when a network is perfectly complaint with status.
+
+ \theoremstyle{definition}
+ \begin{definition}{Perfect Status Compliance}
+     A directed signed network $G=(W,E,w)$ with an implicit status function $\sigma: V \rightarrow \mathbb{N}$ is said to be perfectly status complaint if $\forall e=(u,v) \in E$, $\sgn(w(e))\sigma(u) \leq \sgn(w(e))\sigma(v)$ 
+ \end{definition}
+
+Therefore, the number of edges that are in violation to status theory can be a rudimentary measure of the status compliance of a given network. However, in the case of most signed directed networks, we do not possess the implicit status function $\sigma$. Hence, even computing the number of edges that violate status theory is not possible. Therefore, if we can infer the status function $\sigma$ from the structure of the signed network then we can measure the status compliance of that network. 
+
+We can now use the concept of \textit{agony} described in Section~\ref{sec:hierarchy} to find the optimal hierarchy of a given directed network. The notion of hierarchy is strongly related to status theory for signed networks. In a DAG, then there no cycles and we can find a status function $\sigma$ such that there are no edges that violate status theory. Moreover, agony is a measure of the violation of edges with respect to a ranking function. Nevertheless, agony and hierarchy were primarily defined for unsigned networks. We can easily remedy this by using the fact that a negative edge $u \minusrightarrow v$ can be transformed into a positive edge $u \plusleftarrow v$. If $G$ is a signed network then we denote the unsigned directed network obtained from the transformation described as $G^\prime$.
+
+Now, the agony of an edge $(u,v)$ in $G^\prime$ given a status function (called rank function in Gupte et al.\ \cite{gupte2011finding}) is $\max(\sigma(u)-\sigma(v)+1,0)$. Therefore, agony is a quantification of the status violation of an edge. The agony of the network with respect to a status function $\sigma$ is defined as the sum of the agony of each edge in the network denoted by $A(G^\prime,\sigma)$. The agony of the network $A(G^\prime)= \min_\sigma(A(G^\prime,\sigma))$ is the smallest agony over all possible ranking of the nodes. In this way, the agony of the network is a more generalized measure of status compliance than just counting the number of violating edges. Therefore, we can use one of the algorithms mentioned in Section~\ref{sec:hierarchy} to compute agony of $G^\prime$. We call this value as the agony of the original signed network $G$ and denote $\alpha = \alpha(G) = A(G^\prime)$. The complete process is outlined in Algorithm~\ref{alg:signed-agony}.Now, the agony of a signed network $G$ is a measure of how far $G$ is from being perfectly status complaint. Theorem~\ref{the:agony-status} shows that when $\alpha=0$ the network is perfectly status complaint. 
+
+\begin{theorem}
+\label{the:agony-status}
+Let $G=(V,E,w)$ be a directed signed graph. Then $\alpha(G)=0$ if and only if $G$ is perfectly status complaint.
+\end{theorem}
+\begin{proof}
+    The transformed unsigned directed network is $G^\prime=(V^\prime,E^\prime,w^\prime)$. The agony of a the directed network $G^prime$ is 0 when the network has perfect hierarchy \cite{gupte2011finding}. Therefore, there exists a status function $\sigma$ such that the agony of all edges $G^\prime$ i.e., $\sigma(u) \leq \sigma(v), \forall (u,v)\in E^\prime$. Therefore, there are no edges in $G$ that violate status theory and $G$ is perfectly status complaint. Hence proved.
+\end{proof}
+
+\begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Compute Agony for a directed signed network }
     \label{alg:signed-agony}
@@ -160,9 +186,9 @@ In the second iteration $i=2$, the new voter $v$ has a positive relation with th
     \Return $\alpha$\;
 \end{algorithm}
 
-sdas 
+Now, we can compute the agony of the LSN and utilize it to predict the sign of the vote. We follow a process similar to predicting the sign using balance theorem. First, first assume the vote is positive and add the edge $(v,c)$ to the LSN and compute the agony and call it as $\alpha^+$. Next, we assume the vote is negative and add the edge and compute the agony of the LSN and call it $\alpha^-$. If $\alpha^+ < \alpha^-$, then it means that the positive vote results in a LSN that has fewer violations of status and therefore, we can predict the vote is positive. Similarly, we predict a negative vote if $\alpha^- < \alpha^+$. Alternatively, we can also compute the probability of a positive vote as $p=1/(1+e^{(1-r)})$, where $r=\alpha^-/\alpha^+$. This process is detailed in Algorithm~\ref{alg:status-pred}.
 
-\begin{algorithm}[H]
+\begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Predict positive vote probability using status theory}
     \label{alg:status-pred}
@@ -178,12 +204,14 @@ sdas
     \Return p
 \end{algorithm}
 
+We see a directed LSN similar to the one in Figure~\ref{fig:lsn-balance}a in Figure~\ref{fig:lsn-status}. The branches indicate the two possibilities for the vote edge $(v,c)$. The left branch assumes that the vote is positive and adds it to the LSN. When we transform the negative edges in the LSN we get a cycle. As a cycle indicates that there is no hierarchy in the LSN the agony $\alpha^+=3$ reflects the fact that each edge violates status theory. The right branch assumes that the vote is negative and includes it in the LSN. After transformation, we see that all the edges comply with status theory and therefore, the agony $\alpha^-=0$. Now, the corresponding positive vote probability is $p=0$ indicating that we would predict a negative vote. Note this result is contradictory to balance theory where we predict a positive vote for the same LSN.
+
 \input{images/local-sign-status.tex}
-filler
 
 \subsection{Iterative Prediction Model}
 
-\begin{algorithm}[H]
+
+\begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Iterative Prediction Model}
     \label{alg:iterative-pred}
@@ -196,7 +224,7 @@ filler
     $w_S((u,c)) \leftarrow w^{*}((u,c))$ \tcp*{Assign true vote}
     Initialize session graph $S = \{V_S,E_S,w_S\}$\;
     $predictions \leftarrow \emptyset$ \;
-    \For{$i \leftarrow 2$ till $|O|$}{
+    \For{$i \leftarrow 2$ \KwTo $k$}{
         $v \leftarrow O[i]$\; 
         $V_S \leftarrow V_S \cup \{v\}$ \;
         $LSN \leftarrow S \cap R$\;
