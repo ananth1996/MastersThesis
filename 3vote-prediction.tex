@@ -188,6 +188,8 @@ Let $G=(V,E,w)$ be a directed signed graph. Then $\alpha(G)=0$ if and only if $G
 
 Now, we can compute the agony of the LSN and utilize it to predict the sign of the vote. We follow a process similar to predicting the sign using balance theorem. First, first assume the vote is positive and add the edge $(v,c)$ to the LSN and compute the agony and call it as $\alpha^+$. Next, we assume the vote is negative and add the edge and compute the agony of the LSN and call it $\alpha^-$. If $\alpha^+ < \alpha^-$, then it means that the positive vote results in a LSN that has fewer violations of status and therefore, we can predict the vote is positive. Similarly, we predict a negative vote if $\alpha^- < \alpha^+$. Alternatively, we can also compute the probability of a positive vote as $p=1/(1+e^{(1-r)})$, where $r=\alpha^-/\alpha^+$. This process is detailed in Algorithm~\ref{alg:status-pred}.
 
+We see a directed LSN similar to the one in Figure~\ref{fig:lsn-balance}a in Figure~\ref{fig:lsn-status}. The branches indicate the two possibilities for the vote edge $(v,c)$. The left branch assumes that the vote is positive and adds it to the LSN. When we transform the negative edges in the LSN we get a cycle. As a cycle indicates that there is no hierarchy in the LSN the agony $\alpha^+=3$ reflects the fact that each edge violates status theory. The right branch assumes that the vote is negative and includes it in the LSN. After transformation, we see that all the edges comply with status theory and therefore, the agony $\alpha^-=0$. Now, the corresponding positive vote probability is $p=0$ indicating that we would predict a negative vote. Note this result is contradictory to balance theory where we predict a positive vote for the same LSN.
+
 \begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Predict positive vote probability using status theory}
@@ -204,36 +206,38 @@ Now, we can compute the agony of the LSN and utilize it to predict the sign of t
     \Return p
 \end{algorithm}
 
-We see a directed LSN similar to the one in Figure~\ref{fig:lsn-balance}a in Figure~\ref{fig:lsn-status}. The branches indicate the two possibilities for the vote edge $(v,c)$. The left branch assumes that the vote is positive and adds it to the LSN. When we transform the negative edges in the LSN we get a cycle. As a cycle indicates that there is no hierarchy in the LSN the agony $\alpha^+=3$ reflects the fact that each edge violates status theory. The right branch assumes that the vote is negative and includes it in the LSN. After transformation, we see that all the edges comply with status theory and therefore, the agony $\alpha^-=0$. Now, the corresponding positive vote probability is $p=0$ indicating that we would predict a negative vote. Note this result is contradictory to balance theory where we predict a positive vote for the same LSN.
 
 \input{images/local-sign-status.tex}
 
 \subsection{Iterative Prediction Model}
 
+Now, Algorithm~\ref{alg:iterative-pred} describes a model that can predict the votes in a session iteratively. We have the order of votes in the session denoted by $O$ and the true votes function $w^{*}$. We create the session graph and initialize it with the candidate $c$ and the first voter as seen in line~\ref{iterative-pred:line:init-session}. This is because we need at least one prior vote information to effectively predict a vote. In most settings, such as bills in a government parliament or promotion of a member in a community, there are always  sponsors or nominators who propose the candidate in that session. Therefore, we are justified in starting the session with the candidate and the first vote cast in the session graph $S$. Next, for each subsequent voter $v$ in the list, we add it the session and create the LSN. The $Predict$ function in line~\ref{iterative-pred:line:predict} can be based on either balance (Algorithm~\ref{alg:balance-pred}) or status theory (Algorithm~\ref{alg:status-pred}). Then, we add the true vote of voter $v$ to the session $G$ and move on to the next voter in the list. After all the votes are predicted in the session, we can update the relationship graph $H$ with the data from the current session $S$. This can include operations such as adding nodes that were not present in $R$ and updating the edge weights based on the votes cast in the current session.
+
+In this process we can predict all the votes in all the sessions by starting with an empty relationship graph and updating it after every session. Therefore, the model can be compared to a "\textit{batch}" machine learning model, where each batch is a voting session and the model parameter is the relationship graph $R$. In a batch, the model will predict votes based the paramters which is the information gathered from the previous sessions contained in the relationship graph $R$. After the batch is complete, the model updates its "parameters" or the graph with data from the current session. We can bootstrap the model from a complete \textit{blank slate} where $R$ is an empty graph and then iteratively predicts sessions and updates $R$. The model iteratively improves.
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Iterative Prediction Model}
     \label{alg:iterative-pred}
-    \KwIn{Relation graph $R=(V_R,E_R,w_R)$, Order of voters in current session $O$, Candidate $c$ }
+    \KwIn{Candidate $c$, Relation graph $R=(V_R,E_R,w_R)$, Order of voters in current session $O$ and true votes $w^*$  }
     \KwResult{Predictions for current session }
     $k \leftarrow |O|$\;
     $u \leftarrow O[1]$ \tcp*{First voter} 
     $V_S \leftarrow \{c,u\}$ \tcp*{candidate and first voter}
     $E_S \leftarrow \{(u,c)\}$ \tcp*{first vote}
     $w_S((u,c)) \leftarrow w^{*}((u,c))$ \tcp*{Assign true vote}
-    Initialize session graph $S = \{V_S,E_S,w_S\}$\;
+    Initialize session graph $S = \{V_S,E_S,w_S\}$\; \label{iterative-pred:line:init-session}
     $predictions \leftarrow \emptyset$ \;
     \For{$i \leftarrow 2$ \KwTo $k$}{
         $v \leftarrow O[i]$\; 
         $V_S \leftarrow V_S \cup \{v\}$ \;
-        $LSN \leftarrow S \cap R$\;
-        $p \leftarrow Predict(v,c,LSN)$\;
+        $LSN \leftarrow S \cap R$\; \label{iterative-pred:line:create-lsn}
+        $p \leftarrow Predict(v,c,LSN)$\; \label{iterative-pred:line:predict}
         $predictions \leftarrow predictions \cup p$\;
         $E_S \leftarrow E_S \cup \{(v,c)\}$\;
         $w_S((v,c)) \leftarrow w^{*}((v,c))$ \tcp*{Assign true vote}
     }   
-    $Update(R,S)$ \tcp*{Update Relations graph}
+    $Update(R,S)$ \tcp*{Update Relations graph} \label{iterative-pred:line:update-relation}
     \Return $predictions$\;
 \end{algorithm}
 
