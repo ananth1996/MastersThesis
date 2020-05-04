@@ -4,7 +4,8 @@ In this chapter, we provide an overview of the inner workings and decision makin
 
 \section{Principles of Wikipedia}
 \label{sec:principles-wikipedia}
-Wikipedia is the largest online encyclopedia with over six million pages of content in the English version. It is maintained by an open collaborative effort of multiple editors from all across the world. All the knowledge and content is free and is supported by the non-profit Wikimedia Foundation. The size and popularity of Wikipedia is attributed to the ability for anyone to edit any content. All editors on Wikipedia follow five fundamental principles called the "Five Pillars" shown in Figure~\ref{fig:5-pillars}. It provides a foundational framework for collaboration and contribution to the Wikipedia project.   
+Wikipedia is the largest online encyclopedia with over six million pages of content in the English version. It is maintained by an open collaborative effort of multiple editors from all across the world. All the knowledge and content is free and is supported by the non-profit Wikimedia Foundation. The size and popularity of Wikipedia is attributed to the ability for anyone to edit any content. All editors on Wikipedia follow five fundamental principles called the "Five Pillars" shown in Figure~\ref{fig:5-pillars}. 
+These five pillars provide a foundational framework for collaboration amongst users and contribution towards the betterment of the Wikipedia project.  
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.75\textwidth]{images/Pillars.jpg}
@@ -20,14 +21,62 @@ The third principle enshrines the ideal that all content available on Wikipedia 
 
 The fourth pillar describes Wikipedia's code of conduct. It asks users to act in good faith and assume good faith on the part of other editors. Wikipedia etiquette urges disputes and disagreements such as edit wars \cite{wiki:edit-wars}, to be resolved with civility while respecting other editors.
 
-The fifth and last pillar reminds users that all rules in Wikipedia are policies and guidelines meant to help with collaboration. They can evolve and change to reflect the requirement of the community. It assuages the fear of making mistakes and encourages editors to be bold though not reckless. 
+The fifth and last pillar reminds users that all rules in Wikipedia are essentially just policies and guidelines meant to help with collaboration. They can evolve and change to reflect the requirement of the community. It assuages the fear of making mistakes and encourages editors to be bold though not reckless. 
 
 \section{Formal Organization of Wikipedia}
 \label{sec:formal-org-wikipedia}
+In this section, we describe the various categories of users and explain their roles and responsibilities. All the facts and figures we provide in this thesis are from the English version of Wikipedia. We define a "user" of Wikipedia as a person who contributes to the encyclopedia and a "reader" as someone who simply accesses the content.
+
+Wikipedia started out as completely open with no restrictions on who can edit a page or create a new article. Changes and edits that were made to a page would be published immediately. This lead to many pages that contained erroneous text, biased content and gibberish. Therefore, this led to the English version of Wikipedia introducing restrictions and tools to protect the more controversial pages. They also introduced categories of users to help protect and maintain the quality of the content available on Wikipedia. We proceed to explain the four main user types as seen in Figure~\ref{fig:logos}. 
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.5\textwidth]{images/wikipedians.jpg}
+        \caption{Editors}
+        \label{fig:editors}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.5\textwidth]{images/admins.png}
+        \caption{Administrators}
+        \label{fig:admins}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.5\textwidth]{images/bureaucrat.png}
+        \caption{Bureaucrats}
+        \label{fig:crats}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=0.5\textwidth]{images/arbs.png}
+        \caption{Arbitration Committee}
+        \label{fig:arbs}
+    \end{subfigure}
+    \caption{Logos for each category of user that signifies the role that they play in the Wikipedia community.}
+    \label{fig:logos}
+\end{figure}
+
 \subsection{Editors}
+Editors (or Wikipedians) are the primary users who edit and create all the content on Wikipedia \cite{wiki:editors}. Figuratively, they hold Wikipedia in the palm of their hands as seen by their logo in Figure~\ref{fig:editors}. There are two main types of editors on Wikipedia namely, \textit{registered} and \textit{unregistered}. A registered user is one who has a unique username and a permanent \textit{talk page} where other can communicate with other users. An unregistered user is one who contributes without a registered username and are usually referred to as \textit{IPs} as they are only identified by their IP addresses. Unregistered users usually have similar rights as those of regular users to edit, discuss and contribute with certain exceptions 
+\cite{wiki:unregistered-users}. Unregistered cannot create a new article, edit a protected page, become administrators or vote in elections to promote users within Wikipedia. As the focus of the thesis will be on the elections within Wikipedia, when we refer to editors in the coming chapters and sections we refer to the registered users.
+
+There are over 38 million registered users and this number is constantly rising. However, only roughly $0.37\%$ ($\approx 144\,000$) of the total registered users are active, i.e., have performed some action in the past 30 days. An even smaller percentage of those active users participate in the community discussion forums on Wikipedia. Now, we will explain what tasks editors perform and how contribution is recorded in Wikipedia.
+
+Each page in Wikimedia is classified into a \textit{namespace} based on the type of information that page contains \cite{wiki:namespace}. Namespaces separate pages into sets to distinguish content pages from administrative or editor related pages. For e.g, the \mainNS (or \articleNS) namespace contains all the encyclopedic content and the \userNS namespace contains the user pages and information related to their user accounts. Each page in Wikipedia also has a corresponding \textit{talk page}, which are used by editors to discuss changes to the page in question. For e.g., the \usertalkNS namespace has talk pages corresponding to each user page and acts as a system to message particular users. 
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/namespaces.PNG}
+    \caption{A list of the namespaces in Wikipedia \cite{wiki:namespace}.}
+    \label{fig:namespace}
+\end{figure}
 \subsection{Administrators}
 \subsection{Bureaucrats}
-\subsection{Arb Committee}
+\subsection{Arbitration Committee}
+
+
 
 \section{Request for Adminship}
 \begin{itemize}
