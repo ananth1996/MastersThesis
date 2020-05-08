@@ -10,24 +10,113 @@ Lastly, we explain the metrics which we can ue to evaluate the performance of th
 
 \section{Datasets}
 \label{sec:datasets}
-\begin{itemize}
-    \item Maybe a short description of existing SNAP datasets and their limitations
-    \item The details of the \textit{Wiki-RfA} data and the \textit{User-Contribution} datasets
-\end{itemize}
+As we discussed in Section~\ref{sec:rfa} and \ref{subsec:editors}, Wikipedia keeps detailed information on the election proceedings for the RfA process as well as contributions made by every editor on Wikipedia.
+These act as sources to get data regarding the elections and user contributions. There are existing datasets compiled by the Stanford Network Analysis Project (SNAP) \cite{snapnets} on both Wikipedia RfAs and edit histories.
+However, the RfA dataset has missing features and timestamps for votes that would restrict the usability in the proposed voting models.
+Similarly, the \textit{wiki-meta} and \textit{wiki-talk} datasets possess information until 2008 and lack a username mapping to the network nodes.
+Due to these limitations, we proceeded to scrape Wikipedia dumps and APIs to obtain our own RfA and user contribution datasets, which we will now describe.
+
+\subsection{Wikipedia RfA Data}
+To obtain the RfA data, we parsed through the entire XML dump of Wikipedia from January 2019.
+We filtered the pages related to the RfA process and then extracted each vote and the corresponding comment and timestamp.
+Each vote extracted has the features show in Table~\ref{tab:wiki-rfa-features}.
+
+\begin{table}[htp]
+    \centering
+    \caption{Features of each vote in the \wikirfa dataset}
+    \label{tab:wiki-rfa-features}
+    \begin{tabular}{ccc}
+        \toprule
+        Feature & Data Type & Description\\
+        \midrule
+        \textbf{SRC}&text & username of the source\\
+        \textbf{TGT}&text & username of the target\\
+        \textbf{VOT}&$[-1,0,1]$& Oppose, Neutral or Support vote\\
+        \textbf{RES}&$[-1,1]$ & Failure or Success of RfA\\
+        \textbf{YEA}&date & year of the RfA\\
+        \textbf{DAT}& date \& time & timestamp of the vote\\
+        \textbf{TXT}&text &accompanying textual comment \\
+        \textbf{UID}&alphanumeric&  unique identifier for the RfA\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+As we can see, the format of the data is very similar to the SNAP dataset.
+We have an additional unique identifier field, called UID, to aid in distinguishing RfA of users who have had multiple nominations.
+We collected $226\,781$ votes from $4\,557$ elections with over $13\,000$ unique usernames.
+As the voting format of RfA changes throughout the years, there might be issues in successfully extracting the source username or timestamp information. 
+Regardless, only $1.6\%$ of votes have missing timestamps and $0.4\%$ have a missing source.
+We will refer to this dataset as \wikirfa and it will provide the information regarding the votes cast in a RfA.
+
+\subsection{User Contribution Data}
+As we discussed in Section~\ref{subsec:editors}, every edit made by a user is stored as a contribution.
+Wikipedia provides an API to query all the contributions of a particular user \cite{wiki:Usercontribs-api}.  
+We utilized this API and collected the contribution data of all the unique users we obtained from the \wikirfa dataset.
+There are 16 features that the API provides for each edit; we describe the most import features in Table~\ref{tab:usercontrib-features}.
+
+\begin{table}[htp]
+    \centering
+    \caption{Important features of each contribution in the \usercontrib dataset}
+    \label{tab:usercontrib-features}
+    \begin{tabular}{lcc}
+        \toprule
+        Feature & Data Type & Description\\
+        \midrule
+        \textbf{user}&text& username of the editor\\
+        \textbf{title}&text & title of the page edited\\
+        \textbf{namespace}&int& namespace of the page edited\\
+        \textbf{timestamp}&date \& time & timestamp of the edit\\
+        \textbf{size}&int& new size of the edit \\
+        \textbf{sizediff}& int & size delta of the edit against its parent\\
+        \textbf{new}&boolean &if the editor created a new page \\
+        \textbf{minor}&boolean& if it is a minor edit\\
+        \textbf{comment}& text& accompanying comment\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+As many users change their username, some of the usernames present in the \wikirfa dataset might not have any contributions linked to their old usernames.
+We were able to collect the user contribution details more than $11000$ of the total unique username, amounting to 100GB of data.
+We call this dataset \usercontrib and it provides a wealth of information on the editing habits of the users who take part in Wikipedia RfAs. 
+For instance, grouping the contributions of a particular user by the namespace, we get the proportion of the edits in different Wikipedia namespaces and the respective sizes and quality of their edits.
 
 \section{Linear Combination of Graphs Model}
 \label{sec:linear-combination-implementation}
-\begin{itemize}
-    \item Discuss the various linear models considered for Graph Combinations
-\end{itemize}    
+In this section, we describe how we implement the model proposed in Section~\ref{sec:linear-combination-theory}.
+The model requires auxiliary graphs derived from other non-election based information as well as triadic features derived from the election data.
+Therefore, we first discuss the auxiliary graphs that we create from the \usercontrib dataset and then describe the triadic features from the \wikirfa data.
+
 \subsection{Graphs}
-    Discuss the process of extraction of the various graphs discussed in the previous sections
-    \begin{enumerate}
-        \item \textbf{Agree Graphs and Follows Graph}, where we measure the degree to which one user agrees and follows another user in previous elections
-        \item \textbf{Topic similarity} from the top 100 articles edited for each user and the pairwise Jaccard similarity 
-        \item \textbf{Talk and Interaction graphs}, measures communication between users on their respective user talk pages
-        \item \textbf{Signed Graphs}, triad encoding and extracting the triad counts for each voter. 
-\end{enumerate}
+First, we discuss the creation of the topic similarity network of users.
+Then, we describe the process of forming the talk graph between users.
+Lastly, we define the triadic features we extract from the previous voting data. 
+
+\subsubsection{Topic Similarly Graph}
+In Table~\ref{tab:usercontrib-features}, we see that every contribution has a title of the page where the edit was made.
+We can utilize the page titles to understand the topics that the user most edits.
+For a particular user, we gather all their edits in the \mainNS namespace.
+We choose the \mainNS namespace as it contains all the content articles on Wikipedia.
+By contrast, the edits in other namespaces such as, \userNS and \helpNS, are not indicative of the topics that they are most likely to possess information about.
+Then, we count the number of edits grouped by each page title and choose the top 100 most edited pages in the \mainNS namespace.
+Then we create a set of the words from all the top 100 page titles and remove common stop words using a natural language corpus.
+This set now indicates the users topics of interest.
+Once we have collected the topic set for all the unique users in the \wikirfa dataset, we can compute the similarity between a pair of users using the Jaccard similarity measure. 
+We can take this similarity measure and construct a undirected weighted graph where a link between nodes indicates the similarity in the topics of the user nodes.
+However, we threshold the value of similarity so that we can obtain only meaningful edges and not a complete graph.
+
+\subsubsection{Talk and Interaction Graph}
+We discussed in the previous chapter on how every registered user has a talk page and how it is used as a medium of communication. 
+Therefore, we can similarly gather the contributions of a certain editor in the \usertalkNS namespace and use it to measure interactions with other users.
+We will create two auxiliary graphs in this manner, a \textit{user talk graph}, where each edge also contains the number of times they have written on another users page and a \textit{interaction graph}, which only indicates if two users have interacted via a talk page. 
+We can obtain the number of talk page edits and the target user by grouping by the page titles and extracting the username from the page title respectively. 
+These graphs will be directed in nature and the talk graph is weighted, while the interaction graph is unweighted. 
+In both these graphs, an edge $u \rightarrow v$ indicate that user $u$ has written in the talk page of user $v$.
+
+In the Line~\ref{alg:aux:voting-neighbourhood} described in Algorithm~\ref{alg:auxiliary-feature}, we can define $N_i$ in directed graphs $G_i$ as successors of a node rather the neighbourhood.
+This allow us to understand the influence of edge direction in directed auxiliary graphs.
+Therefore, we will construct two more additional auxiliary graphs which are reversed, i.e., an edge $u \rightarrow v$ indicates that user $v$ has written on the talk page of user $u$.
+Hence, we can compare the contribution each direction brings to the model by analysing the feature importances.
+
+\subsubsection{Signed Graph and Triadic Features}
+We have the voting information present 
 \subsection{Data Preparation}
     Discuss the data split into
     \begin{itemize}
@@ -35,15 +124,11 @@ Lastly, we explain the metrics which we can ue to evaluate the performance of th
         \item Train
         \item Test
     \end{itemize}
-\subsection{Linear models}
+\subsection{Logistic Regression}
     Discuss how any other supervised classification model can be used in its place.
 
     Discuss using the class weights to learn balanced prediction models and how otherwise they end up overcompensating due to the class imbalance.
-        \begin{itemize}
-        \item Support Vector Classifier
-        \item Extreme Gradient Boosting (XGBOOOST) 
-        \item Logistic Regression
-    \end{itemize}
+
 
 \section{Local Signed Graph Models}
 \label{sec:local-signed-network-implementation}

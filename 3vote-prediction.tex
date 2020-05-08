@@ -56,7 +56,7 @@ We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given 
     Initialize $\mathbf{a}$ of length $|A|$\;
     \ForEach{$G_i$ in $A$}{
      
-      $Z = N_i(v) \cap U$ \tcp*{neighbours in $G_i$ who have voted}
+      $Z = N_i(v) \cap U$ \tcp*{neighbours in $G_i$ who have voted} \label{alg:aux:voting-neighbourhood}
       $\mathbf{a}_i \leftarrow 0$\;
       \ForEach{$z$ in $Z$}{
           \tcc{vote in current session multiplied by the edge weight in $G_i$}
