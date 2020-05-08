@@ -1,0 +1,67 @@
+\chapter{Experiments}
+\label{chp:experiments}
+In this section we first describe the datasets that will be used in building our vote prediction models. Then we discuss the various linear and graphical models that we consider and their implementations details. Lastly we define the metrics and other means of evaluating the models and the results.
+
+\section{Datasets}
+\begin{itemize}
+    \item Maybe a short description of existing SNAP datasets and their limitations
+    \item The details of the \textit{Wiki-RfA} data and the \textit{User-Contribution} datasets
+\end{itemize}
+
+\section{Linear Combination of Graphs Model}
+\begin{itemize}
+    \item Discuss the various linear models considered for Graph Combinations
+\end{itemize}    
+\subsection{Graphs}
+    Discuss the process of extraction of the various graphs discussed in the previous sections
+    \begin{enumerate}
+        \item \textbf{Agree Graphs and Follows Graph}, where we measure the degree to which one user agrees and follows another user in previous elections
+        \item \textbf{Topic similarity} from the top 100 articles edited for each user and the pairwise Jaccard similarity 
+        \item \textbf{Talk and Interaction graphs}, measures communication between users on their respective user talk pages
+        \item \textbf{Signed Graphs}, triad encoding and extracting the triad counts for each voter. 
+\end{enumerate}
+\subsection{Data Preparation}
+    Discuss the data split into
+    \begin{itemize}
+        \item Dev
+        \item Train
+        \item Test
+    \end{itemize}
+\subsection{Linear models}
+    Discuss how any other supervised classification model can be used in its place.
+
+    Discuss using the class weights to learn balanced prediction models and how otherwise they end up overcompensating due to the class imbalance.
+        \begin{itemize}
+        \item Support Vector Classifier
+        \item Extreme Gradient Boosting (XGBOOOST) 
+        \item Logistic Regression
+    \end{itemize}
+
+\section{Local Signed Graph Models}
+    \begin{itemize}
+        \item Discuss the motivation behind an iterative model versus a static prediction model
+        \item How model can be bootstrapped to run from beginning
+        \item How it more closely represents the use case of such models
+    \end{itemize}
+    \subsection{Iterative Balance Model}
+        \begin{itemize}
+            \item Discuss the agree graph and how it is created
+            \item Discuss how the Agree graph is updated in terms of Balance
+            \item Describe the overall model's probabilistic output
+        \end{itemize}
+    \subsection{Iterative Status Model}
+        \begin{itemize} 
+            \item Describe how status is derived from the Follows graph in a local signed network 
+            \item Discuss Agony algorithm used as blackbox
+            \item Discuss how the Follows graph is updated after every election
+            \item Describe the probabilistic results.
+        \end{itemize}
+
+\section{Evaluation}
+\begin{itemize}
+    \item Discuss the issues with the imbalance in the dataset
+    \item Illustrate the issues with pure measures of accuracy
+    \item Define Precision, Recall and Macro F1 score
+    \item Discuss ROC and Precision Recall curves for probability based predictions 
+    \item Discuss AUC ROC and AUC posPR and AUC negPR
+\end{itemize}
