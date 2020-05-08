@@ -1,0 +1,59 @@
+\tikzset{
+    position/.style args={#1:#2 from #3}{
+        at=(#3.#1), anchor=#1+180, shift=(#1:#2)
+    }
+}
+
+\begin{tikzpicture}
+
+    \begin{scope}[every node/.style={circle,thick,draw}]
+        \node (v2) at (0,0) {$u$};
+        \node[position=-120:1cm from v2] (v1) {$v$};
+        \node[position=-60:1cm from v2] (v3) {$c$};
+        
+        \node[right=2.5cm of v2] (v5) {$u$};
+        \node[position=-120:1cm from v5] (v4) {$v$};
+        \node[position=-60:1cm from v5] (v6) {$c$};
+        
+        \node[right=2.5cm of v5] (v8) {$u$};
+        \node[position=-120:1cm from v8] (v7) {$v$};
+        \node[position=-60:1cm from v8] (v9) {$c$};
+    
+        
+
+    \end{scope}
+
+    \begin{scope}[>={Stealth[black]},
+        positive/.style={thick,draw,->},
+        negative/.style={thick,draw,->},
+        pred/.style={thick,dashed,draw,->,dashed},
+        every node/.style={fill=white,circle}]
+        % \draw (v4) -- (v1) -- (v3) -- (v2) -- (v1);
+        \path 
+        (v1) edge[positive] node[above left=0.1mm and 0.1mm] {$+$} (v2)
+        (v2) edge[positive] node[above right=0.1mm and 0.1mm] {$-$} (v3) 
+        (v1) edge[pred](v3)   
+
+        (v5) edge[negative] node[above left=0.1mm and 0.1mm] {$-$} (v4)
+        (v5) edge[negative] node[above right=0.1mm and 0.1mm] {$0$} (v6) 
+        (v4) edge[pred] (v6)      
+        
+        (v7) edge[positive] node[above left=0.1mm and 0.1mm] {$0$} (v8)
+        (v9) edge[positive] node[above right=0.1mm and 0.1mm] {$+$} (v8) 
+        (v7) edge[pred] (v9)      
+        ;
+        
+    \end{scope}
+
+    \begin{scope}[
+        every node/.style={fill=white,rectangle},
+        every edge/.style={fill=white}
+        ]
+        \path 
+            (v1) edge node[below=1cm] {$FF+-$}  (v3) 
+            (v4) edge node[below=1cm] {$BF-0$} (v6)      
+            (v7) edge node[below=1cm] {$FB0+$} (v9)      
+            ;     
+    \end{scope}
+  \end{tikzpicture}
+  

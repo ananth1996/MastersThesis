@@ -42,7 +42,7 @@ Each vote extracted has the features show in Table~\ref{tab:wiki-rfa-features}.
 \end{table}
 As we can see, the format of the data is very similar to the SNAP dataset.
 We have an additional unique identifier field, called UID, to aid in distinguishing RfA of users who have had multiple nominations.
-We collected $226\,781$ votes from $4\,557$ elections with over $13\,000$ unique usernames.
+We collected $226\,781$ votes from $4\,557$ elections with over $13\,000$ unique usernames. There are $166\,214$ ($\approx 73\%$) support, $46\,918$ ($\approx 20\%$) oppose and $13\,649$ ($\approx 6\%$) neutral votes.
 As the voting format of RfA changes throughout the years, there might be issues in successfully extracting the source username or timestamp information. 
 Regardless, only $1.6\%$ of votes have missing timestamps and $0.4\%$ have a missing source.
 We will refer to this dataset as \wikirfa and it will provide the information regarding the votes cast in a RfA.
@@ -83,7 +83,13 @@ For instance, grouping the contributions of a particular user by the namespace, 
 In this section, we describe how we implement the model proposed in Section~\ref{sec:linear-combination-theory}.
 The model requires auxiliary graphs derived from other non-election based information as well as triadic features derived from the election data.
 Therefore, we first discuss the auxiliary graphs that we create from the \usercontrib dataset and then describe the triadic features from the \wikirfa data.
+Then, we describe the process of preparing the data to suit the supervised machine learning task and to also prevent data leaks.
+Lastly, we discuss the logistic regression model that we use as the linear predictor trained on the features derived from the auxiliary and signed networks.
 
+The terms used in Chapter~\ref{chp:vote-prediction} can now be defined for the problem of predicting votes in a Wikipedia RfA.
+A candidate $c$ is the nominee who wishes to gain administrators privileges in the Wikipedia RfA.
+The voters $v$ are the registered users in Wikipedia.
+A session relates to the proceedings of a particular RfA.
 \subsection{Graphs}
 First, we discuss the creation of the topic similarity network of users.
 Then, we describe the process of forming the talk graph between users.
@@ -116,14 +122,53 @@ Therefore, we will construct two more additional auxiliary graphs which are reve
 Hence, we can compare the contribution each direction brings to the model by analysing the feature importances.
 
 \subsubsection{Signed Graph and Triadic Features}
-We have the voting information present 
+The \wikirfa dataset contains the voting information of users in RfAs.
+These votes form a signed directed network and we can utilize triadic features as proposed by Leskovec et al.\ \cite{leskovec2010predicting}.
+We utilize a slightly modified naming scheme to identify unique triads in the RfA data.
+Considering the edge we want to predict between a voter $v$ and a candidate $c$ and the other node $u$.
+There are two directions for the edges $(v,u)$ and $(u,c)$ and each edge can have three values, namely -1, 0 or +1 corresponding to oppose, neutral or support respectively.
+This leads to $2 \times 2 \times 3 \times 3 = 36$ possible triads.
+
+We denote the edge $v \rightarrow u$ as "F" and the edge $v \leftarrow u$ as "B" indicating a forward or a backward edge.
+Similarly, the edge $u \rightarrow c$ is "F" and $u \leftarrow c$ is "B".
+The edge labels are "-", "0", and "+" corresponding to oppose, neutral and support.
+We have a nomenclature where "FB+-", indicates $v\plusrightarrow c$ and $u \minusleftarrow c$.
+Figure~\ref{fig:triad-naming} shows more examples of this triad nomenclature.
+
+\begin{figure}[htp]
+    \centering
+    \input{images/wiki-triads.tex}
+    \caption{Examples of triad nomenclature in Wikipedia RfA elections }
+    \label{fig:triad-naming}
+\end{figure}
+We collect all the 36 unique triads in the set $T$ and then utilize it to count the triads for a particular edge, as seen in Algorithm~\ref{alg:triad-feature}.
+Therefore, for each edge to be predicted $(v,c)$, we have a triadic feature vector of length 36 containing the counts of the triads formed by all the common neighbours $u$.  
+
 \subsection{Data Preparation}
-    Discuss the data split into
-    \begin{itemize}
-        \item Dev
-        \item Train
-        \item Test
-    \end{itemize}
+As only roughly $6\%$ of all votes are neutral votes, we will not try to predict neutral votes.
+This is in line with the Wikipedia RfA process where neutral votes are not counted for the support percentage. 
+However, we will use the neutral votes to gather the triadic features and can utilize the additional information to predict votes.
+As we discussed in Section~\ref{sec:voting-signed-networks}, the graph combination model is an extension of the sign prediction models for the voting setting.
+A major requirement to predict votes is to ensure that there is no \textit{data leakage} when creating the training features $\mathbf{X}$, similar to the process used by Kairimi et al.\ \cite{karimi2019multicongress}.
+A data leak is when we have information about the future present in the training data.
+This can cause the model that we train to overfit on the leaked data and not generalize.
+In our problem setting, we divide the whole \wikirfa into three parts, namely \textit{dev}, \textit{train} and \textit{test}.
+As we are predicting votes, we will split the datasets based on the number of votes chronologically and round up to the closest RfA so that it is contiguous. 
+
+The \textit{dev} (or development) dataset will be the set of RfAs which we use to construct the auxiliary and signed graphs.
+We ensure that the \usercontrib dataset is also restricted to the edits that happened until the date of the last RfA in the dev dataset.
+Therefore, all the five auxiliary graphs and the signed graphs are created only with information that is present in the time frame of the dev dataset.
+
+Next, the \textit{train} (or training) dataset is what we use to create the feature matrix $\mathbf{X}$ and target matrix $\mathbf{y}$.
+In this dataset, we only consider the support and oppose votes to be part of the prediction task and hence, filter out all the neutral votes.
+Now, for each vote, we create the auxiliary feature vector $\textbf{a}$ using the five auxiliary graphs and the triadic feature vector $t$ from the signed voting graph as described in Algorithms~\ref{alg:auxiliary-feature} and \ref{alg:triad-feature} respectively.
+These features are concatenated into a feature vector $\textbf{x}$, which is of length $41$ ($5$ auxiliary and $36$ triadic) and is a row in the feature matrix.
+The corresponding true vote is also collected in the target $y_i$.
+The \textit{dev} and \textit{train} splits ensure that the auxiliary and triadic features are strictly not overlapping.
+This allows the feature matrix $\textbf{X}$ to be independent of time and therefore, be cross validated.
+
+Lastly, the \textit{test} dataset contains votes that the model trained on the training dataset would not have seen and can be used to evaluate the performance of the model.
+
 \subsection{Logistic Regression}
     Discuss how any other supervised classification model can be used in its place.
 
