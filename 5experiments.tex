@@ -1,14 +1,22 @@
 \chapter{Experiments}
 \label{chp:experiments}
-In this section we first describe the datasets that will be used in building our vote prediction models. Then we discuss the various linear and graphical models that we consider and their implementations details. Lastly we define the metrics and other means of evaluating the models and the results.
+In this chapter, we will outline the experiments carried out on the Wikipedia elections of administrators using the vote predicition models that we presented in chapter~\ref{chp:vote-prediction}.
+Firstly, we describe the existing sources of data from Wikipedia and the datasets used in the experiments in Section~\ref{sec:datasets}.
+Next, in Section~\ref{sec:linear-combination-implementation}, we discuss the implementation of the linear combination of graph model described in Section~\ref{sec:linear-combination-theory}.
+Then, we cover the implementation of the vote predicition models based on the theories of balance and status in signed networks in Section~\ref{sec:local-signed-network-implementation}.
+Furthermore, in Section~\ref{sec:voting-order}, we discuss the experiments conducted on the voting order and its impact on the predictive power of the models proposed.
+Lastly, we explain the metrics which we can ue to evaluate the performance of the models in Section~\ref{sec:eval-metrics}.
+
 
 \section{Datasets}
+\label{sec:datasets}
 \begin{itemize}
     \item Maybe a short description of existing SNAP datasets and their limitations
     \item The details of the \textit{Wiki-RfA} data and the \textit{User-Contribution} datasets
 \end{itemize}
 
 \section{Linear Combination of Graphs Model}
+\label{sec:linear-combination-implementation}
 \begin{itemize}
     \item Discuss the various linear models considered for Graph Combinations
 \end{itemize}    
@@ -38,6 +46,7 @@ In this section we first describe the datasets that will be used in building our
     \end{itemize}
 
 \section{Local Signed Graph Models}
+\label{sec:local-signed-network-implementation}
     \begin{itemize}
         \item Discuss the motivation behind an iterative model versus a static prediction model
         \item How model can be bootstrapped to run from beginning
@@ -57,7 +66,12 @@ In this section we first describe the datasets that will be used in building our
             \item Describe the probabilistic results.
         \end{itemize}
 
-\section{Evaluation}
+\section{Voting Order Experiments}
+\label{sec:voting-order}
+
+
+\section{Evaluation Metrics}
+\label{sec:eval-metrics}
 \begin{itemize}
     \item Discuss the issues with the imbalance in the dataset
     \item Illustrate the issues with pure measures of accuracy

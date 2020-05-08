@@ -1,6 +1,6 @@
 \chapter{Vote Prediction}
 \label{chp:vote-prediction}
-In this chapter, we cover the main motivation behind predicting the vote of an individual voter and present the methods that can be used to solve this task. We discuss the contrast in perspectives that is present when predicting the result compared to predicting a vote in Section~\ref{sec:result-vs-vote}. Next, we explain how the problem of vote prediction is intrinsically linked to the tasks of edge and sign prediction in signed network in Section~\ref{sec:voting-signed-networks}. In Section~\ref{sec:linear-combination-theory}, we describe a supervised machine learning framework that can use graphs features from voting and non-voting data. Lastly, we present our novel approach of constructing a local signed graph of the current voter and using balance and status theory to predict the vote in Section~\ref{sec:local-signed-network}. 
+In this chapter, we cover the main motivation behind predicting the vote of an individual voter and present the methods that can be used to solve this task. We discuss the contrast in perspectives that is present when predicting the result compared to predicting a vote in Section~\ref{sec:result-vs-vote}. Next, we explain how the problem of vote prediction is intrinsically linked to the tasks of edge and sign prediction in signed network in Section~\ref{sec:voting-signed-networks}. In Section~\ref{sec:linear-combination-theory}, we describe a supervised machine learning framework that can use graphs features from voting and non-voting data. Lastly, we present our novel approach of constructing a local signed graph of the current voter and using balance and status theory to predict the vote in Section~\ref{sec:local-signed-network-theory}. 
 
 
 \section{Result versus Vote Prediction}
@@ -96,7 +96,7 @@ We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given 
 \section{Local Signed Network}
 
 
-\label{sec:local-signed-network}
+\label{sec:local-signed-network-theory}
 In this section, we present an unsupervised method that can be used iteratively in predicting the votes in a session. This method builds on top the concept of a \textit{voting neighbourhood} introduced in the previous section and relies solely on the social theories of balance and status in signed networks to predict a vote. However, unlike the triads features used in the supervised method, we will utilize generic measures of the balance or status of a network  and predict the vote that preserves these measures the best. 
 
 As defined in the previous section, the directed signed graph of the current session is $S = (V_S,E_S,w_S)$ and $v$ is the voter, $c$ is the candidate and $U$ is the set of prior voters in the session. $H=(V_H,E_H,w_H)$ is the directed signed graph that contains the historical voting records prior to the current session. The first step is to construct a signed \textit{relationship graph} $R=(V_R,E_R,w_R)$ from the history voting graph $H$. The edges of this graph capture simple signed relationship between the voters such as \textit{agreement} or \textit{concurrence}  and can be constructed uniquely based on the given problem. Based on whether we use balance or status theory to predict the vote, the relationship graph is either unweighted or weighted respectively.
