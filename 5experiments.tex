@@ -191,11 +191,27 @@ As the training features $\mathbf{X}$ are independent of time, we acn use $k$-fo
 \section{Local Signed Network Models}
 \label{sec:local-signed-network-implementation}
 We now discuss the implementation and significance of the local signed network models discussed in Section~\ref{sec:local-signed-network-theory} to predict votes in Wikipedia RfAs.
+
 These models are iterative models and an important feature is that they are unsupervised.
-Therefore, they do not require any preparation of the data for training or learning of parameters.
-Consequently, we can bootstrap these models to start from the first available RfA and iteratively learn and predict all the votes present in the \wikirfa dataset.
-Thus, when these model predict a vote in a RfA, they will possess the information from votes cast in all the RfA that happened previously.
-These models have a much better real-world importance and usability in terms of predicting future elections.
+Therefore, they do not require any learning of parameters or preparation of data for training.
+Consequently, we can bootstrap the models to start from the first available RfA.
+We achieve this by beginning with an empty relationship graph $R$.
+In the first RfA, the LSN network for all the votes contain only the nodes for voter $v$ and candidate $c$.
+Therefore, the model will predict all votes with probability $0.5$ of being support votes, as there is no information available.
+After the first RfA is over, the relationship graph $R$ will be updated with the voting details.
+Now, in the second RfA there is more information present and the model can be predict votes with more certainty.
+In this manner,the models can iteratively learn and predict all the votes present in the \wikirfa dataset.
+
+In a similar fashion, the iterative models elegantly handle new users for whom we have no information .
+If at any point the current voter $v$ is new and there is no information in the relationship graph , then the model predicts support vote probability of $0.5$, because the LSN contains only the nodes $v$ and $c$ .
+This new voter is then integrated into the relationship graph when it is updated after the RfA session, shown in Line~\ref{iterative-pred:line:update-relation}.
+Therefore, this new voter's information is now available for future vote predictions.
+
+In this thesis, we wish to separately study the votes that are predicted with no information.
+Therefore, in our implementation we specifically mark these votes.
+Firstly, we can accurately evaluate the models using only on the votes predicted with information.
+Next, we can analyse the distribution of the informationless votes and devise strategies to effectively guess the vote in the case when it is a new user.
+Lastly, we can verify if there is some herd mentality when new voters vote for the first time.
 
 We proposed two models, one using balance theory and another using status theory.
 Both the models make use of only the election data, therefore, we will the \wikirfa dataset.
@@ -203,7 +219,30 @@ First, we describe the iterative balance model and define the relationship graph
 Secondly, we explain the iterative status model and the relationship graph based on follower ratio in RfAs.
 
 \subsection{Iterative Balance Model}
+The \textit{Iterative Balance} model uses balance theory of the local signed network to predict the independent vote in a Wikipedia RfA.
+As discussed in Section~\ref{subsec:prediction-based-balance}, we require a signed symmetric measure between two voters.
+We now propose a measure based on the \textit{agreement ratio} between two users $u$ and $v$.
+The ratio is the number of times $u$ and $v$ have voted the same divided by the number of common RfAs they have participated in.
+For example, if $u$ and $v$ have participated in $12$ common RfAs and have voted the same in $9$ RfAs, then the agreement ratio is $0.75$, indicating that they agree more than they disagree.
+Therefore, if they have an agreement ratio of $0.5$, then they neither agree or disagree to a significant degree.
+The agreement ratio is symmetric and we can covert into a signed measure by subtracting 0.5 from the ratio.
 
+Hence, we define a signed undirected \textit{agreement graph} $A= (V_{A},E_{A},w_{A})$, where the weight function is defined as seen in Equation~\eqref{eqn:agree-weight}.
+\begin{equation}
+    \label{eqn:agree-weight}
+    w_{A}((u,v)) = \frac{\text{Number of times } u \text{ and } v \text{ have voted the same}}{\text{Number of common RfAs for } u \text{ and } v} -0.5
+\end{equation}
+
+This agreement graph $A$ is the relationship graph $R$ for the iterative balance model described in Algorithm~\ref{alg:iterative-pred}. 
+In Line~\ref{iterative-pred:line:update-relation} there is a a method, $Update(R,S)$ to update the relationship graph after the end of a voting session.
+Therefore, we require a method to update the signed weights in the agreement graph $A$ given the RfA voting details in a session $S$.
+
+For notational ease, we assume that each edge $e = (u,v) \in E_{A}$ contains two attributes, $e.agree$ and $e.common$, the agreement ratio and the number of common RfAs between the nodes respectively.
+Then, once we get the voting information from the session, we can update the agreement ratio and the number of common RfAs in a straightforward manner.
+This process is shown in Algorithm~\ref{alg:agree-update}.
+We can bootstrap the model by beginning with an empty agreement graph $A$.
+Then for votes with no information the predicted support probability is $0.5$.
+After the RfA session is over, these new voters can be incorporated into the agreement graph when it is updated, as seen in Line~\ref{alg:agree-update:new-edge}.
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
@@ -230,18 +269,21 @@ Secondly, we explain the iterative status model and the relationship graph based
                 $common \leftarrow common +1$\;
             }
             \ElseIf{$vote_{u}=vote_{v}$}{
-            \tcp{if $u$ and $v$ agree for the first time}
+            \tcp{if $e$ is a new edge}
+            \label{alg:agree-update:new-edge}
             $common \leftarrow $ number of elections $v$ and $u$ have in common\;
             $agree \leftarrow 1/common$\;
             $E_{A} \leftarrow E_{A} \cup \{e\}$
             }
             $e.agree \leftarrow agree$\;
             $e.common \leftarrow common$\;  
-            $w_{A}(e) \leftarrow e.agree$\;
+            $w_{A}(e) \leftarrow e.agree -0.5$\;
         }
     }
     \Return $A$
 \end{algorithm}
+
+
 
 
     \subsection{Iterative Status Model}
@@ -260,8 +302,7 @@ Secondly, we explain the iterative status model and the relationship graph based
 \label{sec:eval-metrics}
 \begin{itemize}
     \item Discuss the issues with the imbalance in the dataset
-    \item Illustrate the issues with pure measures of accuracy
-    \item Define Precision, Recall and Macro F1 score
+    \item Illustrate the issues with accuracy
     \item Discuss ROC and Precision Recall curves for probability based predictions 
     \item Discuss AUC ROC and AUC posPR and AUC negPR
 \end{itemize}
