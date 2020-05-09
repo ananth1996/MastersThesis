@@ -219,7 +219,7 @@ First, we describe the iterative balance model and define the relationship graph
 Secondly, we explain the iterative status model and the relationship graph based on follower ratio in RfAs.
 
 \subsection{Iterative Balance Model}
-The \textit{Iterative Balance} model uses balance theory of the local signed network to predict the independent vote in a Wikipedia RfA.
+The \textit{Iterative Balance Model}  uses balance theory of the local signed network to predict the independent vote in a Wikipedia RfA.
 As discussed in Section~\ref{subsec:prediction-based-balance}, we require a signed symmetric measure between two voters.
 We now propose a measure based on the \textit{agreement ratio} between two users $u$ and $v$.
 The ratio is the number of times $u$ and $v$ have voted the same divided by the number of common RfAs they have participated in.
@@ -246,10 +246,10 @@ After the RfA session is over, these new voters can be incorporated into the agr
 
 \begin{algorithm}[H]
     \DontPrintSemicolon
-    \caption{Update Agree graph after a session}
+    \caption{Update Agreement graph after a session}
     \label{alg:agree-update}
-    \KwIn{Session graph $S$, Candidate $c$, Agree graph $A$ }
-    \KwResult{Updated Agree graph $A$ }
+    \KwIn{Session graph $S$, Candidate $c$, Agreement graph $A$ }
+    \KwResult{Updated Agreement graph $A$ }
     \tcp{Get all voters}
     $O \leftarrow V_{S}-\{c\}$\;
     Order $O$ by timestamp\;
@@ -283,16 +283,70 @@ After the RfA session is over, these new voters can be incorporated into the agr
     \Return $A$
 \end{algorithm}
 
+\subsection{Iterative Status Model}
+The \textit{Iterative Status Model}, as described in Section~\ref{subsec:prediction-based-status}, utilizes status theory in the LSN to predict votes.
+Therefore, to predict votes in Wikipedia RfAs, we require a directed signed relationship graph.
+Similar to the agreement ratio for the iterative balance model, we propose a \textit{follower ratio} and a corresponding directed singed \textit{follow graph} $F=(V_{F},E_{F},w_{F})$.
 
+An edge $u \rightarrow v$ in $F$ indicates that node $u$ follows $v$ in RfAs, as in $u$ votes after $v$ in RfAs and $u$ votes the same as $v$ in those RfAs.
+Then, we define the \textit{follower ratio} as the number of times $u$ has agreed with $v$ when $u$ has voted after $v$ divided the total number of RfAs in which $u$ has voted after $v$.
+Therefore, if $u$ and $v$ have $12$ RfAs in common and in $8$ of those, $u$ has voted after $v$  and in $5$ out of $8$, $u$ has voted the same as $v$, then the follower ratio is $5/8 = 0.625$.  
+Then, if the follower ratio is below $0.5$, it indicates that $u$ tends to vote the opposite of what $v$.
+If the follower ratio for $(u,v)$ is $0.625$, the follower ratio in the other direction is not the same.
+Therefore, the measure is not symmetric and we can convert it into a signed measure by subtracting $0.5$ from the follower ratio.
+The weight function $w_{F}$ for the follow graph can be defined as seen in Equation~\eqref{eqn:follow-weight}. 
+\begin{equation}
+    \label{eqn:follow-weight}
+    w_{F}((u,v)) = \frac{\text{Number of times } u \text{ voted after and agreed with } v }{\text{Number of times } u \text{ voted after } v} -0.5
+\end{equation}
 
+The update rule for the follow graph is similar to that for the agreement graph.
+We assume that every edge $e=(u,v) \in E_{F}$, has the attributes $e.follow$ and $e.common$, the follower ratio and the number of elections where $u$ voted after $v$ respectively.
+After a RfA voting session, the session graph $S$ can be used to update the follower ratio and the corresponding weight as show in Algorithm~\ref{alg:follow-update}.
 
-    \subsection{Iterative Status Model}
-        \begin{itemize} 
-            \item Describe how status is derived from the Follows graph in a local signed network 
-            \item Discuss Agony algorithm used as blackbox
-            \item Discuss how the Follows graph is updated after every election
-            \item Describe the probabilistic results.
-        \end{itemize}
+In a RfA we are predicting a vote $v$ given the previous voters $U$, the current session graph $H$ and the follow graph $F$, as seen in Algorithm~\ref{alg:status-pred}.
+When we create the LSN, we only consider the edges of type $v \rightarrow u_{i}$ from the follow graph $F$.
+This is because the voter $v$ is voting after the voters in $U$, therefore, the edges $v \leftarrow u_{i}$ provide information that is not consistent with the current voting situation.
+This can also be a point that can be analysed to see if the revered follower edges provide more benefit to the model or not.
+
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \caption{Update Follow graph after a session}
+    \label{alg:follow-update}
+    \KwIn{Session graph $S$, Candidate $c$, Follow graph $F$ }
+    \KwResult{Updated Follow graph $F$ }
+    \tcp{Get all voters}
+    $O \leftarrow V_{S}-\{c\}$\;
+    Order $O$ by timestamp\;
+    \For{$v \in O$}{
+        $vote_{v}\leftarrow w_{S}((v,c))$\;
+        \ForEach{$u$ who voted after $v$}{
+            $vote_{u} \leftarrow w_{S}((u,c))$\;
+            $e \leftarrow (u,v)$\;
+            \uIf{$e \in E_{F}$}{
+                $follow \leftarrow e.follow$\;
+                $common_{uv} \leftarrow e.common$\;
+                \eIf{$vote_{v}=vote_{u}$}{
+                    $follow \leftarrow ((follow\cdot common_{uv}) +1)/(common_{uv}+1)$\;
+                }{
+                    $follow \leftarrow (follow\cdot common_{uv})/(common_{uv}+1)$\;
+                }
+                $common_{uv} \leftarrow common_{uv} +1$\;
+            }
+            \ElseIf{$vote_{u}=vote_{v}$}{
+            \tcp{if $e$ is a new edge}
+            \label{alg:follow-update:new-edge}
+            $common_{uv} \leftarrow $ number of elections where $u$ voted after $v$\;
+            $follow \leftarrow 1/common_{uv}$\;
+            $E_{F} \leftarrow E_{F} \cup \{e\}$
+            }
+            $e.follow \leftarrow follow$\;
+            $e.common \leftarrow common_{uv}$\;  
+            $w_{F}(e) \leftarrow e.follow -0.5$\;
+        }
+    }
+    \Return $F$
+\end{algorithm}
 
 \section{Voting Order Experiments}
 \label{sec:voting-order}

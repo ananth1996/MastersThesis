@@ -136,6 +136,7 @@ In the second iteration $i=2$, the new voter $v$ has a positive relation with th
 \end{algorithm}
 
 \subsection{Prediction Based on Status Theory }
+\label{subsec:prediction-based-status}
 We mentioned in Section~\ref{sec:status-theory} that status theory is described for directed signed networks. The relationship graph $R$ should, therefore, be be constructed from the history $H$ as a directed signed network. The directed edges $(u,v)$ should denote asymmetric relation between the nodes for e.g., the ratio of concurrence: a measure of times that $u$ has voted after $v$ in a session and agreed. The LSN created from the intersection of the session $S$ and the relation is also a directed signed graph.
 
 Similar to predicting the vote using balance theory, the vote is either positive or negative. Now, we state that the voter aims to maintain the status in the resulting LSN. Therefore, we predict the vote $(v,c)$ that when added to the LSN best preserves status in the network. Therefore, we need a measure of how much a given network conforms to the theory of status. However, to the best of our knowledge, there are no existing methods to quantify and measure the extent that a network conforms to status theory. In this thesis, we present a quantitative definition of status theory in a network and also present a novel method of using the agony of a directed network to measure the compliance with status theory.
