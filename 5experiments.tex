@@ -190,62 +190,60 @@ As the training features $\mathbf{X}$ are independent of time, we acn use $k$-fo
 
 \section{Local Signed Network Models}
 \label{sec:local-signed-network-implementation}
-We now discuss the implementation of the local signed network models discussed in Section~\ref{sec:local-signed-network-theory} to predict votes in Wikipedia RfAs.
-A feature of these iterative models is that they are unsupervised.
+We now discuss the implementation and significance of the local signed network models discussed in Section~\ref{sec:local-signed-network-theory} to predict votes in Wikipedia RfAs.
+These models are iterative models and an important feature is that they are unsupervised.
 Therefore, they do not require any preparation of the data for training or learning of parameters.
-Consequently, we can bootstrap these models to start from the first available election and iteratively predict all the votes present in the \wikirfa dataset.
-Thus, when these model predict a vote in a RfA, they will possess the information from votes case in all the RfA that happened previously.
-This model has much better real-world significance and usability in terms of predicting future elections.
+Consequently, we can bootstrap these models to start from the first available RfA and iteratively learn and predict all the votes present in the \wikirfa dataset.
+Thus, when these model predict a vote in a RfA, they will possess the information from votes cast in all the RfA that happened previously.
+These models have a much better real-world importance and usability in terms of predicting future elections.
 
-we proposed two models, one using balance theory and another using status theory.
+We proposed two models, one using balance theory and another using status theory.
 Both the models make use of only the election data, therefore, we will the \wikirfa dataset.
 First, we describe the iterative balance model and define the relationship graph based on agreement between voters in Wikipedia RfAs.
 Secondly, we explain the iterative status model and the relationship graph based on follower ratio in RfAs.
 
 \subsection{Iterative Balance Model}
-        \begin{itemize}
-            \item Discuss the agree graph and how it is created
-            \item Discuss how the Agree graph is updated in terms of Balance
-            \item Describe the overall model's probabilistic output
-        \end{itemize}
 
-        \begin{algorithm}[H]
-            \DontPrintSemicolon
-            \caption{Update Agree graph after a session}
-            \label{alg:agree-update}
-            \KwIn{Session graph $S$, Candidate $c$, Agree graph $A$ }
-            \KwResult{Updated Agree graph $A$ }
-            \tcp{Get all voters}
-            $O \leftarrow V_{S}-\{c\}$\;
-            Order $O$ by timestamp\;
-            \For{$v \in O$}{
-                $vote_{v}\leftarrow w_{S}((v,c))$\;
-                \ForEach{$u$ who voted after $v$}{
-                    $vote_{u} \leftarrow w_{S}((u,c))$\;
-                    $e \leftarrow (v,u)$\;
-                    \uIf{$e \in E_{A}$}{
-                        $agree \leftarrow e.agree$\;
-                        $common \leftarrow e.common$\;
-                        \eIf{$vote_{v}=vote_{u}$}{
-                            $agree \leftarrow ((agree\cdot common) +1)/(common+1)$\;
-                        }{
-                            $agree \leftarrow (agree\cdot common)/(common+1)$\;
-                        }
-                        $common \leftarrow common +1$\;
-                    }
-                    \ElseIf{$vote_{u}=vote_{v}$}{
-                    \tcp{if $u$ and $v$ agree for the first time}
-                    $common \leftarrow $ number of elections $v$ and $u$ have in common\;
-                    $agree \leftarrow 1/common$\;
-                    $E_{A} \leftarrow E_{A} \cup \{e\}$
-                    }
-                    $e.agree \leftarrow agree$\;
-                    $e.common \leftarrow common$\;  
-                    $w_{A}(e) \leftarrow e.agree$\;
+
+\begin{algorithm}[H]
+    \DontPrintSemicolon
+    \caption{Update Agree graph after a session}
+    \label{alg:agree-update}
+    \KwIn{Session graph $S$, Candidate $c$, Agree graph $A$ }
+    \KwResult{Updated Agree graph $A$ }
+    \tcp{Get all voters}
+    $O \leftarrow V_{S}-\{c\}$\;
+    Order $O$ by timestamp\;
+    \For{$v \in O$}{
+        $vote_{v}\leftarrow w_{S}((v,c))$\;
+        \ForEach{$u$ who voted after $v$}{
+            $vote_{u} \leftarrow w_{S}((u,c))$\;
+            $e \leftarrow (v,u)$\;
+            \uIf{$e \in E_{A}$}{
+                $agree \leftarrow e.agree$\;
+                $common \leftarrow e.common$\;
+                \eIf{$vote_{v}=vote_{u}$}{
+                    $agree \leftarrow ((agree\cdot common) +1)/(common+1)$\;
+                }{
+                    $agree \leftarrow (agree\cdot common)/(common+1)$\;
                 }
+                $common \leftarrow common +1$\;
             }
-            \Return $A$
-        \end{algorithm}
+            \ElseIf{$vote_{u}=vote_{v}$}{
+            \tcp{if $u$ and $v$ agree for the first time}
+            $common \leftarrow $ number of elections $v$ and $u$ have in common\;
+            $agree \leftarrow 1/common$\;
+            $E_{A} \leftarrow E_{A} \cup \{e\}$
+            }
+            $e.agree \leftarrow agree$\;
+            $e.common \leftarrow common$\;  
+            $w_{A}(e) \leftarrow e.agree$\;
+        }
+    }
+    \Return $A$
+\end{algorithm}
+
+
     \subsection{Iterative Status Model}
         \begin{itemize} 
             \item Describe how status is derived from the Follows graph in a local signed network 
