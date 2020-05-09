@@ -168,26 +168,84 @@ The \textit{dev} and \textit{train} splits ensure that the auxiliary and triadic
 This allows the feature matrix $\textbf{X}$ to be independent of time and therefore, be cross validated.
 
 Lastly, the \textit{test} dataset contains votes that the model trained on the training dataset would not have seen and can be used to evaluate the performance of the model.
+The feature matrix for the test dataset, $\mathbf{X}_{test}$ and the target, $\mathbf{y}_{test}$ are also constructed in a similar manner.
+For each vote in the test dataset, we gather the auxiliary and triadic features from the same graphs as we used for the training phase.
+We create each row of $\mathbf{X}_{test}$ by concatenating these features and gathering the true vote as the target.
 
-\subsection{Logistic Regression}
-    Discuss how any other supervised classification model can be used in its place.
+\subsection{Supervised Classification}
+Once we have created the training and testing feature matrices, $\mathbf{X}$ and $\mathbf{X}_{test}$ and the target vectors, $\mathbf{y}$ and $\mathbf{y}_{test}$, the task is a regular supervised classification problem.
+We can use any traditional linear classification models such as support vector classifiers (e.g.,linear SVC), logistic regression models or gradient boosting methods (e.g., XGBoost).
+We choose a logistic regression (LR) model for its interoperability and robustness to overfitting. 
 
-    Discuss using the class weights to learn balanced prediction models and how otherwise they end up overcompensating due to the class imbalance.
+Given a feature vector $\mathbf{x}=(x_{1},x_{2},\dots,x_{n})$ with $n$ features, a logistic regression model learn to predict the probability of the form 
+\begin{equation}
+    P(\text{support} \mid \mathbf{x}) = \frac{1}{1+e^{-(\beta_{0} + \boldsymbol{\beta}\mathbf{x}})}
+\end{equation}
+Where $\beta_{0}$ and $\boldsymbol{\beta} = (\beta_{1},\beta_{2},\dots,\beta_{n})$ are the coefficients that the model learns using the training data.
 
+The \wikirfa dataset has a class imbalance problem.
+Support votes are $73\%$ compared to oppose votes at $20\%$.
+Therefore, we will utilize class weights inversely proportional to the class frequencies while training so that the model learns to predict negative votes effectively. 
+As the training features $\mathbf{X}$ are independent of time, we acn use $k$-fold cross validation to tune the regularization parameter for the logistic regression model.  
 
-\section{Local Signed Graph Models}
+\section{Local Signed Network Models}
 \label{sec:local-signed-network-implementation}
-    \begin{itemize}
-        \item Discuss the motivation behind an iterative model versus a static prediction model
-        \item How model can be bootstrapped to run from beginning
-        \item How it more closely represents the use case of such models
-    \end{itemize}
-    \subsection{Iterative Balance Model}
+We now discuss the implementation of the local signed network models discussed in Section~\ref{sec:local-signed-network-theory} to predict votes in Wikipedia RfAs.
+A feature of these iterative models is that they are unsupervised.
+Therefore, they do not require any preparation of the data for training or learning of parameters.
+Consequently, we can bootstrap these models to start from the first available election and iteratively predict all the votes present in the \wikirfa dataset.
+Thus, when these model predict a vote in a RfA, they will possess the information from votes case in all the RfA that happened previously.
+This model has much better real-world significance and usability in terms of predicting future elections.
+
+we proposed two models, one using balance theory and another using status theory.
+Both the models make use of only the election data, therefore, we will the \wikirfa dataset.
+First, we describe the iterative balance model and define the relationship graph based on agreement between voters in Wikipedia RfAs.
+Secondly, we explain the iterative status model and the relationship graph based on follower ratio in RfAs.
+
+\subsection{Iterative Balance Model}
         \begin{itemize}
             \item Discuss the agree graph and how it is created
             \item Discuss how the Agree graph is updated in terms of Balance
             \item Describe the overall model's probabilistic output
         \end{itemize}
+
+        \begin{algorithm}[H]
+            \DontPrintSemicolon
+            \caption{Update Agree graph after a session}
+            \label{alg:agree-update}
+            \KwIn{Session graph $S$, Candidate $c$, Agree graph $A$ }
+            \KwResult{Updated Agree graph $A$ }
+            \tcp{Get all voters}
+            $O \leftarrow V_{S}-\{c\}$\;
+            Order $O$ by timestamp\;
+            \For{$v \in O$}{
+                $vote_{v}\leftarrow w_{S}((v,c))$\;
+                \ForEach{$u$ who voted after $v$}{
+                    $vote_{u} \leftarrow w_{S}((u,c))$\;
+                    $e \leftarrow (v,u)$\;
+                    \uIf{$e \in E_{A}$}{
+                        $agree \leftarrow e.agree$\;
+                        $common \leftarrow e.common$\;
+                        \eIf{$vote_{v}=vote_{u}$}{
+                            $agree \leftarrow ((agree\cdot common) +1)/(common+1)$\;
+                        }{
+                            $agree \leftarrow (agree\cdot common)/(common+1)$\;
+                        }
+                        $common \leftarrow common +1$\;
+                    }
+                    \ElseIf{$vote_{u}=vote_{v}$}{
+                    \tcp{if $u$ and $v$ agree for the first time}
+                    $common \leftarrow $ number of elections $v$ and $u$ have in common\;
+                    $agree \leftarrow 1/common$\;
+                    $E_{A} \leftarrow E_{A} \cup \{e\}$
+                    }
+                    $e.agree \leftarrow agree$\;
+                    $e.common \leftarrow common$\;  
+                    $w_{A}(e) \leftarrow e.agree$\;
+                }
+            }
+            \Return $A$
+        \end{algorithm}
     \subsection{Iterative Status Model}
         \begin{itemize} 
             \item Describe how status is derived from the Follows graph in a local signed network 
