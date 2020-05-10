@@ -145,6 +145,7 @@ We collect all the 36 unique triads in the set $T$ and then utilize it to count 
 Therefore, for each edge to be predicted $(v,c)$, we have a triadic feature vector of length 36 containing the counts of the triads formed by all the common neighbours $u$.  
 
 \subsection{Data Preparation}
+\label{subsec:data-prep}
 As only roughly $6\%$ of all votes are neutral votes, we will not try to predict neutral votes.
 This is in line with the Wikipedia RfA process where neutral votes are not counted for the support percentage. 
 However, we will use the neutral votes to gather the triadic features and can utilize the additional information to predict votes.
@@ -447,3 +448,5 @@ The negative baseline for the \negPR curve is defined as the ratio of the true n
 As the negative samples, i.e., oppose votes, are the minority in the \wikirfa dataset, the corresponding negative baseline will also be lower.
 We can measure the performance of the model in predicting negative samples by computing the area under the \negPR curve (\aucnegPR).
 This measure is more import for evaluating the performance of our models.
+
+\todo[inline]{Add F1 score para}
