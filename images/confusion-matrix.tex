@@ -1,0 +1,23 @@
+\begin{tikzpicture}[
+    box/.style={draw,rectangle,minimum size=2cm,text width=1.5cm,align=center}]
+    \matrix (conmat) [row sep=.1cm,column sep=.1cm] {
+    \node (tpos) [box,
+        label=left:$+1$,
+        label=above:$+1$,
+        ] {True \\ Positive (TP)};
+    &
+    \node (fneg) [box,
+        label=above:$-1$,
+        ] {False \\ Positive (FP)};
+    \\
+    \node (fpos) [box,
+        label=left:$-1$,
+        ] {False \\ Negative (FN)};
+    &
+    \node (tneg) [box,
+        ] {True \\ Negative (TN)};
+    \\
+    };
+    \node [rotate=90,left=0.5cm of conmat,text width=1cm,align=center] {\textbf{Predicted \\ Outcome}};
+    \node [above =.05cm of conmat,align=center] {\textbf{True Outcome}};
+    \end{tikzpicture}

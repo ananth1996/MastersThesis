@@ -386,3 +386,47 @@ We can also gain insights into creating a more global model of vote prediction i
 
 \section{Evaluation Metrics}
 \label{sec:eval-metrics}
+In this section, we discuss the various metrics that we can use to evaluate the implementation of the models discussed in the previous sections.
+As mentioned in Section~\ref{sec:datasets}, the \wikirfa dataset has an imbalance of support votes.
+Therefore, simple measures such as \textit{accuracy} scores might be misleading as the baseline accuracy for predicting all votes as support votes is nearly $73\%$.
+The models we implement in Section~\ref{sec:linear-combination-implementation} and \ref{sec:linear-combination-implementation} output probabilities, and hence the metrics must also be able to utilize these results.
+
+The independent vote prediction task at hand is binary classification task.
+The models implemented provide the probability of the vote being a support vote.
+Therefore, we have a target class $y \in \{-1,1\}$ corresponding to oppose and support and the result is a probability $p \in [0,1]$ for being a support vote.
+Hence, we propose traditional metrics such as Receiver Operator Characteristics (ROC) and Precision Recall (PR) to evaluate the results of the model.
+
+If we choose a threshold $\theta$, for the probabilities that we have as the output from the model, we can predict all outputs where $p>\theta$ as $+1$ and where $p \leq \theta$ as $-1$.
+When we compare out predictions with the true outputs $y$, we get four possible outcomes.
+First, when the prediction is $+1$ and the true outcome is also $+1$, then it is called a \textit{true positive} (TP). Second, when the prediction is $-1$ and the true output is also $-1$, then it is a \textit{true negative} (TN). However, if the predicted output is $-1$ and the true output is $+1$, then it is referred to as a \textit{false negative} (FN). Similarly, if the prediction is $+1$, but the true output is $-1$, then it is a \textit{false positive} (FP). These four values can be represented in a \textit{confusion matrix}, as seen in Figure~\ref{fig:confusion-matrix}.
+
+\begin{figure}[htp]
+    \centering
+    \input{images/confusion-matrix.tex}
+    \caption{Confusion Matrix for binary classification task}
+    \label{fig:confusion-matrix}
+\end{figure}
+
+\subsection{Receiver Operating Characteristics}
+Now, the \textit{true positive rate} (TPR) is the measure of the number of correct positive predictions made out all the available true positive outcomes and is defined as, $TPR = TP/(TP+FN)$.
+Similarly, the \textit{false positive rate} (FPR) measures the number of incorrect classifications of negative samples out of all the available negative samples, i.e., $FPR = FP/(FP+TN)$.
+Therefore, the ROC curve is the space defined by the TPR as a function of the FPR, i.e., the TPR on y-axis and FPR on the x-axis. 
+Each point on the ROC curve corresponds to a confusion matrix at some threshold.
+A model that randomly predicts outcomes will form a diagonal line, indicating that the TPR and FPR are equal.
+A perfect classifier would have a point at $(0,1)$, which indicates that there are samples that are misclassified.
+Although the ROC curve can be visually inspected to compare models, we utilize the \textit{area under the ROC curve} (AUC-ROC) as a quantitative measure of a model's performance.
+Therefore, the baseline random predicting model has a AUC-ROC of 0.5.
+
+The AUC-ROC score is unaffected by an imbalanced dataset. 
+This means that a high AUC-ROC score might hide the fact that the baseline accuracy of predicting all samples as positive might indeed be higher than 0.5.
+Therefore, we need to be careful when interpreting the quality of the model solely based on the AUC-ROC score.
+
+\subsection{Precision Recall}
+\textit{Recall} is the same as true positive rate (TPR), i.e., $recall = TP/(TP+FN)$.
+The ratio of the number of true positive predictions out of all the predicted positive outcomes is called \textit{precision} (or positive predictive rate).
+It is defined as, $precision = TP/(TP+FP)$. 
+Precision and recall are in tension, meaning that improving precision reduces recall and vice versa.
+Therefore, the Precision-Recall (PR) curve is the space defined by representing precision as a function of recall, i.e., precision on y-axis and recall on the x-axis.
+The baseline for the PR curve is based on the frequency of the positive label in the true outcomes and appears as a horizontal line in the plots.
+ 
+
