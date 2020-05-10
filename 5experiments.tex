@@ -427,6 +427,23 @@ The ratio of the number of true positive predictions out of all the predicted po
 It is defined as, $precision = TP/(TP+FP)$. 
 Precision and recall are in tension, meaning that improving precision reduces recall and vice versa.
 Therefore, the Precision-Recall (PR) curve is the space defined by representing precision as a function of recall, i.e., precision on y-axis and recall on the x-axis.
+Each point on the PR curve corresponds to a single confusion matrix obtained from a particular value of the threshold.
 The baseline for the PR curve is based on the frequency of the positive label in the true outcomes and appears as a horizontal line in the plots.
- 
+Hence, the PR curve is affected by the imbalance present in the dataset.
+Therefore, we define two measures to better represent the imbalances present in the \wikirfa dataset.
 
+The PR curve is usually defined with respect to the positive label probability.
+We refer to this curve as the positive PR curve and denote it by \posPR.
+The positive baseline is computed as ratio of the true positive outputs and the total number of samples, $\text{baseline}_{\text{pos}} = (TP+FN)/(TP+FN+FP+TN)$.
+This will be higher for the \wikirfa dataset as there are more positive samples, i.e., support votes.
+We can measure the positive label performance by computing the area under the positive PR curve (\aucposPR), it is also called average precision score.
+The \aucposPR score should be higher than the positive baseline to be significant.
+Even so, the \aucposPR does not tell us if the model has learnt to predict negative votes equally well.
+
+For this purpose, we define the negative PR curve as the PR curve where we consider the probability of predicting a negative outcome and denote it by \negPR.
+As we have a binary classification task, if the positive probability vector is $\mathbf{p}$, then the negative probability vector is simply $\mathbf{1}-\mathbf{p}$.
+Now considering $-1$ to be the positive label, we can plot a \negPR curve in the same manner.
+The negative baseline for the \negPR curve is defined as the ratio of the true negative samples divided by the total number of samples, $\text{baseline}_{\text{neg}} = (TN+FP)/(TP+FN+FP+TN)$.
+As the negative samples, i.e., oppose votes, are the minority in the \wikirfa dataset, the corresponding negative baseline will also be lower.
+We can measure the performance of the model in predicting negative samples by computing the area under the \negPR curve (\aucnegPR).
+This measure is more import for evaluating the performance of our models.
