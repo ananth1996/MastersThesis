@@ -350,13 +350,39 @@ This can also be a point that can be analysed to see if the revered follower edg
 
 \section{Voting Order Experiments}
 \label{sec:voting-order}
+The iterative models based on balance and status theory predict votes in the order that they were cast.
+In this thesis, we wish to analyse the importance of the voting order on the predictive quality of the model.
+To achieve this, we gather two more RfAs that occurred in May and August of 2019.
+These RfA are not part of the \wikirfa dataset, and therefore the models trained on the dataset will have not seen these votes before.
+
+The first is the RfA of user \textit{HickoryOughtShirt?4}, that was completed on 1st May 2019.
+The RfA was successful with 182 support, 19 oppose and 9 neutral votes.
+This is an example of a RfA that did not have much opposition and consensus was evident in the proceedings.
+This RfA can be used to test if the model is able to effectively predict the negative votes that did appear in this election, given that they are as low as $9\%$ of all votes cast.
+
+The second RfA we collected was the unsuccessful nomination of the user \textit{Hawkeye7} in August 2019.
+In fact, this was the third RfA nomination for the user.
+He was successful in his initial nomination in November 2009.
+Post that, he lost his administrative privileges following an ArbCom decision for misuse of his administrative tools.
+The second nomination in February 2016 resulted in failure even after receiving a significant amount of support votes (191 support and 95 opposition votes).
+The third nomination in August 2019 also resulted in failure after a fairly close voting phase.
+He received 91 support, 83 oppose and 15 neutral votes.
+This RfA is a perfect example of how Wikipedia RfAs are not a majority voting election.
+Therefore, it will be useful to study if the models are able to effectively generalize the information that have learnt from the \wikirfa dataset.
+Also, we can analyse the impact of the order of votes to see if that can affect the prediction in especially close RfAs.
+
+We first predict the votes in both RfAs in the same order that they took place in.
+We call this the \textit{normal} vote ordering.
+Next, we reverse the order of votes from the second vote cast.
+This is because the first votes cast in Wikipedia RfAs are of the nominators and they provide the starting point for the iterative predictions.
+We refer to this ordering as \textit{reversed} vote ordering.
+Lastly, we randomly permute the votes, except the first one cast by the co-nominator.
+We do 10 trails and then compare the results from the models.
+This is called \textit{random} voting order.
+
+By studying the predictive quality of both the status and balance based iterative models, we can understand the role of the voting order in each approach.
+We can also gain insights into creating a more global model of vote prediction if the voting order does not vastly affect the model's predictive accuracy.
 
 
 \section{Evaluation Metrics}
 \label{sec:eval-metrics}
-\begin{itemize}
-    \item Discuss the issues with the imbalance in the dataset
-    \item Illustrate the issues with accuracy
-    \item Discuss ROC and Precision Recall curves for probability based predictions 
-    \item Discuss AUC ROC and AUC posPR and AUC negPR
-\end{itemize}
