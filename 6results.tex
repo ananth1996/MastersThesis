@@ -94,11 +94,11 @@ It will contribute the triadic feature and is hence fine for that task.
         Graph & $|G|$ & $\|G\|$ & density & \shortstack{largest\\  component \\size} & \shortstack{\% of \\test users\\ covered}\\ 
         \midrule
         
-        Similarity Graph & 6368 &1463465 & 0.0721 & 6368 & 27.3\\
+        Topic Similarity & 6368 &1463465 & 0.0721 & 6368 & 27.3\\
         
-        Talk Graph & 5477 & 213307 & 0.0071 & 3489 & 18.9\\
+        Talk  & 5477 & 213307 & 0.0071 & 3489 & 18.9\\
 
-        Signed Graph & 4675 & 65595 & 0.003 & 1083 & 9\\
+        Signed Voting & 4675 & 65595 & 0.003 & 1083 & 9\\
 
         \bottomrule
         \end{tabular}
@@ -139,6 +139,19 @@ This indicates that simple existence correspondence is more important than the a
 
 Then, we tested the trained LR model on the test feature matrix and evaluated the output with the target vectors.
 The results and the evaluation metrics are seen in Table~\ref{tab:test-results}.
+We see that the graph combination model does not perform very well.
+It has marginal gains on all three baseline metrics.
+We can analyse these in more details looking at the ROC and PR curves, shown in Figure~\ref{fig:lr-test-plots}.
+The ROC-AUC curve shows that model is a marginal improvement over the $0.5$ baseline.
+Similarly, the \negPR curve depicts that the model fails to learn to predict negative votes more than the baseline of $0.2$. 
+This combined with the marginal gain in predicting positive votes implies that the model has not learnt any statistically significant information.
+
+We can understand the low performance of the model through its lack of information.
+As the features that are created for each vote are only depended on the dev dataset, they have limited impact when predicting votes in the test dataset.
+This is due to the fact that RfAs are chronological, as there are many more newer users in the test dataset and there is no information available on them in the dev dataset.
+This problem does might reduce, if we change the percentage of data in the dev, train and test datasets.
+However, if we increase the size of dev dataset split, it leads to lack of training data.
+In this case, the LR model cannot efficiently learn the coefficients for the features that have more information, leading again to only marginal improvements over the baselines.
 
 \begin{figure}[htp]
     \centering
@@ -146,24 +159,46 @@ The results and the evaluation metrics are seen in Table~\ref{tab:test-results}.
     \caption{Logistic Regression plots for test data}
     \label{fig:lr-test-plots}
 \end{figure}
-\begin{itemize}
-    \item the description of the auxiliary graphs 
-    \item Present results for LR model
-    \item Show the ROC and PR curves
-    \item Show the feature importances and discuss their relevance 
-    \item Highlight the difficulty of predicting negative votes
-\end{itemize}
 
 \subsection{Iterative Model Results}
-\begin{itemize}
-    \item discuss how to compare the iterative model results
-    \item Provide plots and table 
-    \item Discuss the predictive power of the iterative model over the combination model
-    \item Limitations and expansion of the graph combination model
-\end{itemize}
+Now, we discuss the results of the iterative models for the test dataset.
+We see the evaluation metrics for both the iterative balance and balance models in Table~\ref{tab:test-results}.
+These are the results are the predictions that the iterative models makes for the RfA present in the test dataset. 
+We see that both models perform much better than the baselines as well as the graphical combination model.
+
+However, directly comparing the iterative models' result to the graphical model's result is not fair.
+Because, the iterative models incorporate each election as they progress in the test dataset and utilize that information to predict the next RfA votes.
+Therefore, the predictions of the iterative model are not independent.
+In spite of this, analysing the improvement that the iterative models proves useful in understanding the inherent shortcomings of the graphical combination model discussed previously.
+
+Out of both models, we see that the \textit{Iterative Balance Model} performs much better.
+We see that the model is able to better predict both positive and negative votes, seen by the large \aucposPR and \aucnegPR scores respectively.
+This is in line with the previous analysis that balance theory better predicts triads in the voting neighbourhood.
+Here, we see that the LSN of the voter conforms more according to balance theory than status theory. 
+
+Another analysis, both the iterative balance and status models achieve better performance than the graphical combination model utilizing only the voting data.
+Furthermore, this indicates that there is a scope of incorporating the auxiliary features to the iterative models to further improve the performance of the models.
+Moreover, it clearly shows that solving the problem lack of information in the graph combination model can lead to better predictions.
+
+We can analyse the models further considering the complete \wikirfa dataset.
 
 \section{Complete \wikirfa Results}
 \label{sec:complete-reults}
+The iterative models described in Second~\ref{sec:local-signed-network-implementation}, can be bootstrapped to predict all the votes in the \wikirfa dataset.
+The results for the models along with the baselines are show in Table~\ref{tab:complete-results}.
+We see the complete dataset is more imbalanced than the test dataset, seen by the larger and smaller \aucposPR and \aucnegPR baselines respectively.
+
+\subsection{New Voter Analysis}
+As discussed in Section~\ref{sec:local-signed-network-implementation}, we marked all votes that were predicted without any information from encountering new voters.
+This amounted to $11812$ or approximately $5.7\%$ of all votes predicted.
+The distribution of the true value of these votes is $9217$ support and $2595$ oppose votes.
+This shows that new voters are almost 3x more likely to vote positively.
+We analysed these new voters' vote with the progress of the election of the time to study herd mentality.
+Comparing these votes to the sign of the cumulative sum of votes until that point, we see that nearly 81\% of new votes are the same as the herd.
+Similarity, we also compare the new voters to the vote cast by the person before them.
+We see that 76\% of new voters  agree with the previous voter.
+Therefore, we can adopt a simple strategy of predicting the new voters to have a probability of supporting equal to the ratio of support votes cast until that point.
+
 \begin{table}[htp]
     \centering
     \caption{Results of iterative models on the complete \wikirfa dataset}
@@ -183,13 +218,46 @@ The results and the evaluation metrics are seen in Table~\ref{tab:test-results}.
         \end{tabular}
 \end{table}
 
+\begin{table}[htp]
+    \centering
+    \caption{Information of relationship graphs of iterative models using entire \wikirfa dataset}
+    \label{tab:iterative-graphs}
+    \begin{tabular}{lcccc}
+        \toprule
+        Relationship Graph & $|G|$ & $\|G\|$ & density & \shortstack{largest component \\size}\\
+        \midrule
+        
+        Agreement Graph& 11924 &1463465 & 0.0345 & 11908\\
+        
+        Follow Graph & 11924 & 3136303 & 0.0220 & 11563 \\
+
+
+        \bottomrule
+        \end{tabular}
+\end{table}
+
+\subsubsection{Iterative Balance Model Results}
+The iterative balance models performs very well even when predicting all the votes in the entire \wikirfa dataset.
+The results in Table~\ref{tab:complete-results}, shows that on every metric the balance model has a significant margin over the baseline.
+Especially, we see that negative votes are predicted almost three times better than the baseline, seen by the \aucnegPR score of $0.635$.
+This indicates that the model has collected useful information in the \textit{agreement graph}, seen in Table~\ref{tab:iterative-graphs}.
+The graph at the end of the dataset is fairly large and dense and is nearly connected.
+Therefore, a rich representation of relationships between Wikipedia users is stored in the agreement graph.
+
 \begin{figure}[htp]
     \centering
     \includegraphics[width=\textwidth]{images/iterative_Balance.pdf}
     \caption{Plots for the Iterative Balance Model on the complete \wikirfa dataset}
     \label{fig:complete-iterative-balance}
 \end{figure}
-
+The plots in Figure~\ref{fig:complete-iterative-balance}, show that the model consistently performs well above the baselines.
+Now, in choosing an optimal threshold for the model, we turn to the plots in Figure~\ref{fig:complete-iterative-balance-f1}.
+These show how the F1 score changes as we move out threshold parameter $\theta$.
+We see that the \posF score only starts to decrease gradually after $\theta=0.5$ and there is a peak for the \negF score a little after the point of $\theta=0.5$.
+Therefore, we can choose $\theta=0.53$, to obtain a \posF = 0.887 and \negF=0.602.
+This gives us \macroF $= (0.887+0.602)/2 = 0.745$.
+This threshold also indicates that even if $\lambda_{1}^{+}$ of the LSN is slightly smaller than $\lambda_{1}^{-}$ then the vote is to be predicted positive.
+Therefore, the model has good compliance with balance theory.
 \begin{figure}[htp]
     \centering
     \includegraphics[width=0.75\textwidth]{images/iterative_Balance_f1.pdf}
@@ -197,6 +265,19 @@ The results and the evaluation metrics are seen in Table~\ref{tab:test-results}.
     \label{fig:complete-iterative-balance-f1}
 \end{figure}
 
+\subsection{Iterative Status Model Results}
+Table~\ref{tab:complete-results} show that the iterative status model also performs admirably above the baseline results.
+We also see in Table~\ref{tab:iterative-graphs}, that the \textit{follow graph} is large, fairly dense and has large strongly connected components.
+However, its performance is still marginally worse than the iterative balance model.
+
+In Figure~\ref{fig:complete-iterative-status}, we see that the \posPR curve is nearly identical to that of the iterative balance model.
+This is also reflected in the high \aucposPR score comparable to the iterative balance model.
+However, the \negPR curve clearly shows that there is a lower quality when predicting negative votes.
+This translates in the smaller \aucnegPR score and explains the overall lower AUC-ROC score of the model.
+The reason for the lower predictive power can be explained from our previous analysis of the graph combination models.
+We see that in reality, the triads where status theory is ambivalent actually have a preference for a particular sign.
+Therefore, the cases when the agony of the LSN is equal for both cases, i.e., $\alpha^{+}=\alpha^{-}$, should not map to $p=0.5$.
+Rather we must incorporate the information from analysis of other signed network to craft  heuristic strategies can be adopted to resolve these ambiguities in status theory prediction.
 
 \begin{figure}[htp]
     \centering
@@ -204,6 +285,19 @@ The results and the evaluation metrics are seen in Table~\ref{tab:test-results}.
     \caption{Plots for the Iterative Status Model on the complete \wikirfa dataset}
     \label{fig:complete-iterative-status}
 \end{figure}
+
+In Figure~\ref{fig:complete-iterative-status-f1}, we see a similar issue with a majority of support vote probabilities being 0.5.
+The \posF curve is again identical to the \posF curve of the iterative balance model.
+However, the \negF curve shows that there is an inflection at $\theta=0.5$.
+The change is quite drastic with \negF = 0.05 at $\theta=0.49$ and \negF=0.32 at $\theta-0.5$. 
+This also affects the choice for an optimal threshold for the model.
+We see that the \negF increases as threshold is increased beyond $\theta=0.5$.
+This indicates that closer to 0.5, there are many false positives.
+However, choosing $\theta$ at the peak of \negF at 0.75 is not suitable as the \posF score starts to drop more. 
+Hence, we can choose $\theta=0.63$ as the constrained optimum giving us \posF=0.861 and \negF=0.504, therefore, \macroF = 0.606. 
+This deterministic metric is also lower than the $0.745$ of the iterative balance model.
+The choice of threshold at $\theta=0.6$ suggests that the $\alpha^{+}$, the agony for the positive vote case, must be considerably lower than $\alpha^{-}$, the agony for the negative vote case, to predict that vote to be positive.
+Therefore, this also indicates that we can make additional modifications to status theory to increase the predictive power of the iterative status model.
 
 
 \begin{figure}[htp]
@@ -213,14 +307,6 @@ The results and the evaluation metrics are seen in Table~\ref{tab:test-results}.
     \label{fig:complete-iterative-status-f1}
 \end{figure}
 
-
-
-\begin{itemize}
-    \item Present the Iterative Balance model results
-    \item Discuss quality of predictions using evaluation metrics
-    \item Explain the Iterative Status model results 
-    \item Explain the selection of threshold and F1-score
-\end{itemize}
 
 \section{Voting Order Results}
 \label{sec:voting-order-results}
