@@ -78,9 +78,9 @@ We were able to collect the user contribution details more than $11000$ of the t
 We call this dataset \usercontrib and it provides a wealth of information on the editing habits of the users who take part in Wikipedia RfAs. 
 For instance, grouping the contributions of a particular user by the namespace, we get the proportion of the edits in different Wikipedia namespaces and the respective sizes and quality of their edits.
 
-\section{Linear Combination of Graphs Model}
+\section{Graph Combination Model}
 \label{sec:linear-combination-implementation}
-In this section, we describe how we implement the model proposed in Section~\ref{sec:linear-combination-theory}.
+In this section, we describe how we implement the linear combination of graphs model proposed in Section~\ref{sec:linear-combination-theory}, we call this the \textit{Graph Combination} model.
 The model requires auxiliary graphs derived from other non-election based information as well as triadic features derived from the election data.
 Therefore, we first discuss the auxiliary graphs that we create from the \usercontrib dataset and then describe the triadic features from the \wikirfa data.
 Then, we describe the process of preparing the data to suit the supervised machine learning task and to also prevent data leaks.
@@ -109,6 +109,7 @@ We can take this similarity measure and construct a undirected weighted graph wh
 However, we threshold the value of similarity so that we can obtain only meaningful edges and not a complete graph.
 
 \subsubsection{Talk and Interaction Graph}
+\label{subsec:talk-interaction-graph}
 We discussed in the previous chapter on how every registered user has a talk page and how it is used as a medium of communication. 
 Therefore, we can similarly gather the contributions of a certain editor in the \usertalkNS namespace and use it to measure interactions with other users.
 We will create two auxiliary graphs in this manner, a \textit{user talk graph}, where each edge also contains the number of times they have written on another users page and a \textit{interaction graph}, which only indicates if two users have interacted via a talk page. 
@@ -172,6 +173,8 @@ Lastly, the \textit{test} dataset contains votes that the model trained on the t
 The feature matrix for the test dataset, $\mathbf{X}_{test}$ and the target, $\mathbf{y}_{test}$ are also constructed in a similar manner.
 For each vote in the test dataset, we gather the auxiliary and triadic features from the same graphs as we used for the training phase.
 We create each row of $\mathbf{X}_{test}$ by concatenating these features and gathering the true vote as the target.
+As the auxiliary features and triadic features have different ranges, we standardize both training and testing feature matrices so that all features have a mean of zero and standard deviation of one.
+This will help the linear models train and reach an optimal faster as well as allow for ease in interpreting the coefficients of a linear model.
 
 \subsection{Supervised Classification}
 Once we have created the training and testing feature matrices, $\mathbf{X}$ and $\mathbf{X}_{test}$ and the target vectors, $\mathbf{y}$ and $\mathbf{y}_{test}$, the task is a regular supervised classification problem.
