@@ -227,7 +227,7 @@ Therefore, we can adopt a simple strategy of predicting the new voters to have a
         Relationship Graph & $|G|$ & $\|G\|$ & density & \shortstack{largest component \\size}\\
         \midrule
         
-        Agreement Graph& 11924 &1463465 & 0.0345 & 11908\\
+        Agreement Graph& 11924 &2451028 & 0.0345 & 11908\\
         
         Follow Graph & 11924 & 3136303 & 0.0220 & 11563 \\
 
@@ -310,6 +310,34 @@ Therefore, this also indicates that we can make additional modifications to stat
 
 \section{Voting Order Results}
 \label{sec:voting-order-results}
+In Section~\ref{sec:voting-order}, we discussed how to study the effects of voting order on the performance of the iterative models trained on the complete \wikirfa dataset.
+The results for the third RfA nomination  of user \textit{Hawkeye7} is presented in Table~\ref{tab:fail-rfa} and is referred to the \textit{failed RfA}.
+Similarly, the results of user \textit{HickoryOughtShirt?4} is show in table~\ref{tab:pass-rfa} and is called the \textit{successful RfA}.
+
+\subsection{Failed RfA Results}
+We see that the voting in the failed RfA is fairly tight.
+The \aucposPR score is 0.52 and \aucnegPR is 0.479, indicating that the election did indeed have more support votes than oppose.
+Nevertheless, the RfA failed as the Bureaucrat responsible concluded that the consensus was to not promote the user.
+
+For the \textit{normal voting order}, as seen in Table~\ref{tab:fail-rfa}, the balance models performs much worse when compared to the status model.
+In fact, the iterative balance model performs below the baseline for all metrics.
+This can be attributed to the fact that this particular user had two previous nominations of which one was successful.
+Therefore, a symmetric measure of agreement might not be helpful in predicting the balance as the election progresses, especially when the voting margins are tight.
+On the other hand, we see that the iterative status model performs better the iterative balance model, but is still worse than the baseline metrics for a random model.
+This clearly shows that both models are struggling to predict votes in a RfAs with a narrow margin of difference between support and oppose votes.  
+
+For the \textit{reversed voting order}, we see that iterative balance model performs considerably better compared to the normal voting order.
+Especially, we see that all the metrics, i.e., AUC-ROC,\aucposPR and \aucnegPR scores have improved above the baseline, increasing the model's overall performance.
+This is interesting, as it suggests that the LSNs formed by reversing the voting order provides better information on the voting behaviour than the actual voting order.
+Similarly, we see the status model also gaining in performance when the voting order is reversed.
+Although the \aucnegPR score is still below the baseline, we see the overall performance has improved.
+We can explain the model's difficulty in predicting negative votes using our previous analysis that status theory complies less with the true data than balance theory.
+Therefore, we infer that reversing the voting order improves the performance of both models.
+
+Meanwhile, the results of the average of ten \textit{random voting orders} for both models lie in between the results for the normal and reversed voting methods.
+We see that the result for the iterative balance model is above the baseline for all metrics and the iterative status model is close to the baseline.
+Therefore, we see that the voting order does affect the performance of the iterative models and that we can benefit from reversing the voting order and averaging the results to obtain better predictions for RfAs that have tight margins. 
+
 \begin{table}[htp]
     \centering
     \caption{Results for different vote orderings for the failed RfA}
@@ -323,49 +351,66 @@ Therefore, this also indicates that we can make additional modifications to stat
         \midrule
         
         \multirow{3}{*}{\shortstack[l]{Iterative\\ Balance}} & 
-        Normal &  0.543 & 0.74 & 0.454 \\
+        Normal &  0.392 & 0.490 & 0.403 \\
         % \cmidrule{2-5}
-        &Reversed & 0.74 & 0.868 & 0.572 \\
+        &Reversed & 0.575 & 0.606 & 0.529 \\
         % \cmidrule{2-5}
-        & Random & 0.68 & 0.812 & 0.575 \\
+        & Random & 0.527 & 0.552 & 0.517 \\
         \midrule
 
         \multirow{3}{*}{\shortstack[l]{Iterative\\ Status}} & 
-        Normal & 0.962 & 0.977 & 0.909 \\
+        Normal & 0.454 & 0.532 & 0.457 \\
         % \cmidrule{2-5}
-        & Reversed & 0.930 & 0.965 & 0.806   \\
+        & Reversed & 0.515 & 0.563& 0.466   \\
         % \cmidrule{2-5}
-        & Random & 0.924 & 0.957 & 0.818 \\
+        & Random & 0.493 & 0.538 & 0.480 \\
         \bottomrule
         \end{tabular}
 \end{table}
 
+\subsection{Successful RfA Results}
+In Table~\ref{tab:pass-rfa}, we see that the result of the RfA is clearly evident in the \aucposPR and \aucnegPR baselines.
+Nearly, all votes are supporting the candidate and there are a few minority opposition votes. 
+For this RfA, we see the results are in line with the results we obtained for the unsuccessful RfA.
+
+For the \textit{normal voting order}, we see that the iterative balance model has AUC-ROC and \aucposPR scores lower than the baseline but \aucnegPR scores well above the baseline.
+This indicates that the model is better able to predict oppose votes, but at the cost of the better predictions for the support votes. 
+We see a similar phenomenon for the iterative status model where the \aucposPR is below the baseline but the overall AUC-ROC is slightly above a random predictor.
+This highlights the difficulty of predicting the oppose votes in a fairly clear election.
+
+Once again, in the results for the \textit{reversed voting order}, we see that both iterative models have better performance across all metrics.
+Especially, we see both models have much larger \aucposPR scores and that boosts the AUC-ROC scores as the positive votes are the majority in the RfA.
+As a result, we also see that the \aucnegPR scores drop, indicating the tension in optimizing both positive and negative vote prediction.
+
+The average of 10 \textit{random voting order} results show that the performance of the models are overall better than the normal voting order.
+A note to consider is that this analysis and results are only for the two new RfAs and can be further analysed in detail as a separate project.
 \begin{table}[htp]
     \centering
     \caption{Results for different vote orderings for the successful RfA}
     \label{tab:pass-rfa}
     \begin{tabular}{llccc}
         \toprule
-        Model & Vote Order & ROC AUC & PR Positive  & Pr Negative \\ \midrule
+        Model & Vote Order & AUC-ROC & \aucposPR  & \aucnegPR \\ \midrule
         Baseline & - & 0.5 & 0.905 & 0.095 \\
         \midrule
         
         \multirow{3}{*}{\shortstack[l]{Iterative\\ Balance}} & 
-        Normal &  0.9175 & 0.991 & 0.385 \\
+        Normal &  0.48 & 0.90 & 0.231 \\
         % \cmidrule{2-5}
-        &Reversed & 0.720 & 0.972 & 0.142 \\
+        &Reversed & 0.649 & 0.933 & 0.216 \\
         % \cmidrule{2-5}
-        & Random & 0.894 & 0.989 & 0.431 \\
+        & Random & 0.607 & 0.921 & 0.273 \\
         \midrule
         
         \multirow{3}{*}{\shortstack[l]{Iterative\\ Status}} & 
-        Normal & 0.846 & 0.981 & 0.293 \\
+        Normal & 0.503 & 0.898 & 0.211 \\
         % \cmidrule{2-5}
-        & Reversed & 0.895 & 0.99 & 0.29 \\
+        & Reversed & 0.628 & 0.931 & 0.151 \\
         % \cmidrule{2-5}
-        & Random & 0.931 & 0.992 & 0.451 \\
+        & Random & 0.612 & 0.921 & 0.230 \\
         \bottomrule
         \end{tabular}
 \end{table}
+
 
 
