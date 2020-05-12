@@ -1,9 +1,39 @@
 \chapter{Conclusions and Future Work}
 \label{chp:conclusion}
-\begin{itemize}
-    \item Explain the quality of results with the election perspective
-    \item Future work is to extend this to other election settings and investigate generality of this approach
-    \item Possible future work in congressional voting data
-    \item Can also tackle the other problem in information cascade theory of how to predict who is most likely to vote next 
-    \item This can lead to a complete model of election dynamics and could incorporate elements of game theory and network inference 
-\end{itemize}
+Voting is a fundamental aspect of decision making within a community.
+Predicting how members in that community will vote on a candidate issue provides us with tools to to understand the key motivations of the members and the community.
+These insights are valuable, especially when these communities are politicians in parliaments voting on bills and laws or editors on Wikipedia promoting administrators to moderate content in the largest online encyclopedia.
+
+In this thesis, we described how voting in a community can be intuitively and structurally represented using signed networks.
+The positive and negative links directly relate to a voter's support or opposition to a candidate.
+Furthermore, we discussed how the problem of vote prediction is related to the task of predicting the sign of an link in the signed network.
+Then, we explain the structural theories of balance and status in signed networks. derived from the field of social psychology.
+We presented the existing approaches and methods to solve the sign prediction tasks and discussed their limitations for the vote prediction task.
+Therefore, we propose two new models for the task of vote prediction incorporating the chronological nature of voting.
+
+The first, is an extension of supervised models for sign prediction approaches.
+To predict the vote of an individual voter towards a candidate, we introduce the concept of a \textit{voting neighbourhood}.
+We gather features from the voting neighbourhood of a voter and various auxiliary graphs that represent relationships between the members in community.
+Then, we count the unique triadic features that capture the features of balance and status theory in the voting neighbourhood.
+The combination of all these features and the known true votes form a traditional supervised machine learning problem.
+Therefore, any linear classification model can be trained to predict positive and negative edges that correspond to support or oppose votes.
+
+The second approach we propose is iterative in nature and only relies on structural balance and status theories.
+We extend upon the concept of the voting neighbourhood to create a \textit{Local Signed Network} (LSN)for a voter.
+We state that within this LSN, the voter prefers to vote in a manner that the resultant LSN either complies with balance theory or status theory.
+Therefore, we arrive at two models, the first in which a voter maintains the balance of the LSN and the second where the voter preserves the status in the LSN.
+Then, we developed methods to quantitatively measure agreement with either balance or status theory.
+We utilize these measures to predict how an independent user will vote given their LSN.
+Furthermore, as the voting progresses we propose to maintain a relationships graph that contains the information on the interaction and relationships between the voters in the community.
+This, then leads to the ability to iteratively predict votes in a session and assimilating the information at the end of a session.
+
+From the results presented in Chapter~\ref{chp:results}, we conclude that the proposed models are effective in predicting the votes in Wikipedia RfAs.
+The graph combination models perform poorly only due the the restriction of the supervised learning framework and lack of information to predict votes far off in the future.
+We show that the iterative models overcome these problems and are able to effectively predict votes of the entire dataset using only voting data.
+Analysis of the votes of first time voters in the model indicate that they follow the herd mentality or vote similar to person before them.
+Furthermore, we shoe that votes in the promotion process of Wikipedia administrators are generally more represented by balance theory than status theory.
+We also conclude that the iterative models are sensitive to the voting order.
+Reversing the order of voting brings greater predictive power in both elections that are close as well as elections that are landslides.
+
+Future work includes developing a modified theory of social status in signed network that better represents relationships between people in real life. Similarly, we plan to incorporate external features to improve the iterative models and extend the experiments to congressional and parliamentary votes on bills and laws. 
+
