@@ -1,7 +1,7 @@
 
-\chapter{Graph Theory}
-\label{chp:graph-theory}
-\todo[inline,backgroundcolor=red!25]{Change Chapter to Background and include signed link prediction theory here as well}
+\chapter{Background}
+\label{chp:background}
+
 In this chapter, we will provide the fundamentals of the graph theory concepts required to understand the rest of the thesis. In Section~\ref{sec:prelim} we cover the basic definitions and terminologies used to describe different types of graphs. Then we define a signed graph and discuss its unique properties in Section~\ref{sec:signed-graphs}. We outline the social theories of balance and status in signed networks in \Cref{sec:balance-theory,sec:status-theory}.\todo{Add line for link prediction} Lastly, we explain techniques of finding hierarchies in directed networks and the concept of agony in Section~\ref{sec:hierarchy}.
 
 \section{Preliminaries}
@@ -82,7 +82,7 @@ We can create a $n \times n$ square weight matrix $W$, where each entry $w_{ij}$
     0 & \text{if } (v_i,v_j) \notin E      
 \end{cases}
 \] 
-The signed degree matrix $\overline{D}$ is a diagonal matrix consisting of the signed verted degrees, $\overline{D} = \text{diag}(\overline{d}(v_{1}),\dots,d(v_n))$. We can now define the \textit{signed Laplacian}, $\overline{L}$ as 
+The signed degree matrix $\overline{D}$ is a diagonal matrix consisting of the signed vertex degrees, $\overline{D} = \text{diag}(\overline{d}(v_{1}),\dots,d(v_n))$. We can now define the \textit{signed Laplacian}, $\overline{L}$ as 
 \[ \overline{L} = \overline{D} - W\]
 The signed Laplacian along with results from spectral analysis of signed graphs \cite{hou2005bounds,kunegis2010spectral}, will be useful for balance theory of signed graphs. 
 
@@ -90,7 +90,7 @@ The signed Laplacian along with results from spectral analysis of signed graphs 
 \label{sec:balance-theory}
 
 
-In the 1940s, Heider \cite{heider1946attitudes} proposed  that when there are either \textit{positive relations} (friendship, love, support) and \textit{negative relations} (enmity, hate, oppose) in a group, the  group tends towards \textit{balance}. Balance is the concept that all members aim to maintain consistency in the relations they share with other members of the group. In a group of three members this can be seen as having three positive relations or one positive and two negative relations. In Figure~\ref{fig:undirected-triads} the triads $B_1$ and $B_2$ are \textit{balanced} and mirror aphorisms such as "the friend of my friend is also a friend" and "the enemy of my enemy is a friend" respectively. Therefore, triads $B_3$ and $B_4$ can be called \textit{unbalanced} or \textit{imbalanced} that denotes the cognitive dissonance between the members of the triad. The dissonance can be understood by the counterintuitive nature of the phrase "the friend of my friend is my enemy" described by triad $B_3$.
+In the 1940s, Heider \cite{heider1946attitudes} proposed  that when there are either \textit{positive relations} (friendship, love, support) and \textit{negative relations} (enmity, hate, oppose) in a group, the  group tends towards \textit{balance}. Balance is the concept that all members aim to maintain consistency in the relations they share with other members of the group. In a group of three members this can be seen as having three positive relations or one positive and two negative relations. In Figure~\ref{fig:undirected-triads} the triads $B_1$ and $B_2$ are \textit{balanced} and mirror aphorisms such as "the friend of my friend is also a friend" and "the enemy of my enemy is a friend" respectively. Therefore, triads $B_3$ and $B_4$ can be called \textit{unbalanced} or \textit{imbalanced} that denotes the cognitive dissonance between the members of the triad. The dissonance can be understood by the counter-intuitive nature of the phrase "the friend of my friend is my enemy" described by triad $B_3$.
 
 Harary and Cartwright \cite{cartwright1956structural} generalized this notion of balance by using signed graphs. As these relations are typically symmetric, balance is usually defined for undirected signed graphs. This can been seen in Figure~\ref{fig:undirected-triads} where solid edges are positive and dashed edges are negative. Davies \cite{davis1963weakBalance} also offers an alternate definition of \textit{weak balance} where triads of type $B_2$ are considered to have lesser predictive utility as relationships of these type are less common in real-life social networks.
 
