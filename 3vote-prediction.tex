@@ -47,7 +47,7 @@ In addition to the auxiliary feature vector $\mathbf{a}$, we can also create tri
 
 We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given dataset. Each row is the concatenation of the auxiliary feature vector and the triadic feature vector $\mathbf{x} = [\mathbf{a},\mathbf{t}]$ . The target vector $\mathbf{y}$ is the vector of true votes. Now we train a linear machine learning model and use it to predict the votes in a test dataset.
 
-\begin{algorithm}[H]
+\begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Auxiliary feature vector for voter $v$ }
     \label{alg:auxiliary-feature}
@@ -214,13 +214,13 @@ We see a directed LSN similar to the one in Figure~\ref{fig:lsn-balance}a in Fig
 
 Now, Algorithm~\ref{alg:iterative-pred} describes a model that can predict the votes in a session iteratively. We have the order of votes in the session denoted by $O$ and the true votes function $w^{*}$. We create the session graph and initialize it with the candidate $c$ and the first voter as seen in line~\ref{iterative-pred:line:init-session}. This is because we need at least one prior vote information to effectively predict a vote. In most settings, such as bills in a government parliament or promotion of a member in a community, there are always  sponsors or nominators who propose the candidate in that session. Therefore, we are justified in starting the session with the candidate and the first vote cast in the session graph $S$. Next, for each subsequent voter $v$ in the list, we add it the session and create the LSN. The $Predict$ function in line~\ref{iterative-pred:line:predict} can be based on either balance (Algorithm~\ref{alg:balance-pred}) or status theory (Algorithm~\ref{alg:status-pred}). Then, we add the true vote of voter $v$ to the session $G$ and move on to the next voter in the list. After all the votes are predicted in the session, we can update the relationship graph $H$ with the data from the current session $S$. This can include operations such as adding nodes that were not present in $R$ and updating the edge weights based on the votes cast in the current session.
 
-In this process we can predict all the votes in all the sessions by starting with an empty relationship graph and updating it after every session. Therefore, the model can be compared to a "\textit{batch}" machine learning model, where each batch is a voting session and the model parameter is the relationship graph $R$. In a batch, the model will predict votes based the parameters which is the information gathered from the previous sessions contained in the relationship graph $R$. After the batch is complete, the model updates its "parameters" or the graph with data from the current session. We can bootstrap the model from a complete \textit{blank slate} where $R$ is an empty graph and then iteratively predicts sessions and updates $R$. The model iteratively improves.
+In this process we can predict all the votes in all the sessions by starting with an empty relationship graph and updating it after every session. Therefore, the model can be compared to a "\textit{batch}" machine learning model, where each batch is a voting session and the model parameter is the relationship graph $R$. In a batch, the model will predict votes based the parameters, which is the information gathered from the previous sessions contained in the relationship graph $R$. After the batch is complete, the model updates its "parameters" or the graph with data from the current session. We can bootstrap the model from a complete \textit{blank slate} where $R$ is an empty graph and then iteratively predicts sessions and updates $R$. Therefore, the model can improve after each session by incorporating the voting information into the relationship graph.
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Iterative Prediction Model}
     \label{alg:iterative-pred}
-    \KwIn{Candidate $c$, Relation graph $R=(V_R,E_R,w_R)$, Order of voters in current session $O$ and true votes $w^*$  }
+    \KwIn{Candidate $c$, Relationship graph $R=(V_R,E_R,w_R)$, Order of voters in current session $O$ and true votes $w^*$  }
     \KwResult{Predictions for current session }
     $k \leftarrow |O|$\;
     $u \leftarrow O[1]$ \tcp*{First voter} 
@@ -238,7 +238,7 @@ In this process we can predict all the votes in all the sessions by starting wit
         $E_S \leftarrow E_S \cup \{(v,c)\}$\;
         $w_S((v,c)) \leftarrow w^{*}((v,c))$ \tcp*{Assign true vote}
     }   
-    $Update(R,S)$ \tcp*{Update Relations graph} \label{iterative-pred:line:update-relation}
+    $Update(R,S)$ \tcp*{Update Relationship graph} \label{iterative-pred:line:update-relation}
     \Return $predictions$\;
 \end{algorithm}
 
