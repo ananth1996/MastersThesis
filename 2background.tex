@@ -2,9 +2,14 @@
 \chapter{Background}
 \label{chp:background}
 
-In this chapter, we will provide the fundamentals of the graph theory concepts required to understand the rest of the thesis. In Section~\ref{sec:prelim} we cover the basic definitions and terminologies used to describe different types of graphs. Then we define a signed graph and discuss its unique properties in Section~\ref{sec:signed-graphs}. We outline the social theories of balance and status in signed networks in \Cref{sec:balance-theory,sec:status-theory}.\todo{Add line for link prediction} Lastly, we explain techniques of finding hierarchies in directed networks and the concept of agony in Section~\ref{sec:hierarchy}.
+In this chapter, we will provide the fundamentals of the graph theory concepts required to understand the rest of the thesis.
+In Section~\ref{sec:prelim}, we cover the basic definitions and terminologies used to describe different types of graphs.
+Then, we define a signed graph and discuss its unique properties in Section~\ref{sec:signed-graphs}.
+We outline the social theories of balance and status in signed networks in \Cref{sec:balance-theory,sec:status-theory}.
+Later, in Section~\ref{sec:link-prediction}, we provide an overview of the link and sign prediction tasks in singed network and highlights the important approaches from recent works.
+Lastly, we explain techniques of finding hierarchies in directed networks and the concept of agony in Section~\ref{sec:hierarchy}.
 
-\section{Preliminaries}
+\section{Graph Theory Preliminaries}
 \label{sec:prelim}
 In this section, we define the various types of graphs and their basic properties. The notation and terminologies used closely follow those used in Diestel~\cite{diestel1997graph}. Graphs are structures that describe relationships between entities. These entities are called \textit{vertices} and entities related to one another are joined by edges. The terms graph, vertices and edges can be used interchangeably with \textit{network}, \textit{nodes} and \textit{links} respectively.
 
@@ -129,7 +134,21 @@ There are also cases when status theory is ambivalent to the edge that closes a 
 
 Each positive link inwards ($\indegree^{+}(v)$) and negative link outwards ($\outdegree^{-}(v)$) increases status. Each positive link outwards ($\outdegree^{+}(v)$) and negative link inwards ($\indegree^{-}(v)$) decreases status. Therefore, $\sigma(v) = \indegree^{+}(v) + \outdegree^{-}(v) - \outdegree^{+}(v)- \indegree^{-}(v)$ is a heuristic for the status of a node \cite{leskovec2010predicting}. An interesting fact is that the edge $u \minusrightarrow v$ can be converted into positive edge in the opposite direction $u \plusleftarrow v$. This fact reduces the number of unique triads that can be formed using status theory and will be used in edge prediction tasks that will be discussed in coming chapters.
 
-\section{Hierarchy in directed networks}
+\section{Link and Sign Prediction}
+\label{sec:link-prediction}
+The \textit{link prediction problem} is defined by Liben-Nowell and Kleinberg \cite{liben-nowell2007the} as inferring possible future edges between vertices in a social network. The datasets used was split into training edges and testing edges which had a common core set of vertices. They showed that topological features such as number of common neighbours and Katz's centrality index can be used in a unsupervised setting to accurately predict edges.
+
+Leskovec et al.\ \cite{leskovec2010predicting} extended the link prediction problem to signed networks. They also introduced the problem of \textit{edge sign prediction}: predict the sign of a given edge $(u,v)$ using the existing signed network $G$. A supervised model for the task is proposed that uses network features such as indegree and outdegree of a node along with \textit{triad} features. The edge nodes $u$ and $v$ and a common neighbour $w$ form a triad. The directed edge between $(u,w)$ and $(w,u)$ can be either forward or backwards and each edge is either positive or negative. Therefore there are 16 possible triad types for a given neighbour $w$. They analyse these triadic features from the trained model and show how they relate to balance and status theory. For the link prediction problem, the information from the negative edges in the signed network improves the overall accuracy of the model. This seminal paper inspired many more approaches to solving these problems for signed graphs.   
+
+Matrix factorization and latent space approaches facilitate link prediction and sign prediction tasks for multiple edges simultaneously in a signed network \cite{agrawal2013link,hsieh2012low,gu2019link}.
+Supervised algorithms for both tasks can be improved by utilizing additional node features such as inverse square metric \cite{ahmadalinezhad2018sign} or node rankings \cite{shahriari2014ranking}.
+Models using multiple graph motifs as features \cite{Liu2019LinkPrediction,khodadadi2017sign} extend the concept of triadic feature for link and sign prediction.
+Chiang et al.\ generalize balance theory for longer cycles and incorporate it as features to improve link prediction \cite{chiang2011exploiting}.
+Tang et al.\ \cite{Jiliang2015Negative} discuss the importance of predicting negative links and highlight methods to overcome the inherent imbalance present in signed network datasets.
+Cesa et al.\ \cite{cesa2012correlation} and Chiang et al.\ \cite{chiang2014prediction} utilize clustering techniques to solve sign prediction and link prediction respectively.
+Shuang et al.\ \cite{Shuang-Hong2012Friend} and Karimi et al.\ \cite{karimi2019multicongress} create bespoke models incorporating user behaviour and political party affiliation respectively to predict the sign of edges present in the signed networks.
+
+\section{Hierarchy in Directed Networks}
 \label{sec:hierarchy}
 Hierarchies exist in all social structures, from the explicit levels found in nature such as the food chain or organizational structures in businesses to more implicit stratification that occurs on social media or online networks. A common method to represent such hierarchies is through a tree, for example, the chain of command in the military or within governments. Trees have well defined levels and a single person at the top. If we generalize this structural concept then we get a \textit{Directed Acyclic Graph} (DAG) which represents a partial ordering set. DAGs have perfect hierarchy while structures such as cycles tend to have no hierarchy. Other directed graphs occur somewhere between these two extremes.
 
@@ -165,14 +184,8 @@ As nodes in a graph tend to minimize the overall agony, the agony of a network $
 
 Therefore, finding a ranking of the nodes that minimizes the agony of the network gives us the optimal hierarchy present in that network. Gupte et al.\ \cite{gupte2011finding} and Tatti \cite{tatti2014faster} present a polynomial algorithm that can solve the dual of the agony minimization problem to obtain the optimal ranking $r$ for unweighted graphs. Tatti \cite{tatti2017tiers} provides an alternate approach using a capacitated circulation solver that can handle weighted digraphs as well as additional cardinality constraints. These algorithms allows us to find the levels of hierarchy present in any given directed social network and analyse the interaction between members belonging to different strata in that community.
 
-We will explain in future chapters how hierarchies in social network is intrinsically linked to the theory of status in directed signed networks. We show one can use the concept of agony of a directed signed graph $G$ to quantify the violation to status theory and use it as a metric to predict an unknown signed edge.
+We will explain in future chapters how hierarchies in social network is intrinsically linked to the theory of status in directed signed networks. We show how to use the concept of agony for a directed signed graph $G$ to quantify the violation of status theory and therefore, utilize it as a feature to predict the sign of an edge.
 
-\section{Link and Sign Prediction}
-\label{sec:link-prediction}
-The \textit{link prediction problem} is defined by Liben-Nowell and Kleinberg \cite{liben-nowell2007the} as inferring possible future edges between vertices in a social network. The datasets used was split into training edges and testing edges which had a common core set of vertices. They showed that topological features such as number of common neighbours and Katz's centrality index can be used in a unsupervised setting to accurately predict edges.
 
-Leskovec et al.\ \cite{leskovec2010predicting} extended the link prediction problem to signed networks. They also introduced the problem of \textit{edge sign prediction}: predict the sign of a given edge $(u,v)$ using the existing signed network $G$. A supervised model for the task is proposed that uses network features such as indegree and outdegree of a node along with \textit{triad} features. The edge nodes $u$ and $v$ and a common neighbour $w$ form a triad. The directed edge between $(u,w)$ and $(w,u)$ can be either forward or backwards and each edge is either positive or negative. Therefore there are 16 possible triad types for a given neighbour $w$. They analyse these triadic features from the trained model and show how they relate to balance and status theory. For the link prediction problem, the information from the negative edges in the signed network offers improvement in the overall accuracy of the model. This seminal paper inspired many more approaches to solving these problems for signed graphs.   
-
-Matrix factorization and latent space approaches facilitate link prediction and sign prediction tasks for multiple edges simultaneously in a signed network \cite{agrawal2013link,hsieh2012low,gu2019link}. Supervised algorithms for both tasks can be improved using additional node features such as inverse square metric \cite{ahmadalinezhad2018sign} or node rankings \cite{shahriari2014ranking}. Models that use graph motifs \cite{Liu2019LinkPrediction,khodadadi2017sign} generalize the concept of triadic feature for link and sign prediction. Chiang et al.\ generalize balance theory for longer cycles and use it as features to improve link prediction \cite{chiang2011exploiting}. Tang et al.\ \cite{Jiliang2015Negative} discuss the importance of predicting negative links and highlight methods to overcome the inherent imbalance present in signed network datasets. Cesa et al.\ \cite{cesa2012correlation} and Chiang et al.\ \cite{chiang2014prediction} utilize clustering techniques to solve sign prediction and link prediction respectively. Shuang et al.\ \cite{Shuang-Hong2012Friend}  and Karimi et al.\ \cite{karimi2019multicongress} create bespoke models incorporating user behaviour and political party affiliation respectively to predict the sign of edges present in the signed networks.
 
 
