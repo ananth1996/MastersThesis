@@ -146,8 +146,8 @@
 \newcommand{\SPROFESSORSHIP}{Datateknik}
 % Professorship code is the same in all languages
 \newcommand{\PROFCODE}{SCI3042}
-\newcommand{\KEYWORDS}{signed networks, balance, status, elections, Wikipedia, 
-  voting, graphs}
+\newcommand{\KEYWORDS}{signed networks, balance theory, status theory, Wikipedia, 
+  voting models, graphs}
 \newcommand{\FKEYWORDS}{Finnish Keywords}
 \newcommand{\SKEYWORDS}{Swedish Keywords}
 \newcommand{\LANGUAGE}{English}
@@ -238,7 +238,28 @@
 % Abstract in English
 % ------------------------------------------------------------------
 \thesisabstract{english}{
-\todo[inline]{ABSTRACT}}
+Voting is an integral part of the decision-making mechanism in many communities.
+Voting decides which bills become laws in parliament or users become administrators on Wikipedia.
+Understanding a voter's behaviour and being able to predict how they will vote can help in selecting better and more successful policies or candidates.
+As votes tend to be for or against a particular agenda, they can be intuitively be represented by positive and negative links respectively in a \textit{signed network}.
+These signed networks allow us to view voting through the lens of graph theory and network analysis.
+Predicting a vote translates into predicting the sign of a link in the network.
+The task of sign prediction in signed networks is well studied and many approaches utilize social theories of balance and status in a network.
+However, most conventional methods are generic and disregard the iterative nature of voting in communities. 
+
+In this thesis, we propose two new approaches for solving the task of vote prediction in signed networks.
+The first is a \textit{graph combination method} that gathers features from multiple auxiliary graphs and features encoding balance and status theories.
+Then, it is a supervised machine learning problem and can be trained using a general linear model.
+Second, we propose a novel \textit{iterative method} to learn relationships between users to predict votes.
+We quantify a network's adherence to status theory using the concept of \textit{agony} and hierarchies in directed networks.
+Analogously, we measure the balance in a network through the spectral decomposition of the network.
+Then, we use these measures to predict the votes that comply the most with the social theories.
+
+We implement our approaches to predict votes in the elections of administrators in Wikipedia.
+Our experiments and results on the \wikirfa dataset show that the iterative models perform much better the graph combination model.
+We analyse the impact of the voting order on the performance of the models.
+Furthermore, we find that balance theory represents votes in Wikipedia elections better than status theory.
+}
 
 % Abstract in Finnish
 % ------------------------------------------------------------------
