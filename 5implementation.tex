@@ -7,7 +7,7 @@ Then, we cover the implementation of the vote prediction models based on the the
 Furthermore, in Section~\ref{sec:voting-order}, we discuss the experiments conducted on the voting order and its impact on the predictive power of the models proposed.
 Lastly, we explain the metrics which we can ue to evaluate the performance of the models in Section~\ref{sec:eval-metrics}.
 
-
+All implementations and datasets can be found at \url{https://github.com/ananth1996/Wikipedia}
 \section{Datasets}
 \label{sec:datasets}
 As we discussed in Section~\ref{sec:rfa} and \ref{subsec:editors}, Wikipedia keeps detailed information on the election proceedings for the RfA process as well as contributions made by every editor on Wikipedia.
@@ -248,7 +248,7 @@ We can bootstrap the model by beginning with an empty agreement graph $A$.
 Then for votes with no information the predicted support probability is $0.5$.
 After the RfA session is over, these new voters can be incorporated into the agreement graph when it is updated, as seen in Line~\ref{alg:agree-update:new-edge}.
 
-\begin{algorithm}[H]
+\begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Update Agreement graph after a session}
     \label{alg:agree-update}
@@ -313,7 +313,7 @@ When we create the LSN, we only consider the edges of type $v \rightarrow u_{i}$
 This is because the voter $v$ is voting after the voters in $U$, therefore, the edges $v \leftarrow u_{i}$ provide information that is not consistent with the current voting situation.
 This can also be a point that can be analysed to see if the revered follower edges provide more benefit to the model or not.
 
-\begin{algorithm}[H]
+\begin{algorithm}[htp]
     \DontPrintSemicolon
     \caption{Update Follow graph after a session}
     \label{alg:follow-update}
@@ -452,4 +452,24 @@ As the negative samples, i.e., oppose votes, are the minority in the \wikirfa da
 We can measure the performance of the model in predicting negative samples by computing the area under the \negPR curve (\aucnegPR).
 This measure is more import for evaluating the performance of our models.
 
-\todo[inline]{Add F1 score para}
+
+\subsection{F1 Score}
+All the previous metrics use probabilities directly and evaluate the overall performance of the model.
+The \textit{F1 score} is the harmonic mean of precision and recall and defined as 
+\[
+    F1 = 2\cdot\frac{\text{precision}\cdot\text{recall}}{\text{precision}+\text{recall}}.
+\]
+Therefore, if we consider a PR curve, then the F1 score is computed by taking the precision and recall values at a particular point on that curve.
+If the curve was for the positive class probability, i.e., a \posPR curve, then we define the associated F1 score as the \posF score.
+Similarly, if the curve is for the negative class probabilities, i.e., a \negPR curve, then the score is called the \negF score.
+A simple average of the \posF and \negF scores is called the \textit{macro F1 score}, and is define as follows,
+\[ 
+    \text{F1}_{\text{macro}} = \frac{\text{F1}_{\text{pos}}+\text{F1}_{\text{neg}}}{2}.
+\]
+The \macroF score is useful for datasets which are imbalanced as it places equal weight on both the positive and negative label performance.
+
+As the F1 score is calculated for a point in the PR curve, it corresponds to the particular value of threshold $\theta$, that yielded those values of precision and recall in the confusion matrix.
+Therefore, we can now plot the F1 score as a function of the threshold. 
+This allows us to analyse both the \posF and \negF plots versus the threshold and choose the optimal value of $\theta$, that maximizes the \macroF score.
+Hence, we can understand how the model will perform when asked to deterministically predict classes.
+
