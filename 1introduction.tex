@@ -2,55 +2,58 @@
 
 
 
-In recent years, researchers have become increasingly interested in understanding the behaviour of voters in social networks. Knowledge of the factors that motivate voters, for example, voting for bills in the United States Congress \cite{karimi2019multicongress} or electing administrators in Wikipedia \cite{jankowski-lorek2013MBSN,cabunducan2011voting,lee2012uncovering}, is of great importance in selecting successful policies or candidates. Voting is a classic problem and has been studied in the fields of game theory and political science \cite{zou2015strategicDoodle,kearns2009behavioral,tal2015a}. More recently, there is a focus on using information from the interaction network of voters to model their behaviour. This provides an insight into these interactions and effect of influence of other individuals on voters within a community.
+In recent years, researchers have become increasingly interested in understanding the behaviour of voters in social networks. Knowledge of the factors that motivate voters, for example, voting for bills in the United States Congress \cite{karimi2019multicongress} or electing administrators in Wikipedia \cite{jankowski-lorek2013MBSN,cabunducan2011voting,lee2012uncovering}, is of great importance in selecting successful policies or candidates. Voting is a classic problem and has been studied extensively in the fields of game theory and political science \cite{zou2015strategicDoodle,kearns2009behavioral,tal2015a}. More recently, there is a focus on using information from network formed from the interaction of voters to model their behaviour. This provides an insight into these interactions and effect of influence of other individuals on voters within a community.
 
 In many communities, decision making is carried out through votes.
-In these voting sessions, voters indicate if they are for or against an agenda through their vote.
+In these voting sessions, voters indicate if they are, for or against an agenda through their vote.
 These votes, can be represented as positive or negative links in a \textit{signed network}.
 Analysing this network of voting yields various interesting insights.
-For instance,using methods such as correlation clustering \cite{brito2020aBrazil,levorato2016brazilian,chiang2014prediction} on these signed networks reveals communities that vote similarly and have common ideologies. 
+For instance, using methods such as correlation clustering \cite{brito2020aBrazil,levorato2016brazilian,chiang2014prediction} on these signed networks reveals communities that vote similarly and have common ideologies. 
 This provides us a macroscopic perspective of election dynamics and voting blocks.
 
 On the other hand, predicting the sign of future links in these signed networks gives us a local understanding of the nodes in the network \cite{leskovec2010predicting,leskovec2010signed,chiang2011exploiting}.
 This task is called \textit{sign prediction} and translates into predicting future votes in the voting networks.
 The methods to predict the sign of a link use social theories of balance and status.
 For instance, balance theory states that a friend of an enemy is likely to be an enemy \cite{harary1953on}.
-Therefore, if a user disagrees with common neighbour who supports an agenda, then they are more likely to oppose that agenda. 
+Therefore, if a user disagrees with a common neighbour who supports an agenda, then they are more likely to oppose that agenda. 
 Similarly, status theory states that people interact on the basis or relative merit \cite{leskovec2010predicting}.
-Hence, if you disregard someone who in turn disregards an agenda, then you are more likely to also disregard that agenda.
-These social theories provide a strong frameworks using which we can predict future interactions betweens voters and an agenda within a community.
-By quantifying agreement or respect in a particular community we can understand the motivations and factors that affect an individual voter's decision.
+Hence, if you disregard someone who, in turn disregards an agenda, then you are more likely to disregard that agenda.
+These social theories provide a strong frameworks, using which we can predict future interactions betweens voters and an agenda within a community.
+By quantifying agreement or respect in a particular community, we can understand the motivations and factors that affect an individual voter's decision.
 
-However, most traditional sign prediction approaches disregard the iterative and chronological nature in which voting usually happens.
-These methods also rely on features obtained from counting triangles or \textit{triads} to encode the theories of balance and status.
-Although models trained using these triadic features do perform well. they fail to incorporate larger effects of balance and status in a network.
-These methods are abstract and general, so that they can be applied to signed networks that may not be voting networks \cite{agrawal2013link,khodadadi2017sign,Shuang-Hong2012Friend}.
-Moreover, the in cases where research does focus on sign prediction in voting networks, they heavily rely on non-voting features of the voters and agendas.
+The traditional sign prediction approaches are abstract and general, so that they can be applied to signed networks that may not be voting networks \cite{agrawal2013link,khodadadi2017sign,Shuang-Hong2012Friend}.
+Therefore, they disregard the iterative and chronological nature in which voting usually happens.
+Furthermore, these methods rely on features obtained from counting triangles or \textit{triads}, to encode the theories of balance and status.
+Hence, they fail to incorporate larger effects of balance and status in a network.
+Moreover, in cases where research does focus on sign prediction in voting networks, they heavily rely on non-voting features of the voters and agendas.
 They utilize these features and build bespoke machine learning models that are task-specific and static \cite{karimi2019multicongress,jankowski-lorek2013MBSN}.
 
 Firstly, in this thesis, we propose a method to extend conventional sign prediction for the task of \textit{independent vote prediction}.
 For an independent voter, we define the \textit{voting neighbourhood} with respect to a graph and the previous voters in the session.
 Then, we gather the features from several \textit{auxiliary graphs} that contain non-voting relationships between users.
-Furthermore, we collect triadic information from the voting network as well and create a combined feature vector for a voter.
-Therefore, we formulate a supervised machine learning problem to classify and predict the sign of a vote using true sign of the votes as targets.
+Furthermore, we collect triadic information from the voting network and create a combined feature vector for a voter.
+Therefore, we formulate a supervised machine learning problem to classify and predict the sign of a vote, using true sign of the votes as targets.
 This \textit{graph combination model} can be trained with any general linear method using appropriate data processing techniques.
 
 Secondly, we present a novel iterative framework that utilizes theories of balance and status in the \textit{local signed network} (LSN) of a voter to predict the sign of their vote.
-The framework maintains and constantly updates a \textit{relationship graph}, where the edges capture interaction between voters such as agreement or concurrence.
-The LSN is defined as the interaction of the relationship graph with the graph of the current voting session.
-Then, we quantify how much the LSN complies with balance theory or status theory by utilizing the spectral decomposition or the \textit{agony} of the LSN.
-This allows us to predict the vote as the edge that when added to the LSN complies more with the social theory of choice.
+The framework maintains and constantly updates a \textit{relationship graph}.
+The edges of this graph, capture interaction between voters such as agreement or concurrence.
+The LSN is defined as the intersection of the relationship graph with the graph of the current voting session.
+Then, we quantify how much the LSN complies with balance theory or status theory by utilizing the spectral decomposition or the \textit{agony} of the LSN respectively.
+This allows us to predict the vote as the edge, that when added to the LSN, complies more with either balance or status theory.
 Therefore, we create two models, namely an \textit{iterative balance model} and an \textit{iterative status model}.
 These models are iterative as, once the voting is completed in a session, they update their relationship graph with the information from the session.
 Therefore, these models can be bootstrapped to start with no prior information and improve over time.
 
-Users in Wikipedia undergo a process called a \textit{Request for Adminship} (RfA) to gain administrative privileges.
+Users in Wikipedia undergo a process called a \textit{Request for Adminship} (RfA), to gain administrative privileges.
 Candidates are nominated and the RfA is a week long period in which any registered Wikipedia user can show their support for or opposition towards the candidate.
 After the community finishes its discussions and voting towards the candidate, the result of the RfA is decided by a Bureaucrat (a special class of users).
 Upon success, the candidate is granted administrative privileges, and upon failure, the candidate can appear for a renomination after a period of time.
 
-We implement the models proposed to predict the votes in Wikipedia RfA elections for administrators.
-The results show that the iterative models far out-perform the graph combination model at predicting votes. Furthermore, we analyse the features of both models to understand how well the theories of balance and status represent votes in Wikipedia election and possible scope for future work.
+We implement the models proposed to predict the votes in Wikipedia RfA elections.
+The results show that the iterative models far out-perform the graph combination model at predicting votes.
+We explore the consequences of the voting order on the overall performance of the iterative models.
+Furthermore, we analyse the features of both models to understand how well the theories of balance and status represent votes in Wikipedia election and possible scope for future work.
 
 \section{Thesis Outline}
 The rest of the thesis is organized in the following manner. Firstly, we discuss the background relating to signed graphs and hierarchy in directed networks in Chapter~\ref{chp:background}. Next, in Chapter~\ref{chp:vote-prediction} we describe the vote prediction problem and approaches to solving it. Chapter~\ref{chp:wikipedia} provides a comprehensive view of Wikipedia and the election process for administrators. In Chapter~\ref{chp:implementation} we explain the datasets used, construction of the model and evaluation criteria. After that, we report our findings in Chapter~\ref{chp:results} and discuss their implications. Finally, we conclude the thesis and present future work in Chapter~\ref{chp:conclusion}.

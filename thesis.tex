@@ -241,23 +241,23 @@
 Voting is an integral part of the decision-making mechanism in many communities.
 Voting decides which bills become laws in parliament or users become administrators on Wikipedia.
 Understanding a voter's behaviour and being able to predict how they will vote can help in selecting better and more successful policies or candidates.
-As votes tend to be for or against a particular agenda, they can be intuitively be represented by positive and negative links respectively in a \textit{signed network}.
+As votes tend to be for or against a particular agenda, they can be intuitively represented by positive or negative links respectively in a \textit{signed network}.
 These signed networks allow us to view voting through the lens of graph theory and network analysis.
 Predicting a vote translates into predicting the sign of a link in the network.
 The task of sign prediction in signed networks is well studied and many approaches utilize social theories of balance and status in a network.
 However, most conventional methods are generic and disregard the iterative nature of voting in communities. 
 
-In this thesis, we propose two new approaches for solving the task of vote prediction in signed networks.
-The first is a \textit{graph combination method} that gathers features from multiple auxiliary graphs and features encoding balance and status theories.
-Then, it is a supervised machine learning problem and can be trained using a general linear model.
+Therefore this thesis proposes two new approaches for solving the task of vote prediction in signed networks.
+The first is a \textit{graph combination method} that gathers features from multiple auxiliary graphs as well as encoding balance and status theories using triads.
+Then, it becomes a supervised machine learning problem which can be solved using any general linear model.
 Second, we propose a novel \textit{iterative method} to learn relationships between users to predict votes.
-We quantify a network's adherence to status theory using the concept of \textit{agony} and hierarchies in directed networks.
-Analogously, we measure the balance in a network through the spectral decomposition of the network.
-Then, we use these measures to predict the votes that comply the most with the social theories.
+We quantify a network's adherence to status theory using the concept of \textit{agony} and hierarchy in directed networks.
+Analogously, we use the spectral decomposition of the network to measure its balance.
+These measures are then used to predict the votes that comply the most with the social theories.
 
 We implement our approaches to predict votes in the elections of administrators in Wikipedia.
-Our experiments and results on the \wikirfa dataset show that the iterative models perform much better the graph combination model.
-We analyse the impact of the voting order on the performance of the models.
+Our experiments and results on the \wikirfa dataset show that the iterative models perform much better than the graph combination model.
+We analyse the impact of the voting order on the performance of these models.
 Furthermore, we find that balance theory represents votes in Wikipedia elections better than status theory.
 }
 
@@ -286,15 +286,17 @@ Furthermore, we find that balance theory represents votes in Wikipedia elections
 % show up in the TOC
 \chapter*{Acknowledgements}
 
-Firstly, I would like to extend my deepest gratitude to Professor Aristides Gionis and Dr. Bruno Ordozgoiti, for their constant support and guidance. Their wisdom and help is what made this thesis possible.
+Firstly, I would like to extend my deepest gratitude to Professor Aristides Gionis for his constant support and guidance. 
+I am also truly thankful to Dr. Bruno Ordozgoiti for the many brainstorming sessions and discussion throughout the thesis.
+Their wisdom and help are what made this thesis possible.
 
-I would like to thank all the members of the Data Mining Group for the many deep and insightful discussions. The passion, curiosity and motivation I enjoyed as a part of the group has encouraged me to pursue a career in research.
+I would like to thank all the members of the Data Mining Group for the many deep and insightful interactions. The passion, curiosity and motivation that I enjoyed, being part of this group has encouraged me to pursue a career in research.
 
 I extend my gratitude to all the professors at Aalto University for sharing their knowledge and skills.
 
 I thank all my friend from the Macadamia programme for making these two years truly memorable.
 
-Last, but not least, I thank my family for their never ending love, support and patience.
+Last, but not least, I thank my family for their never-ending love, support and patience.
 % Thank you, and keep up the good work!
 \vskip 10mm
 
