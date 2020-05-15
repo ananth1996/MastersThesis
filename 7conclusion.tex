@@ -1,14 +1,10 @@
 \chapter{Conclusions and Future Work}
 \label{chp:conclusion}
-Voting is a fundamental aspect of decision making within a community.
-Predicting how members in that community will vote on a candidate issue provides us with tools to to understand the key motivations of the members and the community.
-These insights are valuable, especially when these communities are politicians in parliaments voting on bills and laws or editors on Wikipedia promoting administrators to moderate content in the largest online encyclopedia.
-
 In this thesis, we described how voting in a community can be intuitively and structurally represented using signed networks.
 The positive and negative links directly relate to a voter's support or opposition to a candidate.
 Furthermore, we discussed how the problem of vote prediction is related to the task of predicting the sign of an link in the signed network.
 Then, we explain the structural theories of balance and status in signed networks. derived from the field of social psychology.
-We presented the existing approaches and methods to solve the sign prediction tasks and discussed their limitations for the vote prediction task.
+We discuss the existing approaches and methods to solve the sign prediction tasks and explain their limitations for the vote prediction task.
 Therefore, we proposed two new models for the task of vote prediction, incorporating the chronological nature of voting.
 
 The first, is an extension of supervised models for sign prediction approaches.
@@ -18,13 +14,13 @@ Then, we count the unique triadic features that capture the features of balance 
 The combination of all these features and the known true votes form a traditional supervised machine learning problem.
 Therefore, any linear classification model can be trained to predict positive and negative edges that correspond to support or oppose votes.
 
-The second approach we propose is iterative in nature and only relies on structural balance and status theories.
+The second, we propose an iterative model that relies solely on structural balance and status theories.
 We extend upon the concept of the voting neighbourhood to create a \textit{Local Signed Network} (LSN)for a voter.
-We state that within this LSN, the voter prefers to vote in a manner that the resultant LSN either complies with balance theory or status theory.
+We state that within this LSN, the voter prefers to vote in a manner that, the resultant LSN either complies with balance theory or status theory.
 Therefore, we arrive at two models, the first in which a voter maintains the balance of the LSN and the second where the voter preserves the status in the LSN.
-Then, we developed methods to quantitatively measure agreement with either balance or status theory.
+Then, we developed methods to quantitatively measure adherence with either balance or status theory.
 We utilize these measures to predict how an independent user will vote given their LSN.
-Furthermore, as the voting progresses we propose to maintain a relationships graph that contains the information on the interaction and relationships between the voters in the community.
+Furthermore, as the voting progresses we propose to maintain a relationships graph that encapsulates the interaction between the voters in the community.
 This, then leads to the ability to iteratively predict votes in a session and assimilating the information at the end of a session.
 
 From the results presented in Chapter~\ref{chp:results}, we conclude that the proposed models are effective in predicting the votes in Wikipedia RfAs.
