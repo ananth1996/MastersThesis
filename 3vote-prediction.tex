@@ -1,9 +1,9 @@
 \chapter{Vote Prediction}
 \label{chp:vote-prediction}
 In this chapter, we cover the main motivation behind predicting the vote of an individual voter and present the methods that can be used to solve this task.
-We discuss the contrast in perspectives that is present when predicting the result compared to predicting a vote in Section~\ref{sec:result-vs-vote}.
-Next, we explain how the problem of vote prediction is intrinsically linked to the tasks of edge and sign prediction in signed network in Section~\ref{sec:voting-signed-networks}.
-In Section~\ref{sec:linear-combination-theory}, we describe a supervised machine learning framework that can use graphs features from voting and non-voting data.
+First, we discuss the contrast in perspectives that is present when predicting the result compared to predicting a vote in Section~\ref{sec:result-vs-vote}.
+Next, in Section~\ref{sec:voting-signed-networks}, we explain how the problem of vote prediction is intrinsically linked to the tasks of link and sign prediction in a signed network.
+In Section~\ref{sec:linear-combination-theory}, we describe a supervised machine learning framework that uses features from graphs for voting and non-voting data.
 Lastly, we present our novel approach of constructing a local signed graph of the current voter and using balance and status theory to predict the vote in Section~\ref{sec:local-signed-network-theory}. 
 
 
@@ -11,22 +11,22 @@ Lastly, we present our novel approach of constructing a local signed graph of th
 \label{sec:result-vs-vote}
 In this thesis, we are interested in the voting behaviour for a collective action.
 In such cases, members of a community come together as \textit{voters} to decide on a particular \textit{candidate} item during a \textit{session}.
-In a government parliament  the voters are the elected members of the parliament and the candidate is usually a bill or policy matter.
+In a parliament  the voters are the elected members of the parliament and the candidate is usually a bill or a policy matter.
 When it is promotion within a political party or an online community such as Wikipedia, the members vote on a candidate who has been nominated for the position.
-In all these cases we have two levels of decisions being made.
-The first the individual decisions that a voter makes with regard to the candidate.
-The second is the final decision that the group arrives to after everyone has voted.
+In all these cases, we have two levels of decisions being made.
+The first is the individual decision that each voter makes with regard to the candidate.
+The second is the final decision that the group arrives at after everyone has voted.
 We refer to task of predicting the former as \textit{vote prediction} and the latter as \textit{result prediction}. 
 
 Result prediction provides a macro level perspective of the incentives of a community.
 We can create models based on the characteristics of a candidate to predict the result of a collective action.
-This will lead to understanding on a communal level of what features are preferred and if there are voting blocks formed within the members based on the type of candidate.
+This leads to an understanding on a communal level, of what characteristics are preferred and if there are voting blocks formed within the members based on ideological differences.
 This translates to practical examples such as party level dynamics in a parliament, the topic of a bill or the credentials of a nominee \cite{burke2008mopping,yano2012textual,yogatama-etal-2011-predicting}. 
 
 On the other hand, when we focus on the vote prediction problem, we get a deeper understanding of the dynamics between voters and the candidate.
 In fields such as game theory, this is well studied using frameworks such as \textit{strategic voting models} and \textit{momentum} \cite{meir2020strategic,zou2015strategicDoodle,ali2006a,banerjee1992simple,tal2015a}.
 These models are more theoretical and are studied under synthetic conditions.
-Nevertheless, they still provide a foundation on which we can construct practical models that can utilize additional external features.
+Nevertheless, they still provide a foundation on which we can construct practical models that can utilize additional features.
 One such popular approach is using textual information from bills, speeches and legislature to predict votes of politicians in parliament \cite{budhwar2018predicting,gerrish2011predicting}.
 The next important step is to represent the voting data as networks and leveraging network features to understand and predict voter behaviour.
 
@@ -41,20 +41,21 @@ Correlation clustering and community detection of signed voting graphs can disco
 Analysing the networks using social theories of balance and status provides knowledge of voter behaviour and features for prediction methods \cite{levorato2016brazilian,derr2018congressional}.
 The vote prediction task can be broken down into two subtasks which are analogous to link and sign prediction in signed networks. 
 
-The first subtask is to predict who will vote next given a candidate $c$ and a set of previous votes.
-This subtask is similar to link prediction in a signed network where we aim to predict possible future edges of the type $(v,c)$.
-The complexity subtask depends on the format of voting that takes place.
-If there is a known voting order, such as in roll call in parliamentary proceedings or explicit timestamps then it is essentially solved.
-If the voting occurs simultaneously, the subtask can be reduced to predicting the possible subset of members who will vote in a given session.
-When the voting is iterative and there is no known underlying process of who votes next, then a separate model might be required to infer the voting sequence.
-This case can be combinatorially  hard as we would need to find the correct ordering of votes in a session.
+The first subtask is to predict \textit{who} will vote next given a candidate $c$ and a set of previous votes.
+This subtask is similar to link prediction in a signed network, where we aim to predict possible future edges of the type $(v,c)$.
+The complexity of this subtask depends on the format of voting that takes place.
+For instance, if there is a known voting order, such as roll calls in parliamentary proceedings or explicit timestamps, then the subtask is trivially solved.
+On the other hand, if the voting occurs simultaneously, the subtask can be reduced to predicting the possible subset of members who will vote in a given session.
+However, when the voting is iterative and there is no known underlying process of who votes next, then a separate model might be required to infer the voting sequence.
+This particular case can be combinatorially hard, as we would need to find the correct ordering of votes in a session.
 
-The second subtask is to predict how a voter $v$ will vote for a candidate $c$ given the previous votes in the session.
-This task translates into predicting the sign of an edge $(v,c)$ in the current session.
+The second subtask is to predict \textit{how} a voter $v$ will vote for a candidate $c$ given the previous votes in the session.
+This task translates into predicting the sign of an edge $(v,c)$, in the current session.
 We call this subtask the \textit{independent vote prediction} problem.
-It is independent in nature are we are only interested in the decision of the voter $v$ assuming that we have complete prior knowledge of how the previous votes have been cast.
-This problem can be framed as a supervised learning task, using features of the interaction between the current voter $v$, previous voters $U$ and the candidate $c$ to predict the sign of the edge $(v,c)$.
-We can utilize theories of balance and status in signed networks to create models similar to those by Karimi et al.\ \cite{karimi2019multicongress} and Jankowski-Lorek et al.\ \cite{jankowski-lorek2013MBSN} to predict voter behaviour.
+It is independent as we are only interested in the decision of the voter $v$, assuming that we have complete prior knowledge of how the previous votes have been cast.
+Then, this problem can be framed as a supervised learning task.
+It uses features of the interaction between the current voter $v$, previous voters $U$ and the candidate $c$ to predict the sign of the edge $(v,c)$.
+We can utilize the theories of balance and status in signed networks to create models similar to those by Karimi et al.\ \cite{karimi2019multicongress} and Jankowski-Lorek et al.\ \cite{jankowski-lorek2013MBSN} to predict voter behaviour.
 
 \iffalse
 \todo[inline]{Are the IC paras neccessary?}
@@ -89,7 +90,7 @@ In contrast, we focus on using general signed network features of balance and st
 In this section we explain how the approaches outlined in Section~\ref{sec:link-prediction} can be applied to solve the \textit{independent vote prediction} problem.
 As discussed previously, the \textit{edge sign prediction} task in signed network is analogous to vote prediction.
 The models proposed by Leskovec et al.\ \cite{leskovec2010predicting} can be used to predict the sign of the edge $(v,c)$.
-Voting in a community takes place across many sessions in a chronological manner.
+However, voting in a community takes place across many sessions in a chronological manner.
 Therefore, we must partition the training and testing datasets to avoid data leakage.
 We propose the following framework to gather features using a linear combination of the voting history and several auxiliary graphs.
 
@@ -98,28 +99,30 @@ The current voter in consideration is denoted by $v$ and the candidate of the se
 In this thesis, for all the models we assume that each session has a unique candidate.
 The votes that have been cast prior to the current voter exists as edges $(u,c)$ in the session $S$ and the set of prior voters is denoted as $U =\{u \mid (u,c) \in E_S\}$.
 The history $H=(V_H,E_H,w_H)$ is defined as the directed signed graph containing the votes from sessions chronologically prior to $S$.
-We also define a set of auxiliary graphs $A = \{G_1,G_2,\dots,G_l\}$ based on external non-voting data.
+
+We define a set of auxiliary graphs $A = \{G_1,G_2,\dots,G_l\}$ based on external non-voting data.
 These auxiliary graphs can be either directed or undirected, weighted or unweighted, signed or unsigned.
 This is similar to the relational layer in \textit{Multidimensional Social Networks} (MSN) described by Kazienko et al.\ \cite{kazienko2011multidimensional} and Jankowski-Lorek et al.\ \cite{jankowski-lorek2013MBSN}.
-However, the auxiliary graphs capture different relations between a subset of the voting members which will be used to generate additional features for the vote prediction task. 
+However, the auxiliary graphs capture different relations between a \textit{subset} of the voting members that need not overlap.
+These relations will be used to generate additional features for the vote prediction task. 
 
 Algorithm~\ref{alg:auxiliary-feature} describes how to generate a feature vector $\mathbf{a}$ from the auxiliary graphs $A$.
 The algorithm finds the intersection of the prior voters $U$ and the neighbourhood of the current voter $v$ in the graph $G_i$ which we call the \textit{voting neighbourhood}.
-Then the feature $\mathbf{a}_i$ is computed as the weighted sum of the voting neighbourhood plus the edge weight to the candidate $(v,c)$.
+Then the feature $\mathbf{a}_i$ is computed as the weighted sum of the voting neighbourhood plus the edge weight to the candidate $(v,c)$ in the auxiliary graph $G_{i}$.
 Figure~\ref{fig:linear-combination of graphs} provides an example with three auxiliary graphs and two prior voters $u_1$ and $u_2$.
 The dashed red edges are the votes cast in the current session $S$ by the prior voters.
-We see that in the example $G_1$ is a directed graph, $G_2$ is an undirected graph and $G_3$ is a signed directed graph.
-The current voter $v$ has different relations to his voting neighbourhood in each auxiliary graph and therefore each feature is a different combination of edge weights. 
+We see, in the example, $G_1$ is a directed graph, $G_2$ is an undirected graph and $G_3$ is a signed directed graph.
+The current voter $v$ has different relations to his voting neighbourhood in each auxiliary graph and therefore each feature is a different combination of edge weights from those graphs. 
 
 In addition to the auxiliary feature vector $\mathbf{a}$, we can also create triad features based on the historical voting graph $H$.
-Similar to Leskovec et al.\ \cite{leskovec2010predicting} amd Karimi et al.\ \cite{karimi2019multicongress} we can form a set of unique triads $T$.
+Similar to Leskovec et al.\ \cite{leskovec2010predicting} and Karimi et al.\ \cite{karimi2019multicongress} we can form a set of unique triads $T$.
 Then, for each node $u$ in the common neighbourhood of $N_{vc}$ we can count the triad formed from the three vertices.
 Algorithm~\ref{alg:triad-feature} describes this procedure. 
 
-We can now create a feature matrix $\mathbf{X}$ for all the sessions in a given dataset.
-Each row is the concatenation of the auxiliary feature vector and the triadic feature vector $\mathbf{x} = [\mathbf{a},\mathbf{t}]$ .
+We now create a feature matrix $\mathbf{X}$ for all the sessions in a given dataset.
+In the feature matrix, each row is the concatenation of the auxiliary feature vector and the triadic feature vector $\mathbf{x} = [\mathbf{a},\mathbf{t}]$ .
 The target vector $\mathbf{y}$ is the vector of true votes.
-Now we train a linear machine learning model and use it to predict the votes in a test dataset.
+Now, we train a linear machine learning model and use it to predict the votes in a test dataset.
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
@@ -171,31 +174,36 @@ Now we train a linear machine learning model and use it to predict the votes in 
 
 
 \label{sec:local-signed-network-theory}
-In this section, we present an unsupervised method that can be used iteratively in predicting the votes in a session.
-This method builds on top the concept of a \textit{voting neighbourhood} introduced in the previous section and relies solely on the social theories of balance and status in signed networks to predict a vote.
-However, unlike the triads features used in the supervised method, we will utilize generic measures of the balance or status of a network  and predict the vote that preserves these measures the best. 
+In this section, we present an unsupervised method that can be used iteratively to predict the votes in a session.
+This method builds on top the concept of a \textit{voting neighbourhood}, introduced in the previous section and relies solely on the social theories of balance and status in signed networks to predict a vote.
+However, unlike the triadic features used in the supervised method, we propose to utilize generic measures of a network's adherence to the theories of balance or status.
+Then, we predict the vote that preserves these measures the best. 
 
-As defined in the previous section, the directed signed graph of the current session is $S = (V_S,E_S,w_S)$ and $v$ is the voter, $c$ is the candidate and $U$ is the set of prior voters in the session. $H=(V_H,E_H,w_H)$ is the directed signed graph that contains the historical voting records prior to the current session.
-The first step is to construct a signed \textit{relationship graph} $R=(V_R,E_R,w_R)$ from the history voting graph $H$.
-The edges of this graph capture simple signed relationship between the voters such as \textit{agreement} or \textit{concurrence}  and can be constructed uniquely based on the given problem.
+As defined in the previous section, the directed signed graph of the current session is $S = (V_S,E_S,w_S)$ where, $v$ is the voter, $c$ is the candidate and $U$ is the set of prior voters in the session. $H=(V_H,E_H,w_H)$ is the directed signed graph that contains the historical voting records prior to the current session.
+
+The first step is to construct a signed \textit{relationship graph} $R=(V_R,E_R,w_R)$ from the historical voting graph $H$.
+The edges of this graph capture simple signed relationships between the voters such as \textit{agreement} or \textit{concurrence}.
+The relationship graph can also be constructed uniquely based on the details of the domain in which the voting occurs.
 Based on whether we use balance or status theory to predict the vote, the relationship graph is either unweighted or weighted respectively.
 
 We now define the \textit{Local Signed Network} (LSN) of a voter $v$ as the intersection of the session and the relationship graph $LSN=S \cap R$.
 We assume that candidate $c$ is present in the relationship graph so that we get all the prior vote edges $(u_j,c)$ in the LSN.
-The \textit{voting neighbourhood} that we described in the previous section is the set of vertices for the LSN i.e., $V_{LSN}=V_S \cap V_R$.
+The \textit{voting neighbourhood} that we described in the previous section, has the same set of vertices as that of the LSN, i.e., $V_{LSN}=V_S \cap V_R$.
 There are three main types of edges present in the LSN.
 The first are the prior vote edges $(u_j,c)$, from the prior voters to the candidate.
 The second are the relationship edges $(v,u_j)$, from the voter to the prior voters.
 The third is the relationships between the prior voters $(u_j,u_k)$.
 All these three types of edges can be seen in the undirected LSN shown in Figure~\ref{fig:lsn-balance}c.
-We will now cover how to predict the edge $(v,c)$ in the LSN using balance and status theory.  
+We will now explain how to predict the edge $(v,c)$ in the LSN using balance and status theories.  
 
 \subsection{Prediction Based on Balance Theory}
 \label{subsec:prediction-based-balance}
 As described in Section~\ref{sec:balance-theory}, balance theory is applied to undirected signed graphs.
-Therefore, we construct a undirected signed relationship graph $R$ using voting history.
-The signed relations the edges $E_R$ in this graph describe should be symmetric in nature for e.g., the probability of agreements or disagreement between a pair of nodes $u$ and $v$.
-Now, we create the LSN from the intersection of the session graph $S$ and relationship graph $R$ and keep the LSN an undirected graph by ignoring the direction of the voting edges $(u_j,c)$. 
+Therefore, we construct an undirected signed relationship graph $R$ using the voting history.
+The edge set $E_{R}$, represents the signed relations between nodes and should be symmetric in nature.
+For example, the probability of agreements or disagreement between a pair of nodes $u$ and $v$.
+Now, we create the LSN from the intersection of the session graph $S$ and relationship graph $R$.
+To keep the LSN an undirected graph, we ignore the direction of the voting edges $(u_j,c)$. 
 
 Now, we turn to the task of predicting the sign of the edge $(v,c)$ in the LSN.
 The voter $v$ can cast either a positive or negative vote for the candidate $c$.
@@ -208,20 +216,21 @@ Therefore, the larger $\lambda_1$ is, the more imbalanced the network is and if 
  
 Combining these concepts we have Algorithm~\ref{alg:balance-pred}.
 When given a LSN and an edge $(v,c)$ to predict, we first assume the vote is positive, add it to the LSN and compute the smallest eigenvalue denoted by $\lambda_1^{+}$.
-Next, we assume the vote is negative and add the edge to the LSN and the corresponding smallest eigenvalue is $\lambda_1^-$.
-Now, if $\lambda_1^+ < \lambda_1^-$, then we can predict that the vote is positive as the resulting LSN is more balanced.
-Similarly, if $\lambda_1^-<\lambda_1^+$, we predict a negative vote as it results in a more balanced network.
+Next, we assume the vote is negative and add the edge to the LSN and compute the corresponding smallest eigenvalue denoted by $\lambda_1^-$.
+
+Now, if $\lambda_1^+ < \lambda_1^-$, then we can predict that the vote is positive, as the resulting LSN is more balanced.
+Similarly, if $\lambda_1^-<\lambda_1^+$, we predict a negative vote, as it results in a more balanced network.
 This deterministic rule does not capture the gap between $\lambda_1^+$ and $\lambda_1^-$.
 Therefore, the ratio $r=\frac{\lambda_1^-}{\lambda_1^+}$ can be used to express the confidence in predicting the vote is positive.
 As $\lambda_1^+$ approaches $0$ (or $\lambda_1^-$ increases), $r$ approaches $\infty$ and when $\lambda_1^-$ approaches $0$ (or $\lambda_1^+$ increases), $r$ approaches $0$.
-Also, when $\lambda_1^+=\lambda_1^-$, $r=1$ which indicates that we are equivocal between the vote being positive and negative.
-We can convert the ratio $r$ into a measure of the probability that the given edge $(v,c)$ is positive by defining $p=1/(1+e^{(1-r)})$.
-Therefore, the output of the model is a probability measure that can be compared similar to the output of a logistic regression model.
+Also, when $\lambda_1^+=\lambda_1^-$ then $r=1$, which indicates that we are equivocal between the vote being positive and negative.
+We convert the ratio $r$ into a measure of the probability that the given edge $(v,c)$ is positive by defining $p=1/(1+e^{(1-r)})$.
+Therefore, the output of the model is the probability that a vote is positive.
 
-Figure~\ref{fig:lsn-balance} shows an example of how the we can iteratively predict votes using balance theory.
+Figure~\ref{fig:lsn-balance} shows an example of how we can iteratively predict votes using balance theory.
 The current voter at every iteration $i$ is $v=u_{i+1}$.
 We start in the first iteration $i=1$ with one prior voter $u_1$ who has voted negatively for the candidate $c$ seen by the dotted red line in Figure~\ref{fig:lsn-balance}a.
-The current voter $v$ has a negative relation towards $u_1$ indicated by the solid blue line.
+The current voter $v$ has a negative relationship with $u_1$ indicated by the solid blue line.
 Now, in this triad we know "$v$ disagrees with $u_1$" and "$u_1$ disapproves of $c$".
 Using the intuition provided by balance theory, we can predict that the edge $(v,c)$ is positive as it results in the triad being balanced.
 This result can be verified empirically by observing the values of smallest eigenvalue.
@@ -229,10 +238,12 @@ We see that $\lambda_1^+=0$ and $\lambda_1^-=1$ and therefore, the positive vote
 Now, in the next iteration, $v$ becomes the prior voter $u_2$ and we add the edge $(u_2,c)$ with the true vote (in this example we assume it was the same as the prediction made) and we get the next voter as the new $v$.
 
 In the second iteration $i=2$, the new voter $v$ has a positive relation with the prior voter $u_1$ as seen in Figure~\ref{fig:lsn-balance}b.
-By preserving the relation between $u_1$ and $u_2$ from the previous iteration there are larger cycles in the LSN.
-Similar to the previous iteration, we can observe the smallest eigenvalues and conclude that a negative vote leads to more balanced network and positive vote probability is now $p=0$.
-Now, in the third iteration $i=3$, the smallest eigenvalues in both cases are equal.
-Therefore, we are equivocal in the vote being positive or negative and the positive vote probability is $p=0.5$.
+By preserving the relation between $u_1$ and $u_2$ from the previous iteration, we have larger cycles in the current LSN.
+Similar to the previous iteration, we observe the smallest eigenvalues of the LSN.
+We conclude that a negative vote leads to more balanced network and positive vote probability is now $p=0$.
+Now, in the third iteration $i=3$, the smallest eigenvalue of the LSN in both cases are equal.
+Therefore, we are equivocal in the vote being positive or negative.
+Hence, the positive vote probability is $p=0.5$.
 
 \input{images/local-sign-balance.tex}
 
@@ -256,52 +267,54 @@ Therefore, we are equivocal in the vote being positive or negative and the posit
 
 \subsection{Prediction Based on Status Theory }
 \label{subsec:prediction-based-status}
-We mentioned in Section~\ref{sec:status-theory} that status theory is described for directed signed networks.
-The relationship graph $R$ should, therefore, be be constructed from the history $H$ as a directed signed network.
-The directed edges $(u,v)$ should denote asymmetric relation between the nodes for e.g., the ratio of concurrence: a measure of times that $u$ has voted after $v$ in a session and agreed.
-The LSN created from the intersection of the session $S$ and the relation is also a directed signed graph.
+We mentioned in Section~\ref{sec:status-theory} that status theory is defined for directed signed networks.
+The relationship graph $R$ should, therefore, be constructed from the history $H$ as a directed signed network.
+The directed edges $(u,v)$ should denote asymmetric relation between the nodes.
+For example, the ratio of \textit{concurrence} which is a measure of times that $u$ has voted after $v$ in a session and agreed.
+The LSN created from the intersection of the session graph $S$ and the relationship graph $R$ is also a directed signed graph.
 
-Similar to predicting the vote using balance theory, the vote is either positive or negative.
+Similar to predicting the vote using balance theory, the vote can either be positive or negative.
 Now, we state that the voter aims to maintain the status in the resulting LSN.
-Therefore, we predict the vote $(v,c)$ that when added to the LSN best preserves status in the network.
-Therefore, we need a measure of how much a given network conforms to the theory of status.
+Therefore, we predict the vote $(v,c)$ that when added to the LSN best preserves the status of the network.
+Therefore, we require a measure of how much a given network adheres to the theory of status.
 However, to the best of our knowledge, there are no existing methods to quantify and measure the extent that a network conforms to status theory.
 In this thesis, we present a quantitative definition of status theory in a network and also present a novel method of using the agony of a directed network to measure the compliance with status theory.
 
 As we discussed in Section~\ref{sec:status-theory}, signed edges can be interpreted as recognition of relative status.
 This means that a positive edge $u \plusrightarrow v$ indicates that $v$ has a higher status than $u$, and a negative edge $u \minusrightarrow v$ indicates that $v$ has lower status than $u$.
-Let us assume that there is an implicit status function $\sigma: V \rightarrow \mathbb{N}$ that maps each node in the network to a quantity that correlates with status.
-Therefore, the edges $u\plusrightarrow
- v$ and $u \minusrightarrow v$ indicate $\sigma(u)<\sigma(v)$ and $\sigma(u)>\sigma(v)$ respectively.
-This is how we predict the missing sign of an edge in a triad.
-Leskovec et al.\ \cite{leskovec2010signed} provide a way to compute this status function $\sigma$ from the node degrees as seen in Section~\ref{sec:status-theory}.
+Let us assume that there exists an \textit{implicit} status function $\sigma: V \rightarrow \mathbb{N}$ that maps each node in the network to a quantity that correlates with status.
+Therefore, the edges $u\plusrightarrow v$ and $u \minusrightarrow v$ indicate $\sigma(u)<\sigma(v)$ and $\sigma(u)>\sigma(v)$ respectively.
+We can use this relative ranking of status to predict the missing sign of an edge in a triad.
+Leskovec et al.\ \cite{leskovec2010signed} provide a way to compute this status function $\sigma$ from the node degrees as shown in Section~\ref{sec:status-theory}.
 However, this measure is still defined locally and can be used only to predict the sign of an edge.
-We still require a framework to quantify violations and measure how much the network complies with status theory.
+We require a framework to define violations to status theory and measure how much a network on a whole complies with status theory.
 We define that an edge $e=(u,v)$ \textit{violates} status theory if $w(e)\sigma(u)\not\leq w(e)\sigma(v)$.
 Now, we can define when a network is perfectly complaint with status.
 
  \theoremstyle{definition}
  \begin{definition}{Perfect Status Compliance}
-     A directed signed network $G=(W,E,w)$ with an implicit status function $\sigma: V \rightarrow \mathbb{N}$ is said to be perfectly status complaint if $\forall e=(u,v) \in E$, $\sgn(w(e))\sigma(u) \leq \sgn(w(e))\sigma(v)$ 
+     A directed signed network $G=(V,E,w)$ with an implicit status function $\sigma: V \rightarrow \mathbb{N}$ is said to be perfectly status complaint if $\forall e=(u,v) \in E$, $\sgn(w(e))\sigma(u) \leq \sgn(w(e))\sigma(v)$ 
  \end{definition}
 
 Therefore, the number of edges that are in violation to status theory can be a rudimentary measure of the status compliance of a given network.
 However, in the case of most signed directed networks, we do not possess the implicit status function $\sigma$.
 Hence, even computing the number of edges that violate status theory is not possible.
-Therefore, if we can infer the status function $\sigma$ from the structure of the signed network then we can measure the status compliance of that network. 
+However, if we can infer the status function $\sigma$ from the structure of the signed network then we can measure the status compliance of that network. 
 
-We can now use the concept of \textit{agony} described in Section~\ref{sec:hierarchy} to find the optimal hierarchy of a given directed network.
-The notion of hierarchy is strongly related to status theory for signed networks.
-In a DAG, then there no cycles and we can find a status function $\sigma$ such that there are no edges that violate status theory.
-Moreover, agony is a measure of the violation of edges with respect to a ranking function.
-Nevertheless, agony and hierarchy were primarily defined for unsigned networks.
+We now use the concept of \textit{agony} described in Section~\ref{sec:hierarchy} to find the optimal hierarchy of a given directed network.
+However, agony and hierarchy were primarily defined for unsigned networks.
 We can easily remedy this by using the fact that a negative edge $u \minusrightarrow v$ can be transformed into a positive edge $u \plusleftarrow v$.
 If $G$ is a signed network then we denote the unsigned directed network obtained from the transformation described as $G^\prime$.
 
-Now, the agony of an edge $(u,v)$ in $G^\prime$ given a status function (called rank function in Gupte et al.\ \cite{gupte2011finding}) is $\max(\sigma(u)-\sigma(v)+1,0)$.
+The notion of hierarchy is strongly related to status theory for signed networks.
+For instance, if $G^\prime$ is a DAG, then there no cycles and we can find a status function $\sigma$, such that there are no edges that violate status theory.
+Therefore, let us consider that the rank function $r:V\rightarrow \mathbb{N}$ used to define agony is the status function $\sigma$ for the signed network.
+Then, the agony of an edge in $G^\prime$ is a measure of the violation of that edge with respect to status theory.
+
+The agony of an edge $(u,v)$ in $G^\prime$ given the status function $\sigma$ is defined as $\max(\sigma(u)-\sigma(v)+1,0)$.
 Therefore, agony is a quantification of the status violation of an edge.
 The agony of the network with respect to a status function $\sigma$ is defined as the sum of the agony of each edge in the network denoted by $A(G^\prime,\sigma)$.
-The agony of the network $A(G^\prime)= \min_\sigma(A(G^\prime,\sigma))$ is the smallest agony over all possible ranking of the nodes.
+The agony of the network $A(G^\prime)= \min_\sigma(A(G^\prime,\sigma))$. is the smallest agony over all possible ranking of the nodes.
 In this way, the agony of the network is a more generalized measure of status compliance than just counting the number of violating edges.
 Therefore, we can use one of the algorithms mentioned in Section~\ref{sec:hierarchy} to compute agony of $G^\prime$.
 We call this value as the agony of the original signed network $G$ and denote $\alpha = \alpha(G) = A(G^\prime)$.
@@ -315,7 +328,7 @@ Let $G=(V,E,w)$ be a directed signed graph.
 Then $\alpha(G)=0$ if and only if $G$ is perfectly status complaint.
 \end{theorem}
 \begin{proof}
-    The transformed unsigned directed network is $G^\prime=(V^\prime,E^\prime,w^\prime)$. The agony of a the directed network $G^prime$ is 0 when the network has perfect hierarchy \cite{gupte2011finding}. Therefore, there exists a status function $\sigma$ such that the agony of all edges $G^\prime$ i.e., $\sigma(u) \leq \sigma(v), \forall (u,v)\in E^\prime$. Therefore, there are no edges in $G$ that violate status theory and $G$ is perfectly status complaint. Hence proved.
+    The transformed unsigned directed network is $G^\prime=(V^\prime,E^\prime,w^\prime)$. The agony of a the directed network $G^\prime$ is 0 when the network has perfect hierarchy \cite{gupte2011finding}. Therefore, there exists a status function $\sigma$ such that the agony of all edges $G^\prime$, i.e., $\sigma(u) \leq \sigma(v), \forall (u,v)\in E^\prime$. Therefore, there are no edges in $G$ that violate status theory and $G$ is perfectly status complaint. Hence proved.
 \end{proof}
 
 \begin{algorithm}[htp]
@@ -344,8 +357,8 @@ Then $\alpha(G)=0$ if and only if $G$ is perfectly status complaint.
 
 Now, we can compute the agony of the LSN and utilize it to predict the sign of the vote.
 We follow a process similar to predicting the sign using balance theorem.
-First, first assume the vote is positive and add the edge $(v,c)$ to the LSN and compute the agony and call it as $\alpha^+$.
-Next, we assume the vote is negative and add the edge and compute the agony of the LSN and call it $\alpha^-$.
+First, first assume the vote is positive and add the edge $(v,c)$ to the LSN and compute the agony and denote it $\alpha^+$.
+Next, we assume the vote is negative, add the corresponding edge to the LSN and compute the agony and denote it $\alpha^-$.
 If $\alpha^+ < \alpha^-$, then it means that the positive vote results in a LSN that has fewer violations of status and therefore, we can predict the vote is positive.
 Similarly, we predict a negative vote if $\alpha^- < \alpha^+$.
 Alternatively, we can also compute the probability of a positive vote as $p=1/(1+e^{(1-r)})$, where $r=\alpha^-/\alpha^+$.
@@ -355,11 +368,11 @@ We see a directed LSN similar to the one in Figure~\ref{fig:lsn-balance}a in Fig
 The branches indicate the two possibilities for the vote edge $(v,c)$.
 The left branch assumes that the vote is positive and adds it to the LSN.
 When we transform the negative edges in the LSN we get a cycle.
-As a cycle indicates that there is no hierarchy in the LSN the agony $\alpha^+=3$ reflects the fact that each edge violates status theory.
+As a cycle indicates that there is no hierarchy in the LSN, the agony $\alpha^+=3$ reflects the fact that each edge violates status theory.
 The right branch assumes that the vote is negative and includes it in the LSN.
 After transformation, we see that all the edges comply with status theory and therefore, the agony $\alpha^-=0$.
-Now, the corresponding positive vote probability is $p=0$ indicating that we would predict a negative vote.
-Note this result is contradictory to balance theory where we predict a positive vote for the same LSN.
+Now, the corresponding positive vote probability is $p=0$, indicating that we would predict a negative vote.
+Note, this result is contradictory to the prediction made by balance theory for the same LSN.
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
@@ -383,22 +396,25 @@ Note this result is contradictory to balance theory where we predict a positive 
 \subsection{Iterative Prediction Model}
 
 Now, Algorithm~\ref{alg:iterative-pred} describes a model that can predict the votes in a session iteratively.
-We have the order of votes in the session denoted by $O$ and the true votes function $w^{*}$.
-We create the session graph and initialize it with the candidate $c$ and the first voter as seen in line~\ref{iterative-pred:line:init-session}.
-This is because we need at least one prior vote information to effectively predict a vote.
-In most settings, such as bills in a government parliament or promotion of a member in a community, there are always  sponsors or nominators who propose the candidate in that session.
-Therefore, we are justified in starting the session with the candidate and the first vote cast in the session graph $S$.
-Next, for each subsequent voter $v$ in the list, we add it the session and create the LSN.
-The $Predict$ function in line~\ref{iterative-pred:line:predict} can be based on either balance (Algorithm~\ref{alg:balance-pred}) or status theory (Algorithm~\ref{alg:status-pred}).
-Then, we add the true vote of voter $v$ to the session $G$ and move on to the next voter in the list.
+We assume we have the order of votes in the session denoted by $O$ and the true votes function $w^{*}$.
+Then, we create the session graph and initialize it with the candidate $c$ and the first voter as seen in line~\ref{iterative-pred:line:init-session}.
+This is because, we require information from at least one prior vote to effectively predict any vote.
+In most settings, such as bills in a parliament or promotion of a member in a community, there are always sponsors or nominators who propose the candidate in that session.
+Therefore, we are justified in starting the session with the candidate and the first vote cast in the session graph $S$, which we assume is the nominator's vote.
+Next, for each subsequent voter $v$ in the list, we add them to the session and create the LSN.
+The $Predict$ function, in line~\ref{iterative-pred:line:predict} can be based on either balance theory (Algorithm~\ref{alg:balance-pred}) or status theory (Algorithm~\ref{alg:status-pred}).
+After predicting the vote, we add the true vote of voter $v$ to the session $G$ and move on to the next voter in the list.
 After all the votes are predicted in the session, we can update the relationship graph $H$ with the data from the current session $S$.
 This can include operations such as adding nodes that were not present in $R$ and updating the edge weights based on the votes cast in the current session.
 
 In this process we can predict all the votes in all the sessions by starting with an empty relationship graph and updating it after every session.
 Therefore, the model can be compared to a "\textit{batch}" machine learning model, where each batch is a voting session and the model parameter is the relationship graph $R$.
-In a batch, the model will predict votes based the parameters, which is the information gathered from the previous sessions contained in the relationship graph $R$.
-After the batch is complete, the model updates its "parameters" or the graph with data from the current session.
-We can bootstrap the model from a complete \textit{blank slate} where $R$ is an empty graph and then iteratively predicts sessions and updates $R$.
+In a batch, a machine learning model will predict an outcome based on its parameters.
+Analogously, in a session, our iterative model predicts the vote using the the information gathered from the previous sessions contained in the relationship graph $R$.
+After a batch is complete, the machine learning model updates its parameters based on the data in the batch.
+Similarly, after the end of a session, our iterative model updates the relationships graph with voting data from the current session.
+
+Furthermore, we can bootstrap the iterative model from a complete \textit{blank slate} where $R$ is an empty graph and then iteratively predicts sessions and updates $R$.
 Therefore, the model can improve after each session by incorporating the voting information into the relationship graph.
 
 \begin{algorithm}[htp]
