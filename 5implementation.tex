@@ -304,14 +304,16 @@ The weight function $w_{F}$ for the follow graph can be defined as seen in Equat
     w_{F}((u,v)) = \frac{\text{Number of times } u \text{ voted after and agreed with } v }{\text{Number of times } u \text{ voted after } v} -0.5
 \end{equation}
 
-The update rule for the follow graph is similar to that for the agreement graph.
-We assume that every edge $e=(u,v) \in E_{F}$, has the attributes $e.follow$ and $e.common$, the follower ratio and the number of elections where $u$ voted after $v$ respectively.
-After a RfA voting session, the session graph $S$ can be used to update the follower ratio and the corresponding weight as show in Algorithm~\ref{alg:follow-update}.
-
-In a RfA we are predicting a vote $v$ given the previous voters $U$, the current session graph $H$ and the follow graph $F$, as seen in Algorithm~\ref{alg:status-pred}.
 When we create the LSN, we only consider the edges of type $v \rightarrow u_{i}$ from the follow graph $F$.
 This is because the voter $v$ is voting after the voters in $U$, therefore, the edges $v \leftarrow u_{i}$ provide information that is not consistent with the current voting situation.
 This can also be a point that can be analysed to see if the revered follower edges provide more benefit to the model or not.
+
+In a RfA we are predicting a vote $v$ given the previous voters $U$, the current session graph $S$ and the follow graph $F$, as seen in Algorithm~\ref{alg:status-pred}.
+We utilize the code provided by Tatti \cite{tatti2017tiers} to compute the agony of a unsigned weighted directed network required for Algorithm~\ref{alg:signed-agony}.
+
+The update rule for the follow graph $F$ is similar to that for the agreement graph.
+We assume that every edge $e=(u,v) \in E_{F}$, has the attributes $e.follow$ and $e.common$, the follower ratio and the number of elections where $u$ voted after $v$ respectively.
+After a RfA voting session, the session graph $S$ can be used to update the follower ratio and the corresponding weight as show in Algorithm~\ref{alg:follow-update}.
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
