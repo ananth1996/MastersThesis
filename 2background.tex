@@ -2,8 +2,8 @@
 \chapter{Background}
 \label{chp:background}
 
-In this chapter, we will provide the fundamentals of the graph theory concepts required to understand the rest of the thesis.
-In Section~\ref{sec:prelim}, we cover the basic definitions and terminologies used to describe different types of graphs.
+In this chapter, we provide the fundamentals of the graph theory concepts required to understand the rest of the thesis.
+In Sec tion~\ref{sec:prelim}, we cover the basic definitions and terminologies used to describe different types of graphs.
 Then, we define a signed graph and discuss its unique properties in Section~\ref{sec:signed-graphs}.
 We outline the social theories of balance and status in signed networks in \Cref{sec:balance-theory,sec:status-theory}.
 Later, in Section~\ref{sec:link-prediction}, we provide an overview of the link and sign prediction tasks in singed network and highlights the important approaches from recent works.
@@ -17,24 +17,24 @@ The notation and terminologies used closely follow those used in Diestel~\cite{d
 These entities are called \textit{vertices} and entities related to one another are joined by \textit{edges}.
 The terms graph, vertices and edges can be used interchangeably with \textit{network}, \textit{nodes} and \textit{links} respectively.
 
-Graphs can be classified broadly into two types based on whether the edges posses a direction.
+Graphs can be classified broadly into two types based on whether their edges posses a direction.
 We now go on to define them in detail.
 \subsection{Undirected Graphs}
-An undirected graph is pair $G=(V,E)$, where $V$ is the set of vertices and $E$ is the set $E \subseteq \{ (u,v) \mid u,v \in V\}$ of unordered pairs of vertices called edges.
-In this thesis we will deal only with \textit{simple graphs}, i.e., no self loops, $(u,v)\in V \times V, ~ u\neq v$ and there is at most one edge between vertices $u$ and $v$. 
+An undirected graph is a pair $G=(V,E)$, where $V$ is the set of vertices and $E$ is the set $E \subseteq \{ (u,v) \mid u,v \in V\}$ of unordered pairs of vertices called edges.
+In this thesis, we will deal only with \textit{simple graphs}, i.e., no self loops, $(u,v)\in V \times V, ~ u\neq v$ and there is at most one edge between $u$ and $v$. 
 
 The number of the vertices in a graph is called the \textit{order} of the graph and is denoted by $n= |G|$.
 In turn, the \textit{size} of a graph is the number of edges denoted by $m = \|G\|$ or $m=|E|$.
 A vertex $u$ is \textit{adjacent} to $v$ if they are the end points of an edge, $(u,v) \in E$.
-All the vertices adjacent to a vertex $v$ is called the \textit{neighbourhood} of $v$ and is denoted by $N(v)$.
+All the vertices adjacent to a vertex $v$ are called the \textit{neighbourhood} of $v$ and is denoted by $N(v)$.
 The \textit{degree} of a vertex $v$ is the number of nodes adjacent to that vertex and is denoted by $d(v) = |N(v)|$. 
 
-The edges of an undirected graph can also have an associated value.
-This value can indicate the distance or similarity between a pair of vertices.
+The edges of an undirected graph can have an associated value.
+This value indicates the distance or similarity between a pair of vertices.
 These values are called \textit{weights} and the corresponding graph is called a \textit{weighted undirected graph}.
 Therefore, a weighted graph is defined as a triple $G=(V,E,w)$, where $w:E \rightarrow \mathbb{R}^{+}$ is a function that maps an edge $e$ to a positive real weight $w(e)$.
-Now an \textit{unweighted graph} is simply a weighted graph where the function $w$ is defined as: if $e \in E$ then $w(e)=1$ else $w(e)=0$.
-The degree of a vertex $v$ in a weighted graph is the sum of the weights to all the neighbours of $v$ and is defined as $d(v) = \sum_{u\in N(v)}w((u,v))$.
+Now, an \textit{unweighted graph} is simply a weighted graph where the function $w$ is defined as: if $e \in E$ then $w(e)=1$ else $w(e)=0$.
+The degree of a vertex $v$ in a weighted graph is the sum of the weights to all the neighbours of $v$, and is defined as $d(v) = \sum_{u\in N(v)}w((u,v))$.
 An example of a weighted undirected graph is shown in Figure~\ref{fig:weighted-undirected}. 
 \begin{figure}[!ht]
     \centering
@@ -45,22 +45,24 @@ An example of a weighted undirected graph is shown in Figure~\ref{fig:weighted-u
 
 
 \subsection{Directed Graphs}
-The main distinction regarding a \textit{directed graph} (or \textit{digraph}) is that the edges are ordered pairs, i.e.,$(u,v) \neq (v,u)$.
+The main distinction regarding a \textit{directed graph} (or \textit{digraph}) is that the edges are ordered pairs, i.e., $(u,v) \neq (v,u)$.
 Therefore, a directed graph has a similar definition: a pair $G=(V,E)$, where $V$ is the set of vertices and $E$ is the set of \textit{ordered} pairs of vertices.
-Now given an edge $e=(u,v)$ we can define a source function $\src:E\rightarrow V$ such that $\src(e)=u$ and a destination function $d:E\rightarrow V$ where $\dest(e)=v$.
+Now given an edge $e=(u,v)$ we can define a source function $\src:E\rightarrow V$, such that $\src(e)=u$ and a destination function $d:E\rightarrow V$, where $\dest(e)=v$.
 These functions classify the vertices in an edge $e$ as either the source or the destination.
 In this thesis, we deal only with \textit{simple directed graphs}, i.e., no self-loops, and there can be at most one edge from $u$ to $v$. 
 
 As the edges now have an inherent direction, we can define the \textit{successors} and \textit{predecessors} of a node $v$.
-A vertex $u$ is called the \textit{successor} of a node $v$ if there exists a directed edge from $v$ to $u$, therefore the set of successors for a vertex $v$ can be defined as $S(v) = \{u \mid (v,u) \in E\}$.
-A \textit{predecessor} of a node $v$ is a vertex $u$ such that there exists a directed edge from $u$ to $v$, the set of predecessors for a vertex $v$ can de defined as $P(v) = \{u \mid (u,v) \in E\}$.
-Now, a vertex $u$ that is either a successor or a predecessor of a vertex $v$ can be called a neighbour of the vertex $v$.
+A vertex $u$ is called the \textit{successor} of a node $v$, if there exists a directed edge from $v$ to $u$.
+Therefore, the set of successors for a vertex $v$ is defined as $S(v) = \{u \mid (v,u) \in E\}$.
+A \textit{predecessor} of a node $v$ is a vertex $u$ such that there exists a directed edge from $u$ to $v$.
+The set of predecessors for a vertex $v$ is defined as $P(v) = \{u \mid (u,v) \in E\}$.
+Now, a vertex $u$ that is either a successor or a predecessor of a vertex $v$ is called a neighbour of the vertex $v$.
 Therefore, we define the \textit{neighbourhood} of a vertex $v$ as the set of vertices in the union of successors and predecessor, i.e. $N(v) = S(u) \cup P(v)$.
-This definition is also compatible with undirected graphs because if $(u,v) \in E$ then $(v,u) \in E$. 
+This definition is also compatible with undirected graphs, because if $(u,v) \in E$ then $(v,u) \in E$. 
 
 Directed graphs can also have values associated with each directed edge called a \textit{weight}.
 A \textit{weighted directed graph} can be defined as a triple $G=(V,E,w)$, where the weight function $w:E \rightarrow \mathbb{R}^{+}$ maps each edge $e$ to a weight $w(e)$.
-The indegree of a vertex $v$ is defined as the sum of the edge weights from the predecessors of $v$ and is denoted as $\indegree(v) = \sum_{u \in P(v)} w((u,v))$.
+Now, the indegree of a vertex $v$ is defined as the sum of the edge weights from the predecessors of $v$ and is denoted as $\indegree(v) = \sum_{u \in P(v)} w((u,v))$.
 Similarly, the outdegree of a vertex $v$ is defined as the sum of the edge weights to the successors of $v$ and is denoted by $\outdegree(v) = \sum_{u \in S(v)}w((v,u))$.
 Figure~\ref{fig:weighted-directed} shows an example of a weighted directed graph.
 
@@ -106,14 +108,15 @@ We can see some examples of signed graphs in Figure~\ref{fig:signed-graphs}.
 We now proceed to define a few more terms.
 The degree of a vertex $v$ is now the sum of the absolute edge weight of its neighbours, called the \textit{signed degree} and is defined as 
 \[
-    \overline{d}(v) = \sum_{u \in N(v)}|w((u,v))|
+    \overline{d}(v) = \sum_{u \in N(v)}|w((u,v))|.
 \] 
 This can also be extended to \textit{signed indegree} and \textit{signed outdegree} denoted by $\overline{\indegree}(v)$ and $\overline{\outdegree}(v)$ and defined as
 \[
-    \overline{\indegree}(v)=\sum_{u \in P(v)}|w((u,v))|
+    \overline{\indegree}(v)=\sum_{u \in P(v)}|w((u,v))|,
 \] 
+and
 \[
-    \overline{\outdegree}(v)=\sum_{u \in S(v)}|w((v,u))|
+    \overline{\outdegree}(v)=\sum_{u \in S(v)}|w((v,u))|.
 \] 
 
 We can create a $n \times n$ square weight matrix $W$, where each entry $w_{ij}$ is defined as 
@@ -121,7 +124,7 @@ We can create a $n \times n$ square weight matrix $W$, where each entry $w_{ij}$
 \[ w_{ij} = 
 \begin{cases}
     w((v_i,v_j)) & \text{if } (v_i,v_j) \in E \\
-    0 & \text{if } (v_i,v_j) \notin E      
+    0 & \text{if } (v_i,v_j) \notin E      .
 \end{cases}
 \] 
 The signed degree matrix $\overline{D}$ is a diagonal matrix consisting of the signed vertex degrees, $\overline{D} = \text{diag}(\overline{d}(v_{1}),\dots,d(v_n))$.
@@ -135,15 +138,15 @@ The signed Laplacian along with results from spectral analysis of signed graphs 
 
 In the 1940s, Heider \cite{heider1946attitudes} proposed  that when there are either \textit{positive relations} (friendship, love, support) and \textit{negative relations} (enmity, hate, oppose) in a group, the  group tends towards \textit{balance}.
 Balance is the concept that all members aim to maintain consistency in the relations they share with other members of the group.
-In a group of three members this can be seen as having three positive relations or one positive and two negative relations.
-In Figure~\ref{fig:undirected-triads} the triads $B_1$ and $B_2$ are \textit{balanced} and mirror aphorisms such as "the friend of my friend is also a friend" and "the enemy of my enemy is a friend" respectively.
-Therefore, triads $B_3$ and $B_4$ can be called \textit{unbalanced} or \textit{imbalanced} that denotes the cognitive dissonance between the members of the triad.
-The dissonance can be understood by the counter-intuitive nature of the phrase "the friend of my friend is my enemy" described by triad $B_3$.
+Hence, in a group of three members this can be seen as having three positive relations or, one positive and two negative relations.
+In Figure~\ref{fig:undirected-triads}, the triads $B_1$ and $B_2$ are \textit{balanced} and mirror aphorisms such as "the friend of my friend is also a friend" and "the enemy of my enemy is a friend" respectively.
+Therefore, triads $B_3$ and $B_4$ are called \textit{unbalanced} or \textit{imbalanced} that denotes the cognitive dissonance between the members of the triad.
+The dissonance can be understood by the counter-intuitive nature of the phrase "the friend of my friend is my enemy" described by triad $B_3$ for the node $v_{1}$.
 
 Harary and Cartwright \cite{cartwright1956structural} generalized this notion of balance by using signed graphs.
 As these relations are typically symmetric, balance is usually defined for undirected signed graphs.
 This can been seen in Figure~\ref{fig:undirected-triads} where solid edges are positive and dashed edges are negative.
-Davies \cite{davis1963weakBalance} also offers an alternate definition of \textit{weak balance} where triads of type $B_2$ are considered to have lesser predictive utility as relationships of these type are less common in real-life social networks.
+Davies \cite{davis1963weakBalance} offers an alternate definition named \textit{weak balance},where triads of type $B_2$ are considered to have lesser predictive utility as relationships of these type are less common in real-life social networks.
 
 \begin{figure}[!ht]     
     \centering
@@ -153,11 +156,11 @@ Davies \cite{davis1963weakBalance} also offers an alternate definition of \texti
 \end{figure}
 
 The concept of balance can be generalized for an undirected signed graph $G=(V,E,w)$.
-The sign of a cycle $C$ in the signed graph $G$ is defined as the product of the edge weights $sgn(C)=\prod_{e\in C}w(e)$.
+The sign of a cycle $C$ in the signed graph $G$ is defined as the product of the edge weights, $sgn(C)=\prod_{e\in C}w(e)$.
 A signed network $G$ is then said to be balanced if and only if all the sign of all cycles in network are positive.
 Therefore, every cycle in $G$ must have an even number of negative edges.
-This leads to result from Harary \cite{harary1953on} that states that if a graph $G$ is balanced, then there is a partition of the vertices $V = V_1 \cup V_2$ such that edges within the vertices of each set is positive and edges between the sets are negative.
-This means that we can have a bipartite graph when we delete the positive edges and negative edges span between the two sets of vertices.
+This leads to the result from Harary \cite{harary1953on} that states that if a graph $G$ is balanced, then there is a partition of the vertices $V = V_1 \cup V_2$ such that edges within the vertices of each set is positive and edges between the sets are negative.
+This means that once we delete the positive edges in a balanced network, it becomes a bipartite graph.
 An example of a balanced signed graph is shown in Figure~\ref{fig:balanced-graph}.
 Here the partition of the vertex set is $V_1 = \{v_1,v_3,v_4,v_7,v_8\}$ and $V_2 = \{v_2,v_5,v_6,v_9\}$.
 
@@ -168,9 +171,12 @@ Here the partition of the vertex set is $V_1 = \{v_1,v_3,v_4,v_7,v_8\}$ and $V_2
     \label{fig:balanced-graph}
 \end{figure}
 
-The signed Laplacian matrix $\overline{L}$ of a signed graph $G$ is always positive-semidefinite and $\overline{L}$ is positive-definite iff $G$ is \textit{unbalanced} \cite{kunegis2010spectral,hou2005bounds,zaslavsky1982signed}.
+The signed Laplacian matrix $\overline{L}$ of a signed graph $G$ is always positive-semidefinite.
+If the signed graph $G$ is \textit{unbalanced}, then it does not posses a partition that can lead to a bipartite network connected by negative edges.
+Therefore, $\overline{L}$ is positive-definite if and only if $G$ is \textit{unbalanced} \cite{kunegis2010spectral,hou2005bounds,zaslavsky1982signed}.
 If the smallest eigenvalue of a graph $G$ is denoted by $\lambda_{1}(G)$, then $G$ is balanced iff $\lambda_{1}(G)=0$.
-Hou \cite{hou2005bounds} provides bounds on the value of $\lambda_{1}(G)$ and Li et al.\ \cite{li2016note} show that $\lambda_{1}(G)$ can be used as a measure of how far the signed graph $G$ is from being balanced.
+Hou \cite{hou2005bounds} provides bounds on the value of $\lambda_{1}(G)$ and Li et al.\ \cite{li2016note} show that $\lambda_{1}(G)$ can be used as a measure of how far the signed graph $G$ is from being balanced. 
+Therefore, we can use the smallest eigenvalue of the signed Laplacian, $\lambda_{1}(G)$ as a quantification of the balance of the signed network $G$.
 
 \subsection{Status Theory}
 \label{sec:status-theory}
@@ -179,18 +185,18 @@ Leskovec et al.\ \cite{leskovec2010signed,leskovec2010predicting} introduce the 
 A positive edge $u \plusrightarrow v$ indicates that $v$ has a higher status than $u$ and a negative edge $u \minusrightarrow v$ means that $v$ has a lower status than $u$.
 This concept of relative status can be propagated transitively along multiple steps which might lead to contradictions with balance theory \cite{leskovec2010signed}.
 
-Given three vertices $v_1,v_2$ and $v_3$, the presence of an edge $v_1 \plusrightarrow v_2$ indicates that $v_1$ thinks $v_2$ has higher status, the edge $v_2 \plusrightarrow v_3$ indicates that $v_2$ thinks $v_3$ has higher status.
-Now we wish to to close this triad with an edge from $v_3$ to $v_1$.
-Status theory would say that through transitivity $v_1$ has lower status than $v_3$, therefore the prediction is $v_3 \minusrightarrow v_1$.
+For instance, given three vertices $v_1,v_2$ and $v_3$, the presence of an edge $v_1 \plusrightarrow v_2$ indicates that $v_1$ thinks $v_2$ has higher status, the edge $v_2 \plusrightarrow v_3$ indicates that $v_2$ thinks $v_3$ has higher status.
+Now, we wish to to close this triad with an edge from $v_3$ to $v_1$.
+Status theory would say that through transitivity, $v_1$ has lower status than $v_3$, therefore the prediction is $v_3 \minusrightarrow v_1$.
 Whereas, in balance theory we would predict a positive edge $v_3 \plusrightarrow v_1$ to make the cycle have even number of negative edges.
-This example can be seen in triads $S_1$ and $S_2$ shown in Figure~\ref{fig:status-triads}.
+In Figure~\ref{fig:status-triads}, $S_1$ is the triad as predicted by balance theory, while triad $S_2$ is what status theory predicts.
 
 There are also cases when status theory is ambivalent to the edge that closes a triad.
 Consider the example when we have the edges $v_1 \plusrightarrow v_2$ and $v_2 \minusrightarrow v_3$.
-If we were to indicate the status of a vertex $v$ using the function $\sigma(v)$, then the edges describe the following : $\sigma(v_2)>s(v_1) $ and $\sigma(v_2)>\sigma(v_3)$.
+If we indicate the status of a vertex $v$ using the function $\sigma(v)$, then the edges describe the following : $\sigma(v_2)>s(v_1) $ and $\sigma(v_2)>\sigma(v_3)$.
 Therefore, we have no knowledge of the relative difference in status between the vertices $v_1$ and $v_3$.
 Hence, both edges $v_3 \plusrightarrow v_1$ ($\sigma(v_3) > \sigma(v_1)$) and $v_3 \minusrightarrow v_1$ ($\sigma(v_1) > \sigma(v_3)$) are equally valid for status theory.
-Balance theory on the other hand can only predict $v_3 \minusrightarrow v_1$ to keep the triad balanced.
+However, balance theory unequivocally predicts $v_3 \minusrightarrow v_1$, to keep the resultant triad balanced.
 This case is shown in Figure~\ref{fig:status-triads} as triads $S_3$ and $S_4$.
 
 \begin{figure}[!ht] 
@@ -201,53 +207,59 @@ This case is shown in Figure~\ref{fig:status-triads} as triads $S_3$ and $S_4$.
 \end{figure}
 
 Each positive link inwards ($\indegree^{+}(v)$) and negative link outwards ($\outdegree^{-}(v)$) increases status.
-Each positive link outwards ($\outdegree^{+}(v)$) and negative link inwards ($\indegree^{-}(v)$) decreases status.
+In turn, each positive link outwards ($\outdegree^{+}(v)$) and negative link inwards ($\indegree^{-}(v)$) decreases status.
 Therefore, $\sigma(v) = \indegree^{+}(v) + \outdegree^{-}(v) - \outdegree^{+}(v)- \indegree^{-}(v)$ is a heuristic for the status of a node \cite{leskovec2010predicting}.
-An interesting fact is that the edge $u \minusrightarrow v$ can be converted into positive edge in the opposite direction $u \plusleftarrow v$.
-This fact reduces the number of unique triads that can be formed using status theory and will be used in edge prediction tasks that will be discussed in coming chapters.
+An interesting fact is that, the edge $u \minusrightarrow v$ can be converted into positive edge in the opposite direction $u \plusleftarrow v$.
+This fact reduces the number of unique triads that can be formed using status theory and will be used in edge prediction tasks that will be discussed in the coming chapters.
 
 \section{Link and Sign Prediction}
 \label{sec:link-prediction}
-The \textit{link prediction problem} is defined by Liben-Nowell and Kleinberg \cite{liben-nowell2007the} as inferring possible future edges between vertices in a social network.
-The datasets used was split into training edges and testing edges which had a common core set of vertices.
-They showed that topological features such as number of common neighbours and Katz's centrality index can be used in a unsupervised setting to accurately predict edges.
+The \textit{link prediction problem} as defined by Liben-Nowell and Kleinberg \cite{liben-nowell2007the} is the task of inferring possible future edges between vertices in a social network.
+To this end, the datasets used were split into training edges and testing edges which had a common core set of vertices.
+The goal was to use information in the training edges to predict the edges that were likely in the test dataset.
+They showed that topological features such as number of common neighbours and Katz's centrality index can be used in a unsupervised setting to accurately predict future edges.
 
 Leskovec et al.\ \cite{leskovec2010predicting} extended the link prediction problem to signed networks.
-They also introduced the problem of \textit{edge sign prediction}: predict the sign of a given edge $(u,v)$ using the existing signed network $G$.
+They also introduced the problem of \textit{edge sign prediction}: predict the sign of a given edge $(u,v)$, using the existing signed network $G$.
 A supervised model for the task is proposed that uses network features such as indegree and outdegree of a node along with \textit{triad} features.
 The edge nodes $u$ and $v$ and a common neighbour $w$ form a triad.
 The directed edge between $(u,w)$ and $(w,u)$ can be either forward or backwards and each edge is either positive or negative.
-Therefore there are 16 possible triad types for a given neighbour $w$.
+Therefore, there are 16 possible triad types for a given neighbour $w$.
+Hence, for a given edge $(u,v)$, they count the type of triad formed from each common neighbour $w$ and use it as a feature.
 They analyse these triadic features from the trained model and show how they relate to balance and status theory.
-For the link prediction problem, the information from the negative edges in the signed network improves the overall accuracy of the model.
+Furthermore, for the link prediction problem, the information from the negative edges in the signed network improves the overall accuracy of the model.
 This seminal paper inspired many more approaches to solving these problems for signed graphs.   
 
 Matrix factorization and latent space approaches facilitate link prediction and sign prediction tasks for multiple edges simultaneously in a signed network \cite{agrawal2013link,hsieh2012low,gu2019link}.
 Supervised algorithms for both tasks can be improved by utilizing additional node features such as inverse square metric \cite{ahmadalinezhad2018sign} or node rankings \cite{shahriari2014ranking}.
-Models using multiple graph motifs as features \cite{Liu2019LinkPrediction,khodadadi2017sign} extend the concept of triadic feature for link and sign prediction.
+Models using graph motifs as features \cite{Liu2019LinkPrediction,khodadadi2017sign} extend the concept of triadic features for link and sign prediction.
 Chiang et al.\ generalize balance theory for longer cycles and incorporate it as features to improve link prediction \cite{chiang2011exploiting}.
 Tang et al.\ \cite{Jiliang2015Negative} discuss the importance of predicting negative links and highlight methods to overcome the inherent imbalance present in signed network datasets.
 Cesa et al.\ \cite{cesa2012correlation} and Chiang et al.\ \cite{chiang2014prediction} utilize clustering techniques to solve sign prediction and link prediction respectively.
-Shuang et al.\ \cite{Shuang-Hong2012Friend} and Karimi et al.\ \cite{karimi2019multicongress} create bespoke models incorporating user behaviour and political party affiliation respectively to predict the sign of edges present in the signed networks.
+Shuang et al.\ \cite{Shuang-Hong2012Friend} and Karimi et al.\ \cite{karimi2019multicongress} create bespoke models incorporating user behaviour and political party affiliation respectively to predict the sign of edges present in the networks.
 
 \section{Hierarchy in Directed Networks}
 \label{sec:hierarchy}
-Hierarchies exist in all social structures, from the explicit levels found in nature such as the food chain or organizational structures in businesses to more implicit stratification that occurs on social media or online networks.
-A common method to represent such hierarchies is through a tree, for example, the chain of command in the military or within governments.
+Hierarchies exist in all social structures.
+From the explicit levels found in nature, such as the food chain or organizational structures in businesses to more implicit stratification that occurs on social media or online networks.
+A common method to represent such hierarchies is through a tree.
+For example, the chain of command in the military or within governments.
 Trees have well defined levels and a single person at the top.
-If we generalize this structural concept then we get a \textit{Directed Acyclic Graph} (DAG) which represents a partial ordering set.
-DAGs have perfect hierarchy while structures such as cycles tend to have no hierarchy.
-Other directed graphs occur somewhere between these two extremes.
+Generalizing this structural concept, we get a \textit{Directed Acyclic Graph} (DAG), which represents a partially ordered set.
+DAGs have perfect hierarchy, while structures such as cycles tend to have no hierarchy.
+Regular directed graphs occur somewhere between these two extremes.
 
 Gupte et al.\ \cite{gupte2011finding} provide a method to discern the levels of stratification present in a given directed network when no prior information of the hierarchy exists.
-They define a measure of the hierarchy of a given directed network $G$ as $h(G)$ along with a polynomial algorithm to find the largest hierarchy in that network.
-They define a concept of \textit{social agony} which posits that agony is present when a person having a higher rank in network interacts with a person who has a lower rank.
+They define a measure of the hierarchy of a given directed network $G$ as $h(G)$.
+In turn, they propose a polynomial algorithm to find the largest hierarchy in that network.
+
+They define the concept of \textit{social agony}, which posits that agony is present when a person having a higher rank in network interacts with a person who has a lower rank.
 Therefore, if we define the rank of a node in graph $G$ as the function $r:V \rightarrow \mathbb{N}$, then a directed edge $u \rightarrow v$ causes agony when $r(u)\geq r(v)$.
-The agony for the edge can be quantified as $\max(r(u)-r(v)+1,0)$.
-The agony of the graph $G$ wrt to rank function $r$ is defined as 
-\[A(G,r) =  \sum_{(u,v)\in E} \max(r(u)-r(v)+1,0)\]
+The agony of an edge can be quantified as $\max(r(u)-r(v)+1,0)$.
+Hence, the agony of the graph $G$ with respect to the rank function $r$ is defined as 
+\[A(G,r) =  \sum_{(u,v)\in E} \max(r(u)-r(v)+1,0) ~.\]
 As nodes in a graph tend to minimize the overall agony, the agony of a network $G$ is the smallest possible agony over all possible ranking for $r$, $A(G) = \min_{r\in \text{Rankings}}A(G,r)$.
-The hierarchy of a given network $G$, denoted by $h(G)$ can now be expressed in terms of the agony of the network, $h(G)=1-\frac{1}{m}A(G)$, where $m$ is the number of edges.
+Therefore, the hierarchy of a given network $G$, $h(G)$ can now be expressed in terms of the agony of the network \[h(G)=1-\frac{1}{m}A(G),\] where $m$ is the number of edges.
 We can see examples of hierarchy in unweighted directed graph in Figure~\ref{fig:hierarchy}.
 
  
@@ -281,8 +293,7 @@ Gupte et al.\ \cite{gupte2011finding} and Tatti \cite{tatti2014faster} present a
 Tatti \cite{tatti2017tiers} provides an alternate approach using a capacitated circulation solver that can handle weighted digraphs as well as additional cardinality constraints.
 These algorithms allows us to find the levels of hierarchy present in any given directed social network and analyse the interaction between members belonging to different strata in that community.
 
-We will explain in future chapters how hierarchies in social network is intrinsically linked to the theory of status in directed signed networks.
-We show how to use the concept of agony for a directed signed graph $G$ to quantify the violation of status theory and therefore, utilize it as a feature to predict the sign of an edge.
+We explain in future chapters how the hierarchy in a social network is intrinsically linked to the theory of status in directed signed networks and how agony can be used to measure the degree of adherence to status theory.
 
 
 

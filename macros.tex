@@ -7,8 +7,6 @@
 \DeclareMathOperator*{\src}{src}
 \DeclareMathOperator*{\dest}{dest}
 \DeclareMathOperator*{\sgn}{sgn}
-\DeclareMathOperator*{\indegree}{d_{\text{in}}}
-\DeclareMathOperator*{\outdegree}{d_{\text{out}}}
 \DeclareMathOperator*{\plusrightarrow}{\ensuremath{\xrightarrow{+}}}
 \DeclareMathOperator*{\minusrightarrow}{\ensuremath{\xrightarrow{-}}}
 \DeclareMathOperator*{\plusleftarrow}{\ensuremath{\xleftarrow{+}}}
@@ -17,7 +15,7 @@
 
 
 \newcommand{\notimplies}{%
-  \mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+\mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
 
 
 \newtheorem{theorem}{Theorem}
@@ -26,6 +24,9 @@
 \newtheorem{definition}{Definition}
 \newtheorem{remark}{Remark}
 
+
+\newcommand{\indegree}{d_{\text{in}}}
+\newcommand{\outdegree}{d_{\text{out}}}
 
 \newcommand{\mainNS}{{\sc main}\xspace}
 \newcommand{\articleNS}{{\sc Article}\xspace}
