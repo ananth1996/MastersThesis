@@ -1,0 +1,73 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\AUTHOR}{Ananth Mahadevan}
+\newcommand{\TTITLE}{Vote Prediction Models in Signed Social Networks}
+\usepackage{blindtext}
+\usepackage{xcolor}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ }
+
+\definecolor{astral}{RGB}{78, 66, 245}
+\font\myfont=cmr12 at 30pt
+
+\title{\color{astral}\myfont Predicting Voting Patterns in Communities using  Graphs and Social Theories\\
+  \Large MSc Thesis Press Release}
+\date{\today}
+\author{\AUTHOR}
+\begin{document}
+
+{\raggedleft \AUTHOR\\
+\vskip 2mm
+\noindent
+MSc Thesis Press Release\\
+\vskip 2mm
+\noindent Espoo, \today
+\vskip 10mm
+}
+
+{\centering \color{astral}\myfont Predicting Voting Patterns in \\Communities using  Graphs \\and Social Theories\\
+}
+\vskip 4mm
+\noindent
+{\bf
+\large
+Ananth Mahadevan in his Master’s thesis in Computer Science titled “\TTITLE” describes a novel approach to predicting future votes in the elections of Wikipedia administrators. The approach ties social psychology and graphs theory together and models the behaviour of voters in a community.
+}
+
+\medskip
+\noindent
+In communities where everyone knows everyone, people tend to form opinions about one another and several typical behavioural patterns emerge.
+These patterns play out especially when the community chooses to decide any matter through a system of voting.
+In this case, people will vote based on how their "friends" or "enemies" would vote.
+The social theory of \textbf{balance} generalizes this and many sayings such as "the enemy of my enemy is my friend".
+The social theory of \textbf{status} describes how people interact based on perceived status of a person in the society.
+In the close knit community of online Wikipedia editors, we can see these theories come to life when they discuss and vote in a week long process to choose administrators for the website.
+Hence, by understanding the interactions between Wikipedia editors and using these social theories, we can effectively model and predict and how someone will vote for a given candidate.
+
+\medskip
+\noindent
+In his thesis, Ananth explores how votes for and against a candidate can be represented using graphs with both positive and negative links, called \textbf{signed graphs}.
+These signed graphs provide an intuitive framework to incorporate the social theories of balance and status and measure them quantitatively.
+Then, he proposes votes that tend to make the graph more balanced or ones that preserve status are more probable to occur.
+Therefore, by analysing the structure of the graph, he can predict how a voter is most likely to vote. 
+
+\medskip
+\noindent
+Using this as a foundation, Ananth develops two novel iterative models aimed at predicting votes in Wikipedia elections.
+One uses balance theory and the other uses status theory.
+These models capture the relations such as \textbf{agreement} or \textbf{concurrence} between voters and stores them in a graph.
+Then in an election, using these relations and social theories, the model predicts one vote after another till the voting session is over.
+At the session's end, the model compares its predictions with the true votes.
+Then it updates it graph with that information and is ready to predict another election.
+In this way, the model learns in an unsupervised manner to constantly get better at predicting votes.
+An advantage of these models is that they can start from absolutely no information at the beginning.
+Therefore, they iteratively learn relations between Wikipedia editors and improve. 
+
+\medskip
+\noindent
+Ananth Mahadevan and his supervisor Aristides Gionis look forward to improving their iterative vote prediction models and using it to predict votes cast by politicians in the sessions of the European and United States Congress.
+\end{document}
