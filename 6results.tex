@@ -104,7 +104,7 @@ This is because, the signed graph only contains the voting data from the dev dat
 \end{table}
 
 Using these auxiliary and singed graphs we prepare the training and testing feature matrices $\mathbf{X}$ and $\mathbf{X}_{text}$ and target vectors, $\mathbf{y}$ and $\mathbf{y}_{test}$ respectively.
-We train the \textit{Logisitc Regression} (LR) model on the training feature matrix and target vector using five fold cross validation.
+We train the \textit{Logistic Regression} (LR) model on the training feature matrix and target vector using five fold cross validation.
 The feature importances of the trained LR model are shown in Figure~\ref{fig:lr-feature-importances}.
 We see both, the five auxiliary features and the 36 triadic features.
 \textit{Talk Graph R} and \textit{Social Interactions R} features refer to the reversed versions of the talk and social interaction graphs respectively.
