@@ -1,35 +1,36 @@
 \chapter{Conclusions and Future Work}
 \label{chp:conclusion}
 In this thesis, we described how voting in a community can be intuitively and structurally represented using signed networks.
-The positive and negative links directly relate to a voter's support or opposition to a candidate.
-Furthermore, we discussed how the problem of vote prediction is related to the task of predicting the sign of an link in the signed network.
-Then, we explain the structural theories of balance and status in signed networks. derived from the field of social psychology.
+The positive and negative links directly map to a voter's support for or opposition to a candidate respectively.
+Furthermore, we discussed how the problem of vote prediction is related to the task of predicting the sign of a link in the signed network.
+Then, we explain the structural theories of balance and status in signed networks, derived from the field of social psychology.
 We discuss the existing approaches and methods to solve the sign prediction tasks and explain their limitations for the vote prediction task.
 Therefore, we proposed two new models for the task of vote prediction, incorporating the chronological nature of voting.
 
 The first, is an extension of supervised models for sign prediction approaches.
 To predict the vote of an individual voter towards a candidate, we introduce the concept of a \textit{voting neighbourhood}.
 We gather features from the voting neighbourhood of a voter and various auxiliary graphs that represent relationships between the members in community.
-Then, we count the unique triadic features that capture the features of balance and status theory in the voting neighbourhood.
+Then, we count the unique triadic features that capture the theories of balance and status in the voting neighbourhood.
 The combination of all these features and the known true votes form a traditional supervised machine learning problem.
 Therefore, any linear classification model can be trained to predict positive and negative edges that correspond to support or oppose votes.
 
-The second, we propose an iterative model that relies solely on structural balance and status theories.
-We extend upon the concept of the voting neighbourhood to create a \textit{Local Signed Network} (LSN)for a voter.
-We state that within this LSN, the voter prefers to vote in a manner that, the resultant LSN either complies with balance theory or status theory.
+The second, we proposed an iterative model that relies solely on structural balance and status theories.
+We extend upon the concept of the voting neighbourhood to create a \textit{Local Signed Network} (LSN) for a voter.
+We state that within this LSN, the voter prefers to vote in a manner that, the resultant LSN better adheres to either balance or status theory.
 Therefore, we arrive at two models, the first in which a voter maintains the balance of the LSN and the second where the voter preserves the status in the LSN.
-Then, we developed methods to quantitatively measure adherence with either balance or status theory.
+Then, we developed methods to quantitatively measure a network's adherence with either balance or status theory.
 We utilize these measures to predict how an independent user will vote given their LSN.
-Furthermore, as the voting progresses we propose to maintain a relationships graph that encapsulates the interaction between the voters in the community.
-This, then leads to the ability to iteratively predict votes in a session and assimilating the information at the end of a session.
+Furthermore, as the voting progresses, we proposed to maintain a relationships graph that encapsulates the interaction between the voters in the community.
+This, led to the ability to iteratively predict votes in a session and assimilating the information at the end of a session.
 
 From the results presented in Chapter~\ref{chp:results}, we conclude that the proposed models are effective in predicting the votes in Wikipedia RfAs.
-The graph combination models perform poorly only due the the restriction of the supervised learning framework and lack of information to predict votes far off in the future.
-We show that the iterative models overcome these problems and are able to effectively predict votes of the entire dataset using only voting data.
-Analysis of the votes of first time voters in the model indicate that they follow the herd mentality or vote similar to person before them.
-Furthermore, we shoe that votes in the promotion process of Wikipedia administrators are generally more represented by balance theory than status theory.
+The graph combination models perform poorly only due the the restrictions of the supervised learning framework and lack of information to predict votes far off in the future.
+We show that the iterative models overcome these problems and are able to effectively predict votes of the entire dataset using only voting related data.
+We analysed how new voters with respect to the model, tend to vote.
+This showed that a majority new users follow the herd mentality or vote similar to person immediately before them.
+Furthermore, we show that votes in the promotion process of Wikipedia administrators are generally more compliant with balance theory than status theory.
 We also conclude that the iterative models are sensitive to the voting order.
 Reversing the order of voting brings greater predictive power in both elections that are close as well as elections that are landslides.
 
-Future work includes developing a modified theory of social status in signed network that better represents relationships between people in real life. Similarly, we plan to incorporate external features to improve the iterative models and extend the experiments to congressional and parliamentary voting on bills and laws. 
+Future work includes developing a modified theory of social status in signed network that better represents relationships between people in real life. Similarly, we plan to incorporate external non-voting features to improve the iterative models and extend the experiments to congressional and parliamentary voting on bills and laws. 
 
