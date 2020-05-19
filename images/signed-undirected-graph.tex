@@ -17,11 +17,11 @@
 
     \begin{scope}[>={Stealth[red]},
         every edge/.style={thick,draw},
-        every node/.style={fill=white,circle}]
+        every node/.style={fill=white,rectangle}]
         % \draw (v4) -- (v1) -- (v3) -- (v2) -- (v1);
         \path (v1) edge node[left] {$2$} (v2) 
             (v2) edge node[below right=0.05cm and 0.05cm] {$-1.5$} (v3)
-            (v1) edge node[above] {$-1$} (v3)
+            (v1) edge node[above=0.05cm] {$-1$} (v3)
             (v1) edge node[above right] {$4$} (v4)
             (v5) edge node[above left] {$-3$} (v6)
             ;
