@@ -135,13 +135,13 @@ Therefore, we can utilize the triadic features framework as proposed by Leskovec
 We utilize a slightly modified naming scheme to identify unique triads in the RfA data.
 Consider the we have a voter $v$, a candidate $c$ and a third node $u$.
 Then, the edge we wish to predict is $(v,c)$ and the other edges $(v,u)$ and $(u,c)$ form a triad.
-There are two directions for the edges $(v,u)$ and $(u,c)$ and each edge can have three values, namely -1, 0 or +1 corresponding to a oppose, neutral or support vote respectively.
+There are two directions for the edges $(v,u)$ and $(u,c)$ and each edge can have three values, namely $-1$, $0$ or $+1$ corresponding to a oppose, neutral or support vote respectively.
 This leads to $2 \times 2 \times 3 \times 3 = 36$ possible triads.
 
 We denote the edge $v \rightarrow u$ as "F" and the edge $v \leftarrow u$ as "B" indicating a forward or a backward edge respectively.
 Similarly, the edge $u \rightarrow c$ is "F" and $u \leftarrow c$ is "B".
-The edge labels are "-", "0", or "+" corresponding to a oppose, neutral or support vote.
-Therefore, using this nomenclature, the triad "FB+-" represents the edges $v\plusrightarrow c$ and $u \minusleftarrow c$.
+The edge labels are "$-$", "$0$", or "$+$" corresponding to a oppose, neutral or support vote.
+Therefore, using this nomenclature, the triad "FB+$-$" represents the edges $v\plusrightarrow c$ and $u \minusleftarrow c$.
 Figure~\ref{fig:triad-naming} shows more examples of this triad nomenclature.
 
 \begin{figure}[htp]
