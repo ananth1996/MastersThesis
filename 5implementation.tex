@@ -2,10 +2,10 @@
 \label{chp:implementation}
 In this chapter, we will outline the experiments carried out on the Wikipedia elections of administrators using the vote prediction models that we presented in chapter~\ref{chp:vote-prediction}.
 Firstly, we describe the existing sources of data from Wikipedia and the datasets used in the experiments in Section~\ref{sec:datasets}.
-Next, in Section~\ref{sec:linear-combination-implementation}, we discuss the implementation of the linear combination of graph model described in Section~\ref{sec:linear-combination-theory}.
+Next, in Section~\ref{sec:linear-combination-implementation}, we discuss the implementation of the linear combination of graphs model described in Section~\ref{sec:linear-combination-theory}.
 Then, we cover the implementation of the vote prediction models based on the theories of balance and status in signed networks in Section~\ref{sec:local-signed-network-implementation}.
 Furthermore, in Section~\ref{sec:voting-order}, we discuss the experiments conducted on the voting order and its impact on the predictive power of the models proposed.
-Lastly, we explain the metrics which we can ue to evaluate the performance of the models in Section~\ref{sec:eval-metrics}.
+Lastly, we explain the metrics which we can use to evaluate the performance of the models in Section~\ref{sec:eval-metrics}.
 
 All implementations and datasets can be found at \url{https://github.com/ananth1996/Wikipedia}
 \section{Datasets}
@@ -13,13 +13,13 @@ All implementations and datasets can be found at \url{https://github.com/ananth1
 As we discussed in Section~\ref{sec:rfa} and \ref{subsec:editors}, Wikipedia keeps detailed information on the election proceedings for the RfA process as well as contributions made by every editor on Wikipedia.
 These act as sources to get data regarding the elections and user contributions. There are existing datasets compiled by the Stanford Network Analysis Project (SNAP) \cite{snapnets} on both Wikipedia RfAs and edit histories.
 However, the RfA dataset has missing features and timestamps for votes that would restrict the usability in the proposed voting models.
-Similarly, the \textit{wiki-meta} and \textit{wiki-talk} datasets possess information until 2008 and lack a username mapping to the network nodes.
+Similarly, the \textit{wiki-meta} and \textit{wiki-talk} datasets only possess information until 2008 and lack a username mapping to the network nodes.
 Due to these limitations, we proceeded to scrape Wikipedia dumps and APIs to obtain our own RfA and user contribution datasets, which we will now describe.
 
 \subsection{Wikipedia RfA Data}
 To obtain the RfA data, we parsed through the entire XML dump of Wikipedia from January 2019.
 We filtered the pages related to the RfA process and then extracted each vote and the corresponding comment and timestamp.
-Each vote extracted has the features show in Table~\ref{tab:wiki-rfa-features}.
+Each vote extracted has the features shown in Table~\ref{tab:wiki-rfa-features}.
 
 \begin{table}[htp]
     \centering
@@ -42,8 +42,8 @@ Each vote extracted has the features show in Table~\ref{tab:wiki-rfa-features}.
 \end{table}
 As we can see, the format of the data is very similar to the SNAP dataset.
 We have an additional unique identifier field, called UID, to aid in distinguishing RfA of users who have had multiple nominations.
-We collected $226\,781$ votes from $4\,557$ elections with over $13\,000$ unique usernames. There are $166\,214$ ($\approx 73\%$) support, $46\,918$ ($\approx 20\%$) oppose and $13\,649$ ($\approx 6\%$) neutral votes.
-As the voting format of RfA changes throughout the years, there might be issues in successfully extracting the source username or timestamp information. 
+We collected $226781$ votes from $4557$ elections with over $13000$ unique usernames. There are $166214$ ($\approx 73\%$) support, $46918$ ($\approx 20\%$) oppose and $13649$ ($\approx 6\%$) neutral votes.
+As the voting format of RfA changes throughout the years, there were issues in successfully extracting the source username or timestamp information. 
 Regardless, only $1.6\%$ of votes have missing timestamps and $0.4\%$ have a missing source.
 We will refer to this dataset as \wikirfa and it will provide the information regarding the votes cast in a RfA.
 
@@ -74,17 +74,19 @@ There are 16 features that the API provides for each edit; we describe the most 
     \end{tabular}
 \end{table}
 As many users change their username, some of the usernames present in the \wikirfa dataset might not have any contributions linked to their old usernames.
-We were able to collect the user contribution details more than $11000$ of the total unique username, amounting to 100GB of data.
+We were able to collect the user contribution details of more than $11000$ users, amounting to 100GB of data.
 We call this dataset \usercontrib and it provides a wealth of information on the editing habits of the users who take part in Wikipedia RfAs. 
 For instance, grouping the contributions of a particular user by the namespace, we get the proportion of the edits in different Wikipedia namespaces and the respective sizes and quality of their edits.
 
 \section{Graph Combination Model}
 \label{sec:linear-combination-implementation}
-In this section, we describe how we implement the linear combination of graphs proposed in Section~\ref{sec:linear-combination-theory}, we call this the \textit{Graph Combination} model.
-The model requires auxiliary graphs derived from other non-election based information as well as triadic features derived from the election data.
-Therefore, we first discuss the auxiliary graphs that we create from the \usercontrib dataset and then describe the triadic features from the \wikirfa data.
-Then, we describe the process of preparing the data to suit the supervised machine learning task and to also prevent data leaks.
-Lastly, we discuss the logistic regression model that we use as the linear predictor trained on the features derived from the auxiliary and signed networks.
+In this section, we describe how we implemented the linear combination of graphs framework proposed in Section~\ref{sec:linear-combination-theory} for predicting votes in Wikipedia RfA elections.
+We call this the \textit{Graph Combination} model.
+The model requires auxiliary graphs created from other non-election based information as well as triadic features extracted from the voting data.
+Firstly, we discuss the auxiliary graphs that we create from the \usercontrib dataset.
+Next, we explain the nomenclature and collection of triadic features from the \wikirfa data.
+Then, we describe the process of preparing the data to suit the supervised machine learning task as well as preventing any potential data leaks.
+Lastly, we discuss the logistic regression model that we use as the linear classifier trained on the features derived from the auxiliary and signed networks.
 
 The terms used in Chapter~\ref{chp:vote-prediction} can now be defined for the problem of predicting votes in a Wikipedia RfA.
 A candidate $c$ is the nominee who wishes to gain administrators privileges in the Wikipedia RfA.
@@ -97,52 +99,58 @@ Lastly, we define the triadic features we extract from the previous voting data.
 
 \subsubsection{Topic Similarly Graph}
 In Table~\ref{tab:usercontrib-features}, we see that every contribution has a title of the page where the edit was made.
-We can utilize the page titles to understand the topics that the user most edits.
-For a particular user, we gather all their edits in the \mainNS namespace.
+The most edited page titles of a user help in understanding the topics they are interested in.
+Therefore, for a particular user, we gather all their edits in the \mainNS namespace.
 We choose the \mainNS namespace as it contains all the content articles on Wikipedia.
-By contrast, the edits in other namespaces such as, \userNS and \helpNS, are not indicative of the topics that they are most likely to possess information about.
-Then, we count the number of edits grouped by each page title and choose the top 100 most edited pages in the \mainNS namespace.
+By contrast, a user's edits in other namespaces such as, \userNS and \helpNS, are not indicative of the topics in which they possess knowledge.
+Then, we count the number of edits grouped by each page title and choose their top 100 most edited pages in the \mainNS namespace.
 Then we create a set of the words from all the top 100 page titles and remove common stop words using a natural language corpus.
-This set now indicates the users topics of interest.
+This set now indicates the user's topics of interest.
 Once we have collected the topic set for all the unique users in the \wikirfa dataset, we can compute the similarity between a pair of users using the Jaccard similarity measure. 
-We can take this similarity measure and construct a undirected weighted graph where a link between nodes indicates the similarity in the topics of the user nodes.
+Then, we can take this similarity measure and construct a undirected weighted graph where a link between any two nodes indicates the similarity in the topics of the corresponding users.
 However, we threshold the value of similarity so that we can obtain only meaningful edges and not a complete graph.
 
 \subsubsection{Talk and Interaction Graph}
 \label{subsec:talk-interaction-graph}
-We discussed in the previous chapter on how every registered user has a talk page and how it is used as a medium of communication. 
-Therefore, we can similarly gather the contributions of a certain editor in the \usertalkNS namespace and use it to measure interactions with other users.
-We will create two auxiliary graphs in this manner, a \textit{user talk graph}, where each edge also contains the number of times they have written on another users page and a \textit{interaction graph}, which only indicates if two users have interacted via a talk page. 
+We discussed in the previous chapter how every registered user has a talk page and how it is used as a medium of communication. 
+Therefore, we can gather the contributions of a certain editor in the \usertalkNS namespace and use it to measure their interactions with other users.
+We will create two auxiliary graphs in this manner.
+The first is a \textit{user talk graph}, where each edge contains the number of times they have written on another user's page.
+The second is a \textit{interaction graph}, in which an edge only indicates if two users have interacted via a talk page. 
 We can obtain the number of talk page edits and the target user by grouping by the page titles and extracting the username from the page title respectively. 
 These graphs will be directed in nature and the talk graph is weighted, while the interaction graph is unweighted. 
-In both these graphs, an edge $u \rightarrow v$ indicate that user $u$ has written in the talk page of user $v$.
+In both these graphs, an edge $u \rightarrow v$ indicates that user $u$ has written in the talk page of user $v$.
 
-In the Line~\ref{alg:aux:voting-neighbourhood} described in Algorithm~\ref{alg:auxiliary-feature}, we can define $N_i$ in directed graphs $G_i$ as successors of a node rather the neighbourhood.
+In the Line~\ref{alg:aux:voting-neighbourhood} of Algorithm~\ref{alg:auxiliary-feature}, we compute the neighbourhood of a node $v$ in graph $G_i$ as $N_i$.
+We can define $N_i$ in directed graphs $G_i$ as only the successors of a node rather the union of successors and predecessors.
 This allow us to understand the influence of edge direction in directed auxiliary graphs.
-Therefore, we will construct two more additional auxiliary graphs which are reversed, i.e., an edge $u \rightarrow v$ indicates that user $v$ has written on the talk page of user $u$.
-Hence, we can compare the contribution each direction brings to the model by analysing the feature importances.
+Therefore, we will construct two more additional auxiliary graphs which are \textit{reversed}, i.e., an edge $u \rightarrow v$ indicates that user $v$ has written on the talk page of user $u$.
+Hence, we can compare the benefit each direction brings to the model by analysing the feature importances of their respective auxiliary graphs.
 
 \subsubsection{Signed Graph and Triadic Features}
 The \wikirfa dataset contains the voting information of users in RfAs.
-These votes form a signed directed network and we can utilize triadic features as proposed by Leskovec et al.\ \cite{leskovec2010predicting}.
+These votes form a signed directed network.
+Therefore, we can utilize the triadic features framework as proposed by Leskovec et al.\ \cite{leskovec2010predicting}.
+
 We utilize a slightly modified naming scheme to identify unique triads in the RfA data.
-Considering the edge we want to predict between a voter $v$ and a candidate $c$ and the other node $u$.
-There are two directions for the edges $(v,u)$ and $(u,c)$ and each edge can have three values, namely -1, 0 or +1 corresponding to oppose, neutral or support respectively.
+Consider the we have a voter $v$, a candidate $c$ and a third node $u$.
+Then, the edge we wish to predict is $(v,c)$ and the other edges $(v,u)$ and $(u,c)$ form a triad.
+There are two directions for the edges $(v,u)$ and $(u,c)$ and each edge can have three values, namely -1, 0 or +1 corresponding to a oppose, neutral or support vote respectively.
 This leads to $2 \times 2 \times 3 \times 3 = 36$ possible triads.
 
-We denote the edge $v \rightarrow u$ as "F" and the edge $v \leftarrow u$ as "B" indicating a forward or a backward edge.
+We denote the edge $v \rightarrow u$ as "F" and the edge $v \leftarrow u$ as "B" indicating a forward or a backward edge respectively.
 Similarly, the edge $u \rightarrow c$ is "F" and $u \leftarrow c$ is "B".
-The edge labels are "-", "0", and "+" corresponding to oppose, neutral and support.
-We have a nomenclature where "FB+-", indicates $v\plusrightarrow c$ and $u \minusleftarrow c$.
+The edge labels are "-", "0", or "+" corresponding to a oppose, neutral or support vote.
+Therefore, using this nomenclature, the triad "FB+-" represents the edges $v\plusrightarrow c$ and $u \minusleftarrow c$.
 Figure~\ref{fig:triad-naming} shows more examples of this triad nomenclature.
 
 \begin{figure}[htp]
     \centering
     \input{images/wiki-triads.tex}
-    \caption{Examples of triad nomenclature in Wikipedia RfA elections }
+    \caption{Examples of triad nomenclature in Wikipedia RfA elections. Dashed edges are votes to be predicted and solid edges are votes from previous RfAs.  }
     \label{fig:triad-naming}
 \end{figure}
-We collect all the 36 unique triads in the set $T$ and then utilize it to count the triads for a particular edge, as seen in Algorithm~\ref{alg:triad-feature}.
+We store all the 36 unique triads in the set $T$ and then utilize it to count the triads for a particular edge, as seen in Algorithm~\ref{alg:triad-feature}.
 Therefore, for each edge to be predicted $(v,c)$, we have a triadic feature vector of length 36 containing the counts of the triads formed by all the common neighbours $u$.  
 
 \subsection{Data Preparation}
@@ -150,12 +158,14 @@ Therefore, for each edge to be predicted $(v,c)$, we have a triadic feature vect
 As only roughly $6\%$ of all votes are neutral votes, we will not try to predict neutral votes.
 This is in line with the Wikipedia RfA process where neutral votes are not counted for the support percentage. 
 However, we will use the neutral votes to gather the triadic features and can utilize the additional information to predict votes.
-As we discussed in Section~\ref{sec:voting-signed-networks}, the graph combination model is an extension of the sign prediction models for the voting setting.
-A major requirement to predict votes is to ensure that there is no \textit{data leakage} when creating the training features $\mathbf{X}$, similar to the process used by Kairimi et al.\ \cite{karimi2019multicongress}.
-A data leak is when we have information about the future present in the training data.
+
+As we discussed in Section~\ref{sec:voting-signed-networks}, the graph combination model is an extension of a sign prediction model for the task of predicting votes.
+A major requirement to predict votes is to ensure that there is no \textit{data leakage} when creating the training features $\mathbf{X}$.
+A data leak is when we have information about the future available in the training data.
 This can cause the model that we train to overfit on the leaked data and not generalize.
-In our problem setting, we divide the whole \wikirfa into three parts, namely \textit{dev}, \textit{train} and \textit{test}.
-As we are predicting votes, we will split the datasets based on the number of votes chronologically and round up to the closest RfA so that it is contiguous. 
+Kairimi et al.\ \cite{karimi2019multicongress} outline a process to split a dataset chronologically and gather information respecting the boundary dates at the location of the splits.
+Similarly, for our problem setting, we divide the whole \wikirfa into three parts, namely \textit{dev}, \textit{train} and \textit{test}.
+As we are predicting votes, we split the datasets based on the number of votes chronologically and round up to the closest RfA so that it is contiguous. 
 
 The \textit{dev} (or development) dataset will be the set of RfAs which we use to construct the auxiliary and signed graphs.
 We ensure that the \usercontrib dataset is also restricted to the edits that happened until the date of the last RfA in the dev dataset.
@@ -163,23 +173,25 @@ Therefore, all the five auxiliary graphs and the signed graphs are created only 
 
 Next, the \textit{train} (or training) dataset is what we use to create the feature matrix $\mathbf{X}$ and target matrix $\mathbf{y}$.
 In this dataset, we only consider the support and oppose votes to be part of the prediction task and hence, filter out all the neutral votes.
-Now, for each vote, we create the auxiliary feature vector $\textbf{a}$ using the five auxiliary graphs and the triadic feature vector $t$ from the signed voting graph as described in Algorithms~\ref{alg:auxiliary-feature} and \ref{alg:triad-feature} respectively.
-These features are concatenated into a feature vector $\textbf{x}$, which is of length $41$ ($5$ auxiliary and $36$ triadic) and is a row in the feature matrix.
-The corresponding true vote is also collected in the target $y_i$.
-The \textit{dev} and \textit{train} splits ensure that the auxiliary and triadic features are strictly not overlapping.
-This allows the feature matrix $\textbf{X}$ to be independent of time and therefore, be cross validated.
+Now, for each vote, we create the auxiliary feature vector $\textbf{a}$ using the five auxiliary graphs and the triadic feature vector $\mathbf{t}$ from the signed voting graph as described in Algorithms~\ref{alg:auxiliary-feature} and \ref{alg:triad-feature} respectively.
+These features are concatenated into a feature vector $\textbf{x}$, which is of length $41$ ($5$ auxiliary and $36$ triadic features) and is a row of the feature matrix.
+The corresponding true vote is also collected in the target $y$.
+The \textit{dev} split ensure that the auxiliary and triadic features in \textit{train} do not overlap with the \textit{test} split.
+Therefore, this allows the feature matrix $\textbf{X}$ to be independent of time and we can use methods such as $k$-fold to cross validate the model.
 
-Lastly, the \textit{test} dataset contains votes that the model trained on the training dataset would not have seen and can be used to evaluate the performance of the model.
+Lastly, the \textit{test} dataset contains votes that the model trained on the training dataset would not have seen.
+This can be used to evaluate the performance of the model.
 The feature matrix for the test dataset, $\mathbf{X}_{test}$ and the target, $\mathbf{y}_{test}$ are also constructed in a similar manner.
 For each vote in the test dataset, we gather the auxiliary and triadic features from the same graphs as we used for the training phase.
-We create each row of $\mathbf{X}_{test}$ by concatenating these features and gathering the true vote as the target.
+We create each row of $\mathbf{X}_{test}$ by concatenating these features and gathering the true votes as the target.
+
 As the auxiliary features and triadic features have different ranges, we standardize both training and testing feature matrices so that all features have a mean of zero and standard deviation of one.
-This will help the linear models train and reach an optimal faster as well as allow for ease in interpreting the coefficients of a linear model.
+This will help the linear models train better and reach an optimal solution faster as well as allow for ease in interpreting the coefficients of the linear model.
 
 \subsection{Supervised Classification}
 Once we have created the training and testing feature matrices, $\mathbf{X}$ and $\mathbf{X}_{test}$ and the target vectors, $\mathbf{y}$ and $\mathbf{y}_{test}$, the task is a regular supervised classification problem.
-We can use any traditional linear classification models such as support vector classifiers (e.g.,linear SVC), logistic regression models or gradient boosting methods (e.g., XGBoost).
-We choose a logistic regression (LR) model for its interoperability and robustness to overfitting. 
+We can use any traditional linear classification model such as support vector classifier (e.g.,linear SVC), logistic regression model or gradient boosting method (e.g., XGBoost).
+We choose a logistic regression (LR) model for its interpretability and robustness to overfitting. 
 
 Given a feature vector $\mathbf{x}=(x_{1},x_{2},\dots,x_{n})$ with $n$ features, a logistic regression model learn to predict the probability of the form 
 \begin{equation}
@@ -190,63 +202,67 @@ Where $\beta_{0}$ and $\boldsymbol{\beta} = (\beta_{1},\beta_{2},\dots,\beta_{n}
 The \wikirfa dataset has a class imbalance problem.
 Support votes are $73\%$ compared to oppose votes at $20\%$.
 Therefore, we will utilize class weights inversely proportional to the class frequencies while training so that the model learns to predict negative votes effectively. 
-As the training features $\mathbf{X}$ are independent of time, we acn use $k$-fold cross validation to tune the regularization parameter for the logistic regression model.  
+As the training features $\mathbf{X}$ are independent of time, we use $k$-fold cross validation to tune the regularization parameter for the logistic regression model.  
 
 \section{Local Signed Network Models}
 \label{sec:local-signed-network-implementation}
-We now discuss the implementation and significance of the local signed network models discussed in Section~\ref{sec:local-signed-network-theory} to predict votes in Wikipedia RfAs.
+We now discuss the implementation of the local signed network models discussed in Section~\ref{sec:local-signed-network-theory} to predict votes in Wikipedia RfAs.
 
 These models are iterative models and an important feature is that they are unsupervised.
 Therefore, they do not require any learning of parameters or preparation of data for training.
 Consequently, we can bootstrap the models to start from the first available RfA.
 We achieve this by beginning with an empty relationship graph $R$.
-In the first RfA, the LSN network for all the votes contain only the nodes for voter $v$ and candidate $c$.
+In the first RfA, the LSN for all the votes contain only the nodes for voter $v$ and candidate $c$.
 Therefore, the model will predict all votes with probability $0.5$ of being support votes, as there is no information available.
 After the first RfA is over, the relationship graph $R$ will be updated with the voting details.
-Now, in the second RfA there is more information present and the model can be predict votes with more certainty.
-In this manner,the models can iteratively learn and predict all the votes present in the \wikirfa dataset.
+Now, in the second RfA there is more information present and the model can predict votes with more certainty.
+In this manner, the models can iteratively learn and predict all the votes present in the \wikirfa dataset.
 
-In a similar fashion, the iterative models elegantly handle new users for whom we have no information .
+In a similar fashion, the iterative models elegantly handles new users for whom we have no information .
 If at any point the current voter $v$ is new and there is no information in the relationship graph , then the model predicts support vote probability of $0.5$, because the LSN contains only the nodes $v$ and $c$ .
-This new voter is then integrated into the relationship graph when it is updated after the RfA session, shown in Line~\ref{iterative-pred:line:update-relation}.
+This new voter is then integrated into the relationship graph when it is updated after the RfA session, shown in Line~\ref{iterative-pred:line:update-relation} of Algorithm~\ref{alg:iterative-pred}.
 Therefore, this new voter's information is now available for future vote predictions.
 
 In this thesis, we wish to separately study the votes that are predicted with no information.
 Therefore, in our implementation we specifically mark these votes.
-Firstly, we can accurately evaluate the models using only on the votes predicted with information.
-Next, we can analyse the distribution of the informationless votes and devise strategies to effectively guess the vote in the case when it is a new user.
-Lastly, we can verify if there is some herd mentality when new voters vote for the first time.
+Consequently, we can accurately evaluate the iterative model using only the votes predicted with information.
+Then, we can analyse the distribution of the informationless votes and devise strategies to effectively guess the vote in the cases when a voter is new.
+Lastly, we can verify if there new voters follow some herd mentality when they vote for the first time.
 
-We proposed two models, one using balance theory and another using status theory.
-Both the models make use of only the election data, therefore, we will the \wikirfa dataset.
-First, we describe the iterative balance model and define the relationship graph based on agreement between voters in Wikipedia RfAs.
-Secondly, we explain the iterative status model and the relationship graph based on follower ratio in RfAs.
+We proposed two iterative models in Section~\ref{sec:local-signed-network-theory}, one using balance theory and another using status theory.
+Both these models make use of only the votes cast in sessions.
+Therefore, we will use the \wikirfa dataset for the iterative models.
+First, we describe the iterative balance model and define the relationship graph based on \textit{agreement} between voters in Wikipedia RfAs.
+Secondly, we explain the iterative status model and the relationship graph based on the \textit{follower ratio} in RfAs.
 
 \subsection{Iterative Balance Model}
-The \textit{Iterative Balance Model}  uses balance theory of the local signed network to predict the independent vote in a Wikipedia RfA.
+The \textit{Iterative Balance Model}  uses balance theory in the local signed network to predict the votes of independent voters in a Wikipedia RfA.
 As discussed in Section~\ref{subsec:prediction-based-balance}, we require a signed symmetric measure between two voters.
 We now propose a measure based on the \textit{agreement ratio} between two users $u$ and $v$.
-The ratio is the number of times $u$ and $v$ have voted the same divided by the number of common RfAs they have participated in.
-For example, if $u$ and $v$ have participated in $12$ common RfAs and have voted the same in $9$ RfAs, then the agreement ratio is $0.75$, indicating that they agree more than they disagree.
-Therefore, if they have an agreement ratio of $0.5$, then they neither agree or disagree to a significant degree.
-The agreement ratio is symmetric and we can covert into a signed measure by subtracting 0.5 from the ratio.
+The ratio is the number of times $u$ and $v$ have voted similarly, divided by the number of common RfAs they have participated in.
+For example, if $u$ and $v$ have participated in $12$ common RfAs and have voted the same in $9$ RfAs, then the agreement ratio is $0.75$.
+This indicates that they agree more than they disagree.
+Therefore, if a pair of users have an agreement ratio of $0.5$, then they neither agree or disagree with each other.
+The agreement ratio is symmetric and we covert it into a signed measure by subtracting 0.5 from the ratio.
 
 Hence, we define a signed undirected \textit{agreement graph} $A= (V_{A},E_{A},w_{A})$, where the weight function is defined as seen in Equation~\eqref{eqn:agree-weight}.
 \begin{equation}
     \label{eqn:agree-weight}
-    w_{A}((u,v)) = \frac{\text{Number of times } u \text{ and } v \text{ have voted the same}}{\text{Number of common RfAs for } u \text{ and } v} -0.5
+    w_{A}((u,v)) = \frac{\text{Number of times } u \text{ and } v \text{ have voted similarly}}{\text{Number of common RfAs for } u \text{ and } v} -0.5
 \end{equation}
 
-This agreement graph $A$ is the relationship graph $R$ for the iterative balance model described in Algorithm~\ref{alg:iterative-pred}. 
+This agreement graph $A$, is the relationship graph $R$ for the iterative balance model described in Algorithm~\ref{alg:iterative-pred}. 
 In Line~\ref{iterative-pred:line:update-relation} there is a a method, $Update(R,S)$ to update the relationship graph after the end of a voting session.
 Therefore, we require a method to update the signed weights in the agreement graph $A$ given the RfA voting details in a session $S$.
 
 For notational ease, we assume that each edge $e = (u,v) \in E_{A}$ contains two attributes, $e.agree$ and $e.common$, the agreement ratio and the number of common RfAs between the nodes respectively.
 Then, once we get the voting information from the session, we can update the agreement ratio and the number of common RfAs in a straightforward manner.
 This process is shown in Algorithm~\ref{alg:agree-update}.
+
 We can bootstrap the model by beginning with an empty agreement graph $A$.
 Then for votes with no information the predicted support probability is $0.5$.
-After the RfA session is over, these new voters can be incorporated into the agreement graph when it is updated, as seen in Line~\ref{alg:agree-update:new-edge}.
+After the RfA session is over, these new voters will be incorporated into the agreement graph.
+Therefore, from the next RfA, the model has information on the voters it has now incorporated.
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
@@ -292,12 +308,14 @@ The \textit{Iterative Status Model}, as described in Section~\ref{subsec:predict
 Therefore, to predict votes in Wikipedia RfAs, we require a directed signed relationship graph.
 Similar to the agreement ratio for the iterative balance model, we propose a \textit{follower ratio} and a corresponding directed singed \textit{follow graph} $F=(V_{F},E_{F},w_{F})$.
 
-An edge $u \rightarrow v$ in $F$ indicates that node $u$ follows $v$ in RfAs, as in $u$ votes after $v$ in RfAs and $u$ votes the same as $v$ in those RfAs.
-Then, we define the \textit{follower ratio} as the number of times $u$ has agreed with $v$ when $u$ has voted after $v$ divided the total number of RfAs in which $u$ has voted after $v$.
-Therefore, if $u$ and $v$ have $12$ RfAs in common and in $8$ of those, $u$ has voted after $v$  and in $5$ out of $8$, $u$ has voted the same as $v$, then the follower ratio is $5/8 = 0.625$.  
-Then, if the follower ratio is below $0.5$, it indicates that $u$ tends to vote the opposite of what $v$.
-If the follower ratio for $(u,v)$ is $0.625$, the follower ratio in the other direction is not the same.
-Therefore, the measure is not symmetric and we can convert it into a signed measure by subtracting $0.5$ from the follower ratio.
+An edge $u \rightarrow v$ in $F$ indicates that node $u$ follows $v$ in RfAs.
+In more detail, for the RfAs in which both user $u$ and $v$ have voted, $u$ is said to follow $v$, if $u$ votes after $v$ and $u$ votes the same as what $v$ had voted.
+Note, it is not necessary for $u$ to vote \textit{immediately} after $v$, but just vote \textit{chronologically} after $v$.
+Then, we define the \textit{follower ratio} as the number of times $u$ has agreed with $v$ when $u$ has voted after $v$, divided the total number of RfAs in which $u$ has voted after $v$.
+For example, if $u$ and $v$ have $12$ RfAs in common and in $8$ of those, $u$ has voted after $v$  and in $5$ out of $8$, $u$ has voted the same as $v$, then the follower ratio is $5/8 = 0.625$.  
+Therefore, if the follower ratio is below $0.5$, it indicates that $u$ tends to vote the opposite of what $v$ has voted.
+Also note that, if the follower ratio for $(u,v)$ is $0.625$, the follower ratio in the other direction $(v,u)$ is not necessarily the same.
+Therefore, it is not symmetric and we can convert it into a signed measure by subtracting $0.5$ from the follower ratio.
 The weight function $w_{F}$ for the follow graph can be defined as seen in Equation~\eqref{eqn:follow-weight}. 
 \begin{equation}
     \label{eqn:follow-weight}
@@ -305,15 +323,17 @@ The weight function $w_{F}$ for the follow graph can be defined as seen in Equat
 \end{equation}
 
 When we create the LSN, we only consider the edges of type $v \rightarrow u_{i}$ from the follow graph $F$.
-This is because the voter $v$ is voting after the voters in $U$, therefore, the edges $v \leftarrow u_{i}$ provide information that is not consistent with the current voting situation.
-This can also be a point that can be analysed to see if the revered follower edges provide more benefit to the model or not.
+This is because the voter $v$ is voting after the voters in $U$.
+Therefore, the edges $v \leftarrow u_{i}$ provide information that is not consistent with the current voting order.
 
 In a RfA we are predicting a vote $v$ given the previous voters $U$, the current session graph $S$ and the follow graph $F$, as seen in Algorithm~\ref{alg:status-pred}.
-We utilize the code provided by Tatti \cite{tatti2017tiers} to compute the agony of a unsigned weighted directed network required for Algorithm~\ref{alg:signed-agony}.
+We utilize the code provided by Tatti \cite{tatti2017tiers} to compute the agony of a unsigned weighted directed network as required by Algorithm~\ref{alg:signed-agony}.
 
 The update rule for the follow graph $F$ is similar to that for the agreement graph.
 We assume that every edge $e=(u,v) \in E_{F}$, has the attributes $e.follow$ and $e.common$, the follower ratio and the number of elections where $u$ voted after $v$ respectively.
 After a RfA voting session, the session graph $S$ can be used to update the follower ratio and the corresponding weight as show in Algorithm~\ref{alg:follow-update}.
+This allows us to bootstrap the model by beginning with an empty follow graph $F$.
+As the model predicts RfAs, the follow graph is updated and contains more information to predict the next RfA.
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
@@ -357,37 +377,37 @@ After a RfA voting session, the session graph $S$ can be used to update the foll
 \section{Voting Order Experiments}
 \label{sec:voting-order}
 The iterative models based on balance and status theory predict votes in the order that they were cast.
-In this thesis, we wish to analyse the importance of the voting order on the predictive quality of the model.
+In this thesis, we wish to analyse the importance of the voting order for the quality of predictions from the iterative models.
 To achieve this, we gather two more RfAs that occurred in May and August of 2019.
-These RfA are not part of the \wikirfa dataset, and therefore the models trained on the dataset will have not seen these votes before.
+These RfAs are not part of the \wikirfa dataset, and therefore the models trained on the dataset will have not seen the votes in these session before.
 
 The first is the RfA of user \textit{HickoryOughtShirt?4}, that was completed on 1st May 2019.
 The RfA was successful with 182 support, 19 oppose and 9 neutral votes.
 This is an example of a RfA that did not have much opposition and consensus was evident in the proceedings.
-This RfA can be used to test if the model is able to effectively predict the negative votes that did appear in this election, given that they are as low as $9\%$ of all votes cast.
+This RfA can be used to test if the model is able to effectively predict the minority of negative votes that appeared in this election, which were only $9\%$ of all votes cast.
 
 The second RfA we collected was the unsuccessful nomination of the user \textit{Hawkeye7} in August 2019.
 In fact, this was the third RfA nomination for the user.
-He was successful in his initial nomination in November 2009.
-Post that, he lost his administrative privileges following an ArbCom decision for misuse of his administrative tools.
+He was successful in his first nomination in November 2009 and was promoted to an administrator.
+After that, he lost his administrative privileges following an ArbCom decision for misuse of his administrative tools.
 The second nomination in February 2016 resulted in failure even after receiving a significant amount of support votes (191 support and 95 opposition votes).
 The third nomination in August 2019 also resulted in failure after a fairly close voting phase.
 He received 91 support, 83 oppose and 15 neutral votes.
 This RfA is a perfect example of how Wikipedia RfAs are not a majority voting election.
-Therefore, it will be useful to study if the models are able to effectively generalize the information that have learnt from the \wikirfa dataset.
+Therefore, it will be useful to study if the iterative models are able to effectively generalize the information that have learnt from the \wikirfa dataset.
 Also, we can analyse the impact of the order of votes to see if that can affect the prediction in especially close RfAs.
 
 We first predict the votes in both RfAs in the same order that they took place in.
-We call this the \textit{normal} vote ordering.
+We call this the \textit{normal vote ordering}.
 Next, we reverse the order of votes from the second vote cast.
 This is because the first votes cast in Wikipedia RfAs are of the nominators and they provide the starting point for the iterative predictions.
-We refer to this ordering as \textit{reversed} vote ordering.
+We refer to this ordering as \textit{reversed vote ordering}.
 Lastly, we randomly permute the votes, except the first one cast by the co-nominator.
-We do 10 trails and then compare the results from the models.
-This is called \textit{random} voting order.
+We do 10 trails and then average the results.
+This is called \textit{random voting order}.
 
 By studying the predictive quality of both the status and balance based iterative models, we can understand the role of the voting order in each approach.
-We can also gain insights into creating a more global model of vote prediction if the voting order does not vastly affect the model's predictive accuracy.
+We can also gain insights into creating a more global framework of vote prediction if the voting order does not vastly affect the model's predictive accuracy.
 
 
 \section{Evaluation Metrics}
@@ -395,15 +415,17 @@ We can also gain insights into creating a more global model of vote prediction i
 In this section, we discuss the various metrics that we can use to evaluate the implementation of the models discussed in the previous sections.
 As mentioned in Section~\ref{sec:datasets}, the \wikirfa dataset has an imbalance of support votes.
 Therefore, simple measures such as \textit{accuracy} scores might be misleading as the baseline accuracy for predicting all votes as support votes is nearly $73\%$.
-The models we implement in Section~\ref{sec:linear-combination-implementation} and \ref{sec:linear-combination-implementation} output probabilities, and hence the metrics must also be able to utilize these results.
+The models we implement in Section~\ref{sec:linear-combination-implementation} and \ref{sec:linear-combination-implementation} output probabilities, and hence the metrics must also be able to utilize these outputs.
 
-The independent vote prediction task at hand is binary classification task.
+The independent vote prediction task is a binary classification task.
 The models implemented provide the probability of the vote being a support vote.
-Therefore, we have a target class $y \in \{-1,1\}$ corresponding to oppose and support and the result is a probability $p \in [0,1]$ for being a support vote.
+Therefore, we have a target class $y \in \{-1,1\}$ corresponding to oppose and support votes and the result is a probability $p \in [0,1]$ for being a support vote.
 Hence, we propose traditional metrics such as Receiver Operator Characteristics (ROC) and Precision Recall (PR) to evaluate the results of the model.
+We also discuss how to compute F1 scores to evaluate model in a deterministic manner for a given threshold $\theta$.
 
-If we choose a threshold $\theta$, for the probabilities that we have as the output from the model, we can predict all outputs where $p>\theta$ as $+1$ and where $p \leq \theta$ as $-1$.
-When we compare out predictions with the true outputs $y$, we get four possible outcomes.
+We can choose a threshold $\theta$, for the probabilities that we have as the output from the model.
+Then, we predict all outputs where $p>\theta$ as $+1$ and where $p \leq \theta$ as $-1$.
+When we compare our predictions with the true outputs $y$, we get four possible outcomes.
 First, when the prediction is $+1$ and the true outcome is also $+1$, then it is called a \textit{true positive} (TP). Second, when the prediction is $-1$ and the true output is also $-1$, then it is a \textit{true negative} (TN). However, if the predicted output is $-1$ and the true output is $+1$, then it is referred to as a \textit{false negative} (FN). Similarly, if the prediction is $+1$, but the true output is $-1$, then it is a \textit{false positive} (FP). These four values can be represented in a \textit{confusion matrix}, as seen in Figure~\ref{fig:confusion-matrix}.
 
 \begin{figure}[htp]
@@ -418,10 +440,10 @@ Now, the \textit{true positive rate} (TPR) is the measure of the number of corre
 Similarly, the \textit{false positive rate} (FPR) measures the number of incorrect classifications of negative samples out of all the available negative samples, i.e., $FPR = FP/(FP+TN)$.
 Therefore, the ROC curve is the space defined by the TPR as a function of the FPR, i.e., the TPR on y-axis and FPR on the x-axis. 
 Each point on the ROC curve corresponds to a confusion matrix at some threshold.
-A model that randomly predicts outcomes will form a diagonal line, indicating that the TPR and FPR are equal.
-A perfect classifier would have a point at $(0,1)$, which indicates that there are samples that are misclassified.
+A model that randomly predicts outcomes will plot a diagonal line, indicating that the TPR and FPR are equal.
+A perfect classifier's plot would have a point at $(0,1)$, which indicates that there are no samples that are misclassified.
 Although the ROC curve can be visually inspected to compare models, we utilize the \textit{area under the ROC curve} (AUC-ROC) as a quantitative measure of a model's performance.
-Therefore, the baseline random predicting model has a AUC-ROC of 0.5.
+Therefore, the baseline random model has a AUC-ROC of 0.5.
 
 The AUC-ROC score is unaffected by an imbalanced dataset. 
 This means that a high AUC-ROC score might hide the fact that the baseline accuracy of predicting all samples as positive might indeed be higher than 0.5.
@@ -431,9 +453,9 @@ Therefore, we need to be careful when interpreting the quality of the model sole
 \textit{Recall} is the same as true positive rate (TPR), i.e., $recall = TP/(TP+FN)$.
 The ratio of the number of true positive predictions out of all the predicted positive outcomes is called \textit{precision} (or positive predictive rate).
 It is defined as, $precision = TP/(TP+FP)$. 
-Precision and recall are in tension, meaning that improving precision reduces recall and vice versa.
+Precision and recall are in tension, i.e., improving precision reduces recall and vice versa.
 Therefore, the Precision-Recall (PR) curve is the space defined by representing precision as a function of recall, i.e., precision on y-axis and recall on the x-axis.
-Each point on the PR curve corresponds to a single confusion matrix obtained from a particular value of the threshold.
+Each point on the PR curve corresponds to a single confusion matrix obtained from a particular value of the threshold $\theta$.
 The baseline for the PR curve is based on the frequency of the positive label in the true outcomes and appears as a horizontal line in the plots.
 Hence, the PR curve is affected by the imbalance present in the dataset.
 Therefore, we define two measures to better represent the imbalances present in the \wikirfa dataset.
@@ -442,7 +464,7 @@ The PR curve is usually defined with respect to the positive label probability.
 We refer to this curve as the positive PR curve and denote it by \posPR.
 The positive baseline is computed as ratio of the true positive outputs and the total number of samples, $\text{baseline}_{\text{pos}} = (TP+FN)/(TP+FN+FP+TN)$.
 This will be higher for the \wikirfa dataset as there are more positive samples, i.e., support votes.
-We can measure the positive label performance by computing the area under the positive PR curve (\aucposPR), it is also called average precision score.
+We can measure the positive label performance by computing the area under the \posPR curve (\aucposPR), it is also called average precision score.
 The \aucposPR score should be higher than the positive baseline to be significant.
 Even so, the \aucposPR does not tell us if the model has learnt to predict negative votes equally well.
 
@@ -452,11 +474,10 @@ Now considering $-1$ to be the positive label, we can plot a \negPR curve in the
 The negative baseline for the \negPR curve is defined as the ratio of the true negative samples divided by the total number of samples, $\text{baseline}_{\text{neg}} = (TN+FP)/(TP+FN+FP+TN)$.
 As the negative samples, i.e., oppose votes, are the minority in the \wikirfa dataset, the corresponding negative baseline will also be lower.
 We can measure the performance of the model in predicting negative samples by computing the area under the \negPR curve (\aucnegPR).
-This measure is more import for evaluating the performance of our models.
+This measure will be more important for evaluating the performance of the iterative models on the \wikirfa dataset.
 
 
 \subsection{F1 Score}
-All the previous metrics use probabilities directly and evaluate the overall performance of the model.
 The \textit{F1 score} is the harmonic mean of precision and recall and defined as 
 \[
     F1 = 2\cdot\frac{\text{precision}\cdot\text{recall}}{\text{precision}+\text{recall}}.
@@ -464,12 +485,13 @@ The \textit{F1 score} is the harmonic mean of precision and recall and defined a
 Therefore, if we consider a PR curve, then the F1 score is computed by taking the precision and recall values at a particular point on that curve.
 If the curve was for the positive class probability, i.e., a \posPR curve, then we define the associated F1 score as the \posF score.
 Similarly, if the curve is for the negative class probabilities, i.e., a \negPR curve, then the score is called the \negF score.
-A simple average of the \posF and \negF scores is called the \textit{macro F1 score}, and is define as follows,
+A simple average of the \posF and \negF scores is called the \textit{macro F1 score}, and is defined as follows,
 \[ 
     \text{F1}_{\text{macro}} = \frac{\text{F1}_{\text{pos}}+\text{F1}_{\text{neg}}}{2}.
 \]
-The \macroF score is useful for datasets which are imbalanced as it places equal weight on both the positive and negative label performance.
+The \macroF score is useful for datasets which are imbalanced as it places equal weight on the performance for both positive and negative labels.
 
+All the metrics in the previous subsubsection used probabilities directly to evaluate the overall performance of the model.
 As the F1 score is calculated for a point in the PR curve, it corresponds to the particular value of threshold $\theta$, that yielded those values of precision and recall in the confusion matrix.
 Therefore, we can now plot the F1 score as a function of the threshold. 
 This allows us to analyse both the \posF and \negF plots versus the threshold and choose the optimal value of $\theta$, that maximizes the \macroF score.
