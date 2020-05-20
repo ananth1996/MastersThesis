@@ -245,7 +245,12 @@ Now, in the third iteration $i=3$, the smallest eigenvalue of the LSN in both ca
 Therefore, we are equivocal in the vote being positive or negative.
 Hence, the positive vote probability is $p=0.5$.
 
-\input{images/local-sign-balance.tex}
+\begin{figure}[!ht]
+    \centering
+    \input{images/local-sign-balance.tex}
+    \caption{Local Singed Network prediction based on balance theory. At every iteration $i$ the dotted red lines are prior votes, solid blue lines are relationships based on voting records and the dashed black edge $(v,c)$ is the edge whose sign is being predicted. $\lambda_1^+$ and $\lambda_1^-$ correspond to the smallest eigenvalue of the signed Laplacian $\overline{L}_i$ based on whether $w((v,c))=+1$ or $w((v,c))=-1$.     }
+    \label{fig:lsn-balance}
+\end{figure}
 
 \begin{algorithm}[htp]
     \DontPrintSemicolon
@@ -390,8 +395,12 @@ Note, this result is contradictory to the prediction made by balance theory for 
     \Return p
 \end{algorithm}
 
-
-\input{images/local-sign-status.tex}
+\begin{figure}[!ht]
+    \centering
+    \input{images/local-sign-status.tex}
+    \caption{Example of LSN sign prediction using status theory.}
+    \label{fig:lsn-status}
+\end{figure}
 
 \subsection{Iterative Prediction Model}
 
