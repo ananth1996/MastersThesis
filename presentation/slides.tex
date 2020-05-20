@@ -151,9 +151,24 @@
 
 \subsection{Agreement Graph}
 \begin{frame}
-    \frametitle{Agreement Graph}
+    \frametitle{Balance Theory}
     \begin{itemize}
         \item Balance theory works for undirected signed graphs
+        \item A cycle is balanced if it has even number of negative links
+        \item A graph is balanced if every cycle is balanced
+        \item Triads $B_1$, $B_2$ are balanced
+        \item Traids $B_3$ and $B_4$ are unbalanced
+    \end{itemize}
+    \begin{figure}
+        \centering
+        \scalebox{0.75}{\input{../images/signed-triads.tex}}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Agreement Graph}
+    \begin{itemize}
         \item Define a symmetric relationship based on \textbf{agreement} 
         \item Subtract 0.5 from agreement ratio to get a signed measure
         \item Create an \textit{Agreement Graph}, $A=(V_A,E_A,w_A)$
@@ -190,10 +205,25 @@
 \subsection{Follows Graph}
 
 \begin{frame}
+    \frametitle{Status Theory}
+    \begin{itemize}
+        \item Status theory is based on relative merit of nodes
+        \item Edge $u\plusrightarrow v$ : $v$ has higher status than $u$
+        \item Edge $u \minusrightarrow v$ : $v$ has lower status than $u$
+        \item Status and Balance theories can contradict each other when used to predict edges
+        \item Triads $S_2$, $S_3$ and $S_4$ adhere to status theory
+        \item Only triads $S_1$ and $S_3$ are balanced 
+    \end{itemize}
+    \begin{figure}
+        \centering
+        \scalebox{0.7}{\input{../images/status-triads.tex}}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}
     \frametitle{Follows Graph}
     \begin{itemize}
-        \item Status theory works for directed signed graphs
-        \item An edge $u\rightarrow v$ indicates $v$ has higher status than $u$
         \item Define a asymmetric relationship based on \textbf{following} 
         \item Create an \textit{Follow Graph}, $F=(V_F,E_F,w_F)$
         \item An edge $u \rightarrow v$ indicates $u$ votes after $v$
