@@ -1,6 +1,8 @@
 \documentclass{beamer}
 \usetheme{Madrid}
 
+\input{../macros}
+
 \AtBeginSection[]{
   \begin{frame}
   \vfill
@@ -112,9 +114,9 @@
 \begin{frame}
     \frametitle{Terminology}
     \begin{itemize}
-        \item Current voting sessions is a signed graph $S=(V_S,E_S,w_S)$
-        \item It contains current voter $v$, candidate $c$ and prior voters $U$
-        \item We also have a \textit{Relationship Graph} $R = (V_R,E_R,w_R)$
+        \item Current voting session is a signed graph $S=(V_S,E_S,w_S)$
+        \item It contains current voter $v$, candidate $c$ and prior set of voters $U$
+        \item We also have a signed \textit{Relationship Graph}, $R = (V_R,E_R,w_R)$
         \item It is created from the history of voting sessions $H$
         \item The \textit{Local Signed Network} is the intersection of these two graphs $LSN = S \cap R$
         \item Essentially the subgraph of the voter's neighbours in $R$ who have already voted in $S$
@@ -124,12 +126,53 @@
 
 \end{frame}
 
+\begin{frame}
+    \frametitle{Wikipedia Elections}    
+    \begin{itemize}
+        \item RfAs are an election-esque process to gain admin rights
+        \item Anyone can nominate a \textbf{candidate} or self-nominate
+        \item 7 day long period of voting and discussion
+        \item Any registered editor can comment and vote :
+        \begin{itemize}
+            \item Support 
+            \item Oppose
+            \item Neutral
+        \end{itemize}
+        \item Highly intense process with Q\&A with the candidate about Wiki policy etc
+        \item Final decision is made by a bureaucrat
+        \item Decision is based on if a \textbf{consensus} has been reached
+        \item Successful RfAs usually have 75\% support
+    \end{itemize}
+
+    
+
+\end{frame}
 \section{Balance Theory}
 
 \subsection{Agreement Graph}
 \begin{frame}
     \frametitle{Agreement Graph}
+    \begin{itemize}
+        \item Balance theory works for undirected signed graphs
+        \item Define a symmetric relationship based on \textbf{agreement} 
+        \item Subtract 0.5 from agreement ratio to get a signed measure
+        \item Create an \textit{Agreement Graph}, $A=(V_A,E_A,w_A)$
+    \end{itemize}
+    \begin{block}{Signed Symmetric Measure}
+        $$w_{A}((u,v)) = \frac{\text{Number of times } u \text{ and } v \text{ have voted similarly}}{\text{Number of common RfAs for } u \text{ and } v} -0.5$$
+    \end{block}
 
+\end{frame}
+
+\begin{frame}
+    \frametitle{How to measure balance?}
+    \begin{itemize}
+        \item Triads can be capture local balance of a network
+        \item Need capture information from longer cycles \cite{chiang2011exploiting}
+        \item Smallest eigenvalue $\lambda_{1}$ of the signed Laplacian $\overline{L}$ is a measure of the imbalance of the network \cite{hou2005bounds}
+        \item  We state that a voter chooses to maintain the balance of the LSN
+        \item Therefore, can use $\lambda_{1}$ as basis for predictions in model
+    \end{itemize}
     
 
 \end{frame}
@@ -148,12 +191,90 @@
 
 \begin{frame}
     \frametitle{Follows Graph}
-    
-    
-    
+    \begin{itemize}
+        \item Status theory works for directed signed graphs
+        \item An edge $u\rightarrow v$ indicates $v$ has higher status than $u$
+        \item Define a asymmetric relationship based on \textbf{following} 
+        \item Create an \textit{Follow Graph}, $F=(V_F,E_F,w_F)$
+        \item An edge $u \rightarrow v$ indicates $u$ votes after $v$
+        \item Weight is 0.5 subtracted from the \textit{followe ratio}
+    \end{itemize}
+    \begin{block}{Signed Asymmetric Measure}
+        $$ w_{F}((u,v)) = \frac{\text{Number of times } u \text{ voted after and agreed with } v }{\text{Number of times } u \text{ voted after } v} -0.5$$
+    \end{block}
+
 \end{frame}
 
+
 \subsection{Agony and Status}
+
+\begin{frame}
+    \frametitle{How to measure status?}
+    \begin{itemize}
+        \item Directed triads and other graph motifs can be a proxy for measuring status \cite{Liu2019LinkPrediction}
+        \item Heuristic for status like  $\sigma(v) = \indegree^{+}(v) + \outdegree^{-}(v) - \outdegree^{+}(v)- \indegree^{-}(v)$ \cite{leskovec2010predicting}
+        \item These still only capture local effect of status
+        \item Cannot measure violations of status in larger cycles
+        \item The concept of a nodes possessing an implicit status is very similar to a hierarchy
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Agony}
+    \begin{itemize}
+        \item Assume a ranking for nodes, $r:V\rightarrow \mathbb{N}$
+        \item An edge $u \rightarrow v$ causes \textbf{agony} if $r(u)<r(v)$
+        \item Quantified as $\max(r(u)-r(v)+1,0)$ for an edge
+        \item Agony of a graph $G$ wrt $r$ is $A(G,r) =  \sum_{(u,v)\in E} \max(r(u)-r(v)+1,0)$
+        \item Agony of a graph is lowest possible agony over all rankings $A(G) = \min_{r\in \text{Rankings}}A(G,r)$
+        \item Lower agony means better hierarchy $h(G)=1-\frac{1}{|E|}A(G)$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Examples}
+    \begin{figure}[!ht]
+        \centering
+        \begin{subfigure}[t]{0.5\textwidth}
+            \centering
+            \scalebox{0.5}{\input{../images/DAG.tex}}
+            \caption{DAG has perfect hierarchy, $h(G)=1$ and agony of each edge is 0}
+            \label{fig:dag}
+        \end{subfigure}
+
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \scalebox{0.5}{\input{../images/cycle.tex}}
+            \caption{A cycle has no hierarchy, $h(G)=0$ and each edge has agony of 1}
+            \label{fig:cycle}
+        \end{subfigure}
+        \hspace{4mm}%
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \scalebox{0.5}{\input{../images/some-hierarchy.tex}}
+            \caption{Graph with some hierarchy $h(G)=2/5$. Red dashed edge has agony of 3 and solid black edges have 0 agony.  }
+            \label{fig:some-hierarchy}
+        \end{subfigure}
+        \caption{Examples of hierarchy in unweighted directed graphs. Numbers inside nodes indicate the rank of vertex.}
+        \label{fig:hierarchy} 
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Agony and Status}
+    \begin{itemize}
+        \item \cite{gupte2011finding} and \cite{tatti2017tiers} provide algorithms to compute agony of directed graphs
+        \item Consider rank function $r$ as status function $\sigma$
+        \item For edg $u \rightarrow v$, $\sigma(u)<\sigma(v)$ is a status violation
+        \item Therefore, agony is a measure of status violation of an edge
+        \item The agony of a network is the \textbf{overall status compliance} of $G$
+        \item What to do with signed edges?
+        \item Flip edges $u \minusrightarrow v$ to $u \plusleftarrow v$
+        \item Now, we say a voter chooses to reduce the agony of the LSN
+    \end{itemize}
+
+\end{frame}
+
 \subsection{Model}
 \begin{frame}
     \frametitle{Iterative Status Model}
@@ -165,6 +286,18 @@
 
 \section{Iterative Prediction}
 
+\begin{frame}
+    \frametitle{Iterative Predictions and its Advantages}
+    \begin{itemize}
+        \item Predictions with balance and status predictions are unsupervised
+        \item Can be bootstrapped by starting with an empty graph $R$
+        \item After predicting votes in a session, it updates $R$
+        \item Iteratively gathers more information in $R$ increasing performance
+        \item Therefore, model can be trained on the entire dataset
+    \end{itemize}
+    
+
+\end{frame}
 \begin{frame}
     \frametitle{Algorithm}
     \centering
@@ -196,6 +329,71 @@
 \end{frame}
 \section{Results}
 
+\begin{frame}
+    \frametitle{Tabular Results}
+    \begin{table}[H]
+        \centering
+        \caption{Information of relationship graphs of iterative models using entire \wikirfa dataset}
+        \label{tab:iterative-graphs}
+        \begin{tabular}{lcccc}
+            \toprule
+            Relationship Graph & $|V|$ & $|E|$ & density & \shortstack{largest component \\size}\\
+            \midrule
+            
+            Agreement Graph& 11924 &2451028 & 0.0345 & 11908\\
+            
+            Follow Graph & 11924 & 3136303 & 0.0220 & 11563 \\
+    
+    
+            \bottomrule
+            \end{tabular}
+    \end{table}
+    \begin{table}[H]
+        \centering
+        \caption{Results of iterative models on the complete \wikirfa dataset}
+        \label{tab:complete-results}
+        \begin{tabular}{lccc}
+            \toprule
+            Model & AUC-ROC & \aucposPR  & \aucnegPR \\ 
+            \midrule
+            
+            Baseline & 0.5 & 0.784& 0.216 \\
+    
+            Iterative Balance &  0.835 & 0.935 & 0.635 \\
+    
+            Iterative Status & 0.784 & 0.917 & 0.502 \\
+            
+            \bottomrule
+            \end{tabular}
+    \end{table}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Plots}
+    \begin{figure}[htp]
+        \centering
+        \includegraphics[width=0.7\textwidth]{../images/iterative_Balance.pdf}
+        \caption{Plots for the Iterative Balance Model on the complete \wikirfa dataset}
+        \label{fig:complete-iterative-balance}
+    \end{figure}
+
+    \begin{figure}[htp]
+        \centering
+        \includegraphics[width=0.7\textwidth]{../images/iterative_Status.pdf}
+        \caption{Plots for the Iterative Status Model on the complete \wikirfa dataset}
+        \label{fig:complete-iterative-status}
+    \end{figure}   
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{}
+
+    \centering \Large
+    \emph{Questions or Comments}
+
+\end{frame}
 
 \bibliography{../sources}
 \bibliographystyle{apalike}
