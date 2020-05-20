@@ -1,0 +1,203 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.pathmorphing,decorations.markings}
+\usetikzlibrary{shapes}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows,positioning}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\colorlet{colD}{red!40}
+\colorlet{colIP}{cyan!40}
+\colorlet{colV}{blue!40}
+\colorlet{colBorder}{gray!70}
+
+
+\title[Signed Vote Prediction]{Vote Prediction Models for Signed Social Networks}
+\author{Ananth Mahadevan}
+\institute{Aalto University}
+\date{\today}
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}
+    \frametitle{Overview}
+    \tableofcontents
+\end{frame}
+
+
+\section{Voting and Signed Networks}
+
+\begin{frame}
+    \frametitle{Voting in Communities}
+    \begin{itemize}
+        \item Communities need to take collective action 
+        \item Voting is a popular method 
+        \item Members of the community vote on the agenda
+        \item E.g.
+        \begin{itemize}
+            \item Politicians voting for bills in the parliament
+            \item Wikipedia users voting for promoting administrators 
+        \end{itemize}
+        \item Understanding voting behaviour is beneficial
+        \item Can propose agendas items which will be be successful 
+        \item Identify ideological fault lines amongst members
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{Votes as Signed Graphs}
+    \begin{itemize}
+        \item Votes are usually for or against an agenda
+        \item Intuitively maps to positive and negative edges in signed graphs 
+        \item More tools to analyse voting patterns, e.g.,
+        \begin{itemize}
+            \item Correlation clustering \cite{brito2020aBrazil,arinik2017signed}
+            \item Balance and Status \cite{levorato2016brazilian,derr2018congressional}
+        \end{itemize}
+        \item Two main prediction tasks exist with regard to voting 
+        \begin{enumerate}
+            \item Predicting the Result
+            \item Predicting an individual vote
+        \end{enumerate}
+        \item We focus on predicting votes
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{Predicting Votes}
+    Predicting a vote can be split into two phases
+    \begin{enumerate}
+        \item \textbf{Who} will vote next
+        \begin{itemize}
+            \item Same as link prediction task
+            \item Is trivial when voting order is known, e.g., parliament roll calls
+            \item Combinatorial if no known underlying process
+        \end{itemize}
+        \item \textbf{How} they will vote 
+        \begin{itemize}
+            \item Same as sign prediction task
+            \item Triad features encode balance and status theory
+            \item Train a supervised ML model using network and triad features \cite{leskovec2010predicting,leskovec2010signed}
+        \end{itemize}
+    \end{enumerate}
+    We propose an \textit{unsupervised iterative model} to predict the sign of a vote using balance and status theory.
+
+\end{frame}
+\section{Local Signed Network}
+\begin{frame}
+    \frametitle{Terminology}
+    \begin{itemize}
+        \item Current voting sessions is a signed graph $S=(V_S,E_S,w_S)$
+        \item It contains current voter $v$, candidate $c$ and prior voters $U$
+        \item We also have a \textit{Relationship Graph} $R = (V_R,E_R,w_R)$
+        \item It is created from the history of voting sessions $H$
+        \item The \textit{Local Signed Network} is the intersection of these two graphs $LSN = S \cap R$
+        \item Essentially the subgraph of the voter's neighbours in $R$ who have already voted in $S$
+        \item Can use balance and status theory in the LSN to predict votes
+    \end{itemize}
+    
+
+\end{frame}
+
+\section{Balance Theory}
+
+\subsection{Agreement Graph}
+\begin{frame}
+    \frametitle{Agreement Graph}
+
+    
+
+\end{frame}
+\subsection{Model}
+\begin{frame}
+    \frametitle{Iterative Balance Model}
+    \centering
+    \scalebox{0.7}{\input{../images/local-sign-balance.tex}}
+
+\end{frame}
+
+\section{Status Theory}
+
+
+\subsection{Follows Graph}
+
+\begin{frame}
+    \frametitle{Follows Graph}
+    
+    
+    
+\end{frame}
+
+\subsection{Agony and Status}
+\subsection{Model}
+\begin{frame}
+    \frametitle{Iterative Status Model}
+        \centering
+        \scalebox{0.5}{\input{../images/local-sign-status.tex}}
+    
+
+\end{frame}
+
+\section{Iterative Prediction}
+
+\begin{frame}
+    \frametitle{Algorithm}
+    \centering
+    \scalebox{0.7}{
+    \begin{algorithm}[H]
+        \DontPrintSemicolon
+        \KwIn{Candidate $c$, Relationship graph $R=(V_R,E_R,w_R)$, Order of voters in current session $O$ and true votes $w^*$  }
+        \KwResult{Predictions for current session }
+        $k \leftarrow |O|$\;
+        $u \leftarrow O[1]$ \tcp*{First voter} 
+        $V_S \leftarrow \{c,u\}$ \tcp*{candidate and first voter}
+        $E_S \leftarrow \{(u,c)\}$ \tcp*{first vote}
+        $w_S((u,c)) \leftarrow w^{*}((u,c))$ \tcp*{Assign true vote}
+        Initialize session graph $S = \{V_S,E_S,w_S\}$\;
+        $predictions \leftarrow \emptyset$ \;
+        \For{$i \leftarrow 2$ \KwTo $k$}{
+            $v \leftarrow O[i]$\; 
+            $V_S \leftarrow V_S \cup \{v\}$ \;
+            $LSN \leftarrow S \cap R$\;
+            $p \leftarrow Predict(v,c,LSN)$\; 
+            $predictions \leftarrow predictions \cup p$\;
+            $E_S \leftarrow E_S \cup \{(v,c)\}$\;
+            $w_S((v,c)) \leftarrow w^{*}((v,c))$ \tcp*{Assign true vote}
+        }   
+        $Update(R,S)$ \tcp*{Update Relationship graph}
+        \Return $predictions$\;
+    \end{algorithm}
+    }
+\end{frame}
+\section{Results}
+
+
+\bibliography{../sources}
+\bibliographystyle{apalike}
+
+\end{document}

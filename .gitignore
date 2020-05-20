@@ -9,6 +9,8 @@
 *.toc
 *.xmpdata
 *.xmpi
+*.nav
+*.snm
 minimal_thesis.pdf
 minimal_thesis.tex
 minimal/
