@@ -130,8 +130,10 @@
 \newcommand{\ATTHESIS}{}
 \newcommand{\ATSUPERVISORNAME}{}
 \newcommand{\ATINSTRUCTORNAME}{}
+\newcommand{\ATEXAMINERNAME}{}
 \newcommand{\ATSUPERVISOR}{}
 \newcommand{\ATINSTRUCTOR}{}
+\newcommand{\ATEXAMINER}{}
 \newcommand{\ATDATENAME}{}
 \newcommand{\ATDATE}{}
 \newcommand{\ATCITY}{}
@@ -162,8 +164,12 @@
   \ifthenelse{\NUMINSTRUCTORS = 1}%
     {\renewcommand{\ATINSTRUCTORNAME}{Advisor}}%
     {\renewcommand{\ATINSTRUCTORNAME}{Advisors}}
+  \ifthenelse{\NUMINSTRUCTORS = 1}%
+    {\renewcommand{\ATEXAMINERNAME}{Examiner}}%
+    {\renewcommand{\ATEXAMINERNAME}{Examiners}}
   \renewcommand{\ATSUPERVISOR}{\SUPERVISOR}
   \renewcommand{\ATINSTRUCTOR}{\INSTRUCTOR}
+  \renewcommand{\ATEXAMINER}{\EXAMINER}
   \renewcommand{\ATDATENAME}{Date}
   \renewcommand{\ATDATE}{\DATE}
   \renewcommand{\ATCITY}{Espoo}
@@ -295,6 +301,7 @@
 \ATINSTRUCTORNAME: & \allowlinebreaks{10cm}{%
 \ifthenelse{\isundefined{\COVERINSTRUCTOR}}%
 {\ATINSTRUCTOR}{\COVERINSTRUCTOR}}\\
+\ATEXAMINERNAME: & \ATEXAMINER
 \end{tabular}
 }
 \newpage%

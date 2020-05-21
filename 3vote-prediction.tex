@@ -188,7 +188,12 @@ Based on whether we use balance or status theory to predict the vote, the relati
 
 We now define the \textit{Local Signed Network} (LSN) of a voter $v$ as $LSN = S \localintersect R$.
 Where, $\localintersect$ is the \textit{local intersection} of two graphs.
-Given two graph $G_1=(V_1,E_1)$ and $G_2=(V_2,E_2)$, the 
+Given two graph $G_1=(V_1,E_1)$ and $G_2=(V_2,E_2)$, the local intersection is defined as seen in Equation~\eqref{eqn:localintersect}.
+\begin{equation}
+    \label{eqn:localintersect}
+    G_1 \localintersect G_2 = (V_1 \cap V_2,E_1\cup E_2).
+\end{equation}
+Therefore, the LSN is the subgraph induced by the neighbourhood of $v$ in $R$ who have voted in the session $S$.
 We assume that candidate $c$ is present in the relationship graph so that we get all the prior vote edges $(u_j,c)$ in the LSN.
 The \textit{voting neighbourhood} that we described in the previous section, has the same set of vertices as that of the LSN, i.e., $V_{LSN}=V_S \cap V_R$.
 There are three main types of edges present in the LSN.
@@ -447,7 +452,7 @@ Therefore, the model can improve after each session by incorporating the voting 
     \For{$i \leftarrow 2$ \KwTo $k$}{
         $v \leftarrow O[i]$\; 
         $V_S \leftarrow V_S \cup \{v\}$ \;
-        $LSN \leftarrow S \cap R$\; \label{iterative-pred:line:create-lsn}
+        $LSN \leftarrow S \localintersect R$\; \label{iterative-pred:line:create-lsn}
         $p \leftarrow Predict(v,c,LSN)$\; \label{iterative-pred:line:predict}
         $predictions \leftarrow predictions \cup p$\;
         $E_S \leftarrow E_S \cup \{(v,c)\}$\;
