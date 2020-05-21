@@ -58,14 +58,16 @@
         \item Communities need to take collective action 
         \item Voting is a popular method 
         \item Members of the community vote on the agenda
-        \item E.g.
+        \item For example
         \begin{itemize}
             \item Politicians voting for bills in the parliament
             \item Wikipedia users voting for promoting administrators 
         \end{itemize}
         \item Understanding voting behaviour is beneficial
-        \item Can propose agendas items which will be be successful 
-        \item Identify ideological fault lines amongst members
+        \begin{itemize}
+            \item Can propose agendas items which will be successful 
+            \item Identify ideological fault lines amongst members
+        \end{itemize}
     \end{itemize}
     
 \end{frame}
@@ -73,8 +75,8 @@
 \begin{frame}
     \frametitle{Votes as Signed Graphs}
     \begin{itemize}
-        \item Votes are usually for or against an agenda
-        \item Intuitively maps to positive and negative edges in signed graphs 
+        \item Votes are usually \textbf{for} or \textbf{against} an agenda
+        \item Intuitively maps to \textbf{positive} and \textbf{negative} edges in signed graphs 
         \item More tools to analyse voting patterns, e.g.,
         \begin{itemize}
             \item Correlation clustering \cite{brito2020aBrazil,arinik2017signed}
@@ -82,7 +84,7 @@
         \end{itemize}
         \item Two main prediction tasks exist with regard to voting 
         \begin{enumerate}
-            \item Predicting the Result
+            \item Predicting the result
             \item Predicting an individual vote
         \end{enumerate}
         \item We focus on predicting votes
@@ -110,24 +112,10 @@
     We propose an \textit{unsupervised iterative model} to predict the sign of a vote using balance and status theory.
 
 \end{frame}
-\section{Local Signed Network}
-\begin{frame}
-    \frametitle{Terminology}
-    \begin{itemize}
-        \item Current voting session is a signed graph $S=(V_S,E_S,w_S)$
-        \item It contains current voter $v$, candidate $c$ and prior set of voters $U$
-        \item We also have a signed \textit{Relationship Graph}, $R = (V_R,E_R,w_R)$
-        \item It is created from the history of voting sessions $H$
-        \item The \textit{Local Signed Network} is the intersection of these two graphs $LSN = S \cap R$
-        \item Essentially the subgraph of the voter's neighbours in $R$ who have already voted in $S$
-        \item Can use balance and status theory in the LSN to predict votes
-    \end{itemize}
-    
 
-\end{frame}
-
+\section{Wikipedia Elections}
 \begin{frame}
-    \frametitle{Wikipedia Elections}    
+    \frametitle{Requests for Adminship (RfA)}    
     \begin{itemize}
         \item RfAs are an election-esque process to gain admin rights
         \item Anyone can nominate a \textbf{candidate} or self-nominate
@@ -139,14 +127,31 @@
             \item Neutral
         \end{itemize}
         \item Highly intense process with Q\&A with the candidate about Wiki policy etc
-        \item Final decision is made by a bureaucrat
+        \item Final decision is made by a Bureaucrat (a special class of users)
         \item Decision is based on if a \textbf{consensus} has been reached
         \item Successful RfAs usually have 75\% support
     \end{itemize}
 
+
+\end{frame}
+
+\section{Local Signed Network}
+\begin{frame}
+    \frametitle{Terminology}
+    \begin{itemize}
+        \item Current voting session is a signed graph $S=(V_S,E_S,w_S)$
+        \item It contains current voter $v$, candidate $c$ and prior set of voters $U$
+        \item We also have a signed \textit{Relationship Graph}, $R = (V_R,E_R,w_R)$
+        \item It is created from the historical voting data, $H$
+        \item The \textit{Local Signed Network} is defined as $LSN = ( V_S \cap V_R, E_S\cup E_R)$
+        \item Essentially the subgraph of the voter's neighbours in $R$, who have already voted in $S$
+        \item Can use balance and status theory in the LSN to predict votes
+    \end{itemize}
     
 
 \end{frame}
+
+
 \section{Balance Theory}
 
 \subsection{Agreement Graph}
@@ -155,9 +160,9 @@
     \begin{itemize}
         \item Balance theory works for undirected signed graphs
         \item A cycle is balanced if it has even number of negative links
-        \item A graph is balanced if every cycle is balanced
+        \item A graph is balanced iff every cycle is balanced
         \item Triads $B_1$, $B_2$ are balanced
-        \item Traids $B_3$ and $B_4$ are unbalanced
+        \item Triads $B_3$ and $B_4$ are unbalanced
     \end{itemize}
     \begin{figure}
         \centering
@@ -182,11 +187,11 @@
 \begin{frame}
     \frametitle{How to measure balance?}
     \begin{itemize}
-        \item Triads can be capture local balance of a network
-        \item Need capture information from longer cycles \cite{chiang2011exploiting}
+        \item Triads can capture local balance of a network
+        \item Need to capture information from longer cycles \cite{chiang2011exploiting}
         \item Smallest eigenvalue $\lambda_{1}$ of the signed Laplacian $\overline{L}$ is a measure of the imbalance of the network \cite{hou2005bounds}
         \item  We state that a voter chooses to maintain the balance of the LSN
-        \item Therefore, can use $\lambda_{1}$ as basis for predictions in model
+        \item Therefore, can use $\lambda_{1}$ as the basis for predictions in the model
     \end{itemize}
     
 
@@ -224,10 +229,10 @@
 \begin{frame}
     \frametitle{Follows Graph}
     \begin{itemize}
-        \item Define a asymmetric relationship based on \textbf{following} 
+        \item Define an asymmetric relationship based on \textbf{following} 
         \item Create an \textit{Follow Graph}, $F=(V_F,E_F,w_F)$
         \item An edge $u \rightarrow v$ indicates $u$ votes after $v$
-        \item Weight is 0.5 subtracted from the \textit{followe ratio}
+        \item Weight is 0.5 subtracted from the \textit{follower ratio}
     \end{itemize}
     \begin{block}{Signed Asymmetric Measure}
         $$ w_{F}((u,v)) = \frac{\text{Number of times } u \text{ voted after and agreed with } v }{\text{Number of times } u \text{ voted after } v} -0.5$$
@@ -245,7 +250,7 @@
         \item Heuristic for status like  $\sigma(v) = \indegree^{+}(v) + \outdegree^{-}(v) - \outdegree^{+}(v)- \indegree^{-}(v)$ \cite{leskovec2010predicting}
         \item These still only capture local effect of status
         \item Cannot measure violations of status in larger cycles
-        \item The concept of a nodes possessing an implicit status is very similar to a hierarchy
+        \item The concept of a nodes possessing an implicit status is very similar to a \textbf{hierarchy} 
     \end{itemize}
 \end{frame}
 
@@ -253,11 +258,11 @@
     \frametitle{Agony}
     \begin{itemize}
         \item Assume a ranking for nodes, $r:V\rightarrow \mathbb{N}$
-        \item An edge $u \rightarrow v$ causes \textbf{agony} if $r(u)<r(v)$
+        \item An edge $u \rightarrow v$ causes \textbf{agony}, if $r(u)\geq r(v)$
         \item Quantified as $\max(r(u)-r(v)+1,0)$ for an edge
         \item Agony of a graph $G$ wrt $r$ is $A(G,r) =  \sum_{(u,v)\in E} \max(r(u)-r(v)+1,0)$
-        \item Agony of a graph is lowest possible agony over all rankings $A(G) = \min_{r\in \text{Rankings}}A(G,r)$
-        \item Lower agony means better hierarchy $h(G)=1-\frac{1}{|E|}A(G)$
+        \item Agony of a graph is the lowest possible agony over all rankings $A(G) = \min_{r\in \text{Rankings}}A(G,r)$
+        \item Lower agony means better hierarchy, $h(G)=1-\frac{1}{|E|}A(G)$
     \end{itemize}
 \end{frame}
 
@@ -295,11 +300,13 @@
     \begin{itemize}
         \item \cite{gupte2011finding} and \cite{tatti2017tiers} provide algorithms to compute agony of directed graphs
         \item Consider rank function $r$ as status function $\sigma$
-        \item For edg $u \rightarrow v$, $\sigma(u)<\sigma(v)$ is a status violation
+        \item For an edge $u \rightarrow v$, $\sigma(u)\geq\sigma(v)$ is a status violation
         \item Therefore, agony is a measure of status violation of an edge
         \item The agony of a network is the \textbf{overall status compliance} of $G$
         \item What to do with signed edges?
-        \item Flip edges $u \minusrightarrow v$ to $u \plusleftarrow v$
+        \begin{itemize}
+            \item Flip edges $u \minusrightarrow v$ to $u \plusleftarrow v$
+        \end{itemize}
         \item Now, we say a voter chooses to reduce the agony of the LSN
     \end{itemize}
 
@@ -319,11 +326,11 @@
 \begin{frame}
     \frametitle{Iterative Predictions and its Advantages}
     \begin{itemize}
-        \item Predictions with balance and status predictions are unsupervised
+        \item Predictions with balance and status are unsupervised
         \item Can be bootstrapped by starting with an empty graph $R$
         \item After predicting votes in a session, it updates $R$
-        \item Iteratively gathers more information in $R$ increasing performance
-        \item Therefore, model can be trained on the entire dataset
+        \item Iteratively gathers more information in $R$, increasing performance
+        \item Therefore, the model can be trained on the entire dataset
     \end{itemize}
     
 
