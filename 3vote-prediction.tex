@@ -186,7 +186,9 @@ The edges of this graph capture simple signed relationships between the voters s
 The relationship graph can also be constructed uniquely based on the details of the domain in which the voting occurs.
 Based on whether we use balance or status theory to predict the vote, the relationship graph is either unweighted or weighted respectively.
 
-We now define the \textit{Local Signed Network} (LSN) of a voter $v$ as the intersection of the session and the relationship graph $LSN=S \cap R$.
+We now define the \textit{Local Signed Network} (LSN) of a voter $v$ as $LSN = S \localintersect R$.
+Where, $\localintersect$ is the \textit{local intersection} of two graphs.
+Given two graph $G_1=(V_1,E_1)$ and $G_2=(V_2,E_2)$, the 
 We assume that candidate $c$ is present in the relationship graph so that we get all the prior vote edges $(u_j,c)$ in the LSN.
 The \textit{voting neighbourhood} that we described in the previous section, has the same set of vertices as that of the LSN, i.e., $V_{LSN}=V_S \cap V_R$.
 There are three main types of edges present in the LSN.
@@ -298,7 +300,7 @@ Now, we can define when a network is perfectly complaint with status.
 
  \theoremstyle{definition}
  \begin{definition}{Perfect Status Compliance}
-     A directed signed network $G=(V,E,w)$ with an implicit status function $\sigma: V \rightarrow \mathbb{N}$ is said to be perfectly status complaint if $\forall e=(u,v) \in E$, $\sgn(w(e))\sigma(u) \leq \sgn(w(e))\sigma(v)$ 
+     A directed signed network $G=(V,E,w)$ with an implicit status function $\sigma: V \rightarrow \mathbb{N}$ is said to be perfectly status complaint if $\forall e=(u,v) \in E$, $\sgn(w(e))\sigma(u) \leq \sgn(w(e))\sigma(v)$.
  \end{definition}
 
 Therefore, the number of edges that are in violation to status theory can be a rudimentary measure of the status compliance of a given network.
@@ -312,7 +314,7 @@ We can easily remedy this by using the fact that a negative edge $u \minusrighta
 If $G$ is a signed network then we denote the unsigned directed network obtained from the transformation described as $G^\prime$.
 
 The notion of hierarchy is strongly related to status theory for signed networks.
-For instance, if $G^\prime$ is a DAG, then there no cycles and we can find a status function $\sigma$, such that there are no edges that violate status theory.
+For instance, if $G^\prime$ is a DAG, then there are no cycles and we can find a status function $\sigma$, such that there are no edges that violate status theory.
 Therefore, let us consider that the rank function $r:V\rightarrow \mathbb{N}$ used to define agony is the status function $\sigma$ for the signed network.
 Then, the agony of an edge in $G^\prime$ is a measure of the violation of that edge with respect to status theory.
 
@@ -333,7 +335,10 @@ Let $G=(V,E,w)$ be a directed signed graph.
 Then $\alpha(G)=0$ if and only if $G$ is perfectly status complaint.
 \end{theorem}
 \begin{proof}
-    The transformed unsigned directed network is $G^\prime=(V^\prime,E^\prime,w^\prime)$. The agony of a the directed network $G^\prime$ is 0 when the network has perfect hierarchy \cite{gupte2011finding}. Therefore, there exists a status function $\sigma$ such that the agony of all edges $G^\prime$, i.e., $\sigma(u) \leq \sigma(v), \forall (u,v)\in E^\prime$. Therefore, there are no edges in $G$ that violate status theory and $G$ is perfectly status complaint. Hence proved.
+    The transformed unsigned directed network is $G^\prime=(V^\prime,E^\prime,w^\prime)$. The agony of a the directed network $G^\prime$ is 0 when the network has perfect hierarchy \cite{gupte2011finding}. Therefore, there exists a status function $\sigma$ such that the agony of all edges $G^\prime$, i.e., $\sigma(u) \leq \sigma(v), \forall (u,v)\in E^\prime$. Therefore, there are no edges in $G$ that violate status theory and $G$ is perfectly status complaint.
+    Similarly, when $G$ is perfectly status compliant, we can find a status function $\sigma:V\rightarrow \mathbb{N}$, such that the agony of each edge in $G^\prime$ is $0$.
+    Therefore, the agony of the entire graph $G^\prime$ is $0$, and correspondingly $\alpha(G)=0$.
+    Hence proved.
 \end{proof}
 
 \begin{algorithm}[htp]

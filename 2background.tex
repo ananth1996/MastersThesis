@@ -17,7 +17,7 @@ The notation and terminologies used closely follow those used in Diestel~\cite{d
 These entities are called \textit{vertices} and entities related to one another are joined by \textit{edges}.
 The terms graph, vertices and edges can be used interchangeably with \textit{network}, \textit{nodes} and \textit{links} respectively.
 
-Graphs can be classified broadly into two types based on whether their edges posses a direction.
+Graphs can be classified broadly into two types based on whether their edges possess a direction.
 We now go on to define them in detail.
 \subsection{Undirected Graphs}
 An undirected graph is a pair $G=(V,E)$, where $V$ is the set of vertices and $E$ is the set $E \subseteq \{ (u,v) \mid u,v \in V\}$ of unordered pairs of vertices called edges.
@@ -172,15 +172,15 @@ Here the partition of the vertex set is $V_1 = \{v_1,v_3,v_4,v_7,v_8\}$ and $V_2
 \end{figure}
 
 The signed Laplacian matrix $\overline{L}$ of a signed graph $G$ is always positive-semidefinite.
-If the signed graph $G$ is \textit{unbalanced}, then it does not posses a partition that can lead to a bipartite network connected by negative edges.
-Therefore, $\overline{L}$ is positive-definite if and only if $G$ is \textit{unbalanced} \cite{kunegis2010spectral,hou2005bounds,zaslavsky1982signed}.
+If the signed graph $G$ is \textit{unbalanced}, then it does not possess a partition that can lead to a bipartite network connected by negative edges.
 If the smallest eigenvalue of a graph $G$ is denoted by $\lambda_{1}(G)$, then $G$ is balanced iff $\lambda_{1}(G)=0$.
+Therefore, $\overline{L}$ is positive-definite if and only if $G$ is \textit{unbalanced} \cite{kunegis2010spectral,hou2005bounds,zaslavsky1982signed}.
 Hou \cite{hou2005bounds} provides bounds on the value of $\lambda_{1}(G)$ and Li et al.\ \cite{li2016note} show that $\lambda_{1}(G)$ can be used as a measure of how far the signed graph $G$ is from being balanced. 
 Therefore, we can use the smallest eigenvalue of the signed Laplacian, $\lambda_{1}(G)$ as a quantification of the balance of the signed network $G$.
 
 \subsection{Status Theory}
 \label{sec:status-theory}
-Guha et al.\ \cite{guha2004propagation} mention implicitly that a signed edge from $u$ to $v$ can be interpreted in a asymmetric manner different from "friend" or "enemy".
+Guha et al.\ \cite{guha2004propagation} mention implicitly that a signed edge from $u$ to $v$ can be interpreted in an asymmetric manner different from "friend" or "enemy".
 Leskovec et al.\ \cite{leskovec2010signed,leskovec2010predicting} introduce the concept of \textit{status} to contextualize directed singed edges.
 A positive edge $u \plusrightarrow v$ indicates that $v$ has a higher status than $u$ and a negative edge $u \minusrightarrow v$ means that $v$ has a lower status than $u$.
 This concept of relative status can be propagated transitively along multiple steps which might lead to contradictions with balance theory \cite{leskovec2010signed}.
@@ -217,7 +217,7 @@ This fact reduces the number of unique triads that can be formed using status th
 The \textit{link prediction problem} as defined by Liben-Nowell and Kleinberg \cite{liben-nowell2007the} is the task of inferring possible future edges between vertices in a social network.
 To this end, the datasets used were split into training edges and testing edges which had a common core set of vertices.
 The goal was to use information in the training edges to predict the edges that were likely in the test dataset.
-They showed that topological features such as number of common neighbours and Katz's centrality index can be used in a unsupervised setting to accurately predict future edges.
+They showed that topological features such as number of common neighbours and Katz's centrality index can be used in an unsupervised setting to accurately predict future edges.
 
 Leskovec et al.\ \cite{leskovec2010predicting} extended the link prediction problem to signed networks.
 They also introduced the problem of \textit{edge sign prediction}: predict the sign of a given edge $(u,v)$, using the existing signed network $G$.
