@@ -6,7 +6,7 @@ In this chapter, we provide the fundamentals of the graph theory concepts requir
 In Section~\ref{sec:prelim}, we cover the basic definitions and terminologies used to describe different types of graphs.
 Then, we define a signed graph and discuss its unique properties in Section~\ref{sec:signed-graphs}.
 We outline the social theories of balance and status in signed networks in \Cref{sec:balance-theory,sec:status-theory}.
-Later, in Section~\ref{sec:link-prediction}, we provide an overview of the link and sign prediction tasks in singed network and highlights the important approaches from recent works.
+Later, in Section~\ref{sec:link-prediction}, we provide an overview of the link and sign prediction tasks in signed network and highlights the important approaches from recent works.
 Lastly, we explain techniques of finding hierarchies in directed networks and the concept of agony in Section~\ref{sec:hierarchy}.
 
 \section{Graph Theory}
@@ -181,7 +181,7 @@ Therefore, we can use the smallest eigenvalue of the signed Laplacian, $\lambda_
 \subsection{Status Theory}
 \label{sec:status-theory}
 Guha et al.\ \cite{guha2004propagation} mention implicitly that a signed edge from $u$ to $v$ can be interpreted in an asymmetric manner different from "friend" or "enemy".
-Leskovec et al.\ \cite{leskovec2010signed,leskovec2010predicting} introduce the concept of \textit{status} to contextualize directed singed edges.
+Leskovec et al.\ \cite{leskovec2010signed,leskovec2010predicting} introduce the concept of \textit{status} to contextualize directed signed edges.
 A positive edge $u \plusrightarrow v$ indicates that $v$ has a higher status than $u$ and a negative edge $u \minusrightarrow v$ means that $v$ has a lower status than $u$.
 This concept of relative status can be propagated transitively along multiple steps which might lead to contradictions with balance theory \cite{leskovec2010signed}.
 
